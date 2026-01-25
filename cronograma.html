@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciclo de Estudos | Sistema Inteligente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* PALETA PROFISSIONAL E MODERNA */
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #8b5cf6;
+            
+            /* TEMA ESCURO ELEGANTE */
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-card: #1e293b;
+            --bg-card-light: #334155;
+            --border-color: #475569;
+            --border-light: rgba(255, 255, 255, 0.1);
+            
+            /* TEXTO */
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            
+            /* EFEITOS */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+            --border-radius: 16px;
+            --border-radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* GRADIENTES */
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --gradient-success: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            --gradient-danger: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            --gradient-card: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 15% 25%, rgba(99, 102, 241, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 85% 75%, rgba(14, 165, 233, 0.1) 0%, transparent 25%);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* HEADER ELEGANTE */
+        .main-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+            color: white;
+            padding: 2.5rem 3rem;
+            position: relative;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 10px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* CONTEÚDO */
+        .content {
+            padding: 3rem;
+        }
+        
+        /* TIPOGRAFIA */
+        h2 {
+            color: var(--text-primary);
+            font-size: 1.9rem;
+            margin-bottom: 1.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 700;
+        }
+        
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+        
+        .section-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* SETUP CONTAINER */
+        .setup-container {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .textarea-container {
+            position: relative;
+            margin: 2rem 0;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 350px;
+            padding: 1.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            line-height: 1.8;
+            resize: vertical;
+            transition: var(--transition);
+            font-family: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+            background: rgba(15, 23, 42, 0.7);
+            color: var(--text-primary);
+            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 
+                0 0 0 4px rgba(99, 102, 241, 0.2),
+                inset 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .textarea-label {
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+        }
+        
+        /* BOTÕES */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 1rem 2.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            color: var(--text-primary);
+            border-color: var(--primary-light);
+        }
+        
+        .btn-danger {
+            background: var(--gradient-danger);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-success {
+            background: var(--gradient-success);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .buttons-row {
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-top: 2.5rem;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* ESTATÍSTICAS */
+        .stats-section {
+            margin: 3rem 0;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat-card {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-sm);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-light);
+            line-height: 1;
+            text-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+        
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* PROGRESSO */
+        .progress-section {
+            margin: 3rem 0;
+        }
+        
+        .progress-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            height: 16px;
+            margin: 1.25rem 0 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 50px;
+            transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+            position: relative;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
+            background-size: 200% 100%;
+            animation: progress-shine 2s infinite;
+        }
+        
+        @keyframes progress-shine {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* HEADER DO DIA */
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 3rem 0 2rem;
+            padding: 2rem;
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+        }
+        
+        .day-indicator {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .day-subject {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-sm);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .day-stats {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* LISTA DE TÓPICOS - CORREÇÃO DO CLIQUE */
+        .topic-list {
+            list-style: none;
+            margin-bottom: 3rem;
+        }
+        
+        .topic-item {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-sm);
+            padding: 1.75rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-left: 5px solid var(--border-color);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: visible; /* Alterado de hidden para visible */
+            cursor: pointer;
+        }
+        
+        .topic-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+            border-left-color: var(--primary);
+            border-color: var(--primary-light);
+        }
+        
+        .topic-item.completed {
+            border-left-color: var(--success);
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+        
+        /* CHECKBOX FIX - REMOVER POSITION RELATIVE E Z-INDEX */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            /* REMOVER position relative e z-index que podem estar bloqueando */
+        }
+        
+        .custom-checkbox {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.05);
+            position: relative; /* Mantém position relative */
+            z-index: 10; /* Aumentar z-index para garantir que está acima */
+        }
+        
+        .custom-checkbox:hover {
+            border-color: var(--primary-light);
+            transform: scale(1.1);
+        }
+        
+        .custom-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+            animation: checkPop 0.3s ease;
+        }
+        
+        @keyframes checkPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .custom-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .topic-text {
+            flex: 1;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .topic-item.completed .topic-text {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        
+        /* BADGES */
+        .pending-badge, .completed-badge {
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 1; /* Garantir que não cubra o checkbox */
+            position: relative;
+        }
+        
+        .completed-badge {
+            background: var(--gradient-success);
+        }
+        
+        /* CONTROLES */
+        .controls-row {
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+            padding-top: 2.5rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            background: var(--gradient-card);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary-light);
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+        
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(12px);
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(30px);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .modal p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        /* RESPONSIVIDADE */
+        @media (max-width: 1024px) {
+            .content {
+                padding: 2rem;
+            }
+            
+            .header {
+                padding: 2rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .header {
+                padding: 1.5rem;
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 1.9rem;
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .header-subtitle {
+                justify-content: center;
+            }
+            
+            .setup-container {
+                padding: 1.75rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .buttons-row, .controls-row, .modal-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .day-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.25rem;
+                padding: 1.5rem;
+            }
+            
+            .modal-content {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .content {
+                padding: 1.25rem;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            h2 {
+                font-size: 1.6rem;
+            }
+            
+            .stat-card {
+                padding: 1.75rem;
+            }
+            
+            .stat-value {
+                font-size: 2.5rem;
+            }
+            
+            textarea {
+                min-height: 300px;
+                padding: 1.25rem;
+            }
+        }
+        
+        /* ANIMAÇÕES */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.4s ease forwards;
+        }
+        
+        /* ÍCONES */
+        i {
+            color: var(--primary-light);
+        }
+        
+        /* ACESSIBILIDADE */
+        .btn:focus, textarea:focus, .custom-checkbox:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        
+        /* SCROLLBAR PERSONALIZADA */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* LOADING STATE */
+        .loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* CORREÇÃO ESPECÍFICA PARA CLIQUE NO CHECKBOX */
+        .topic-item * {
+            pointer-events: auto;
+        }
+        
+        .topic-item {
+            pointer-events: auto;
+        }
+        
+        .custom-checkbox {
+            pointer-events: auto !important;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <div class="header">
+                <h1><i class="fas fa-graduation-cap"></i> Sistema de Estudos Inteligente</h1>
+                <div class="header-subtitle">
+                    <i class="fas fa-rocket"></i>
+                    <span>Organize, acompanhe e otimize seu aprendizado</span>
+                </div>
+            </div>
+            
+            <div class="content">
+                <!-- Configuração inicial -->
+                <div id="setup-container">
+                    <div class="setup-container">
+                        <h2><i class="fas fa-sliders-h"></i> Configurar Cronograma</h2>
+                        
+                        <div class="textarea-container">
+                            <label class="textarea-label">
+                                <i class="fas fa-calendar-alt"></i> Cronograma de Estudos (Formato: Dia X: Matéria - Tópico)
+                            </label>
+                            <textarea id="schedule-input" placeholder="Cole seu cronograma aqui no formato:
+
+Dia 1:
+Matéria – Tópico 1
+Matéria – Tópico 2
+
+Dia 2:
+Outra Matéria – Tópico 1
+
+Ou use o exemplo abaixo...">
+Dia 1:
+Língua Portuguesa – 1. Interpretação e Compreensão de texto
+Língua Portuguesa – 2. Organização estrutural dos textos
+
+Dia 2:
+Raciocínio Lógico Matemático – 1. Lógica: proposições, conectivos, equivalências lógicas
+
+Dia 3:
+Geografia – 1. Noções básicas de cartografia: 1.1. Orientação: pontos cardeais
+Geografia – 1. Noções básicas de cartografia: 1.2. Localização: coordenadas geográficas, latitude, longitude, altitude
+
+Dia 4:
+Noções de Informática – 1.1. Sistema Operacional Windows (Desktop, Menu Iniciar, Pastas e arquivos)
+
+Dia 5:
+Língua Portuguesa – 3. Marcas de textualidade: coesão, coerência e intertextualidade
+Língua Portuguesa – 4. Modos de organização discursiva: descrição, narração, exposição, argumentação e injunção
+
+Dia 6:
+Raciocínio Lógico Matemático – 1. Lógica: quantificadores e predicados
+Raciocínio Lógico Matemático – 2. Conjuntos e suas operações, diagramas
+
+Dia 7:
+Ética no Serviço Público – 1. Código de Ética do IBGE
+
+Dia 8:
+Língua Portuguesa – 5. Tipos textuais: informativo, publicitário, propagandístico, normativo, didático e divinatório
+
+Dia 9:
+Raciocínio Lógico Matemático – 3. Números inteiros, racionais e reais e suas operações
+
+Dia 10:
+Geografia – 1.3. Representação: leitura, escala, legendas e convenções
+
+Dia 11:
+Noções de Informática – 1.2. Gerenciamento de arquivos e pastas: tipos de arquivos, navegação, criar, renomear, copiar, mover, recortar, colar, excluir, desfazer
+
+Dia 12:
+Língua Portuguesa – 6. Textos literários e não literários
+Língua Portuguesa – 7. Tipologia da frase portuguesa
+
+Dia 13:
+Raciocínio Lógico Matemático – 3. Porcentagem e juros
+Raciocínio Lógico Matemático – 4. Proporcionalidade direta e inversa
+
+Dia 14:
+Ética no Serviço Público – 2. Lei nº 8.112/1990 – Art. 116, incisos I a IV, V (a e c), VI a XII e parágrafo único
+
+Dia 15:
+Língua Portuguesa – 8. Estrutura da frase portuguesa: operações de deslocamento, substituição, modificação e correção
+
+Dia 16:
+Raciocínio Lógico Matemático – 5. Medidas de comprimento, área, volume, massa e tempo
+
+Dia 17:
+Geografia – 2. Aspectos físicos do Brasil e meio ambiente: grandes domínios de clima, vegetação, relevo e hidrografia; ecossistemas
+
+Dia 18:
+Noções de Informática – 1.3.1. Microsoft Word: criar e editar documentos; formatação básica; inserir imagens, tabelas e cabeçalhos
+
+Dia 19:
+Língua Portuguesa – 9. Problemas estruturais das frases
+Língua Portuguesa – 10. Norma culta
+
+Dia 20:
+Raciocínio Lógico Matemático – 6. Estrutura lógica de relações arbitrárias entre pessoas, lugares, objetos ou eventos fictícios
+
+Dia 21:
+Ética no Serviço Público – 2. Lei nº 8.112/1990 – Art. 117, incisos I a VI e IX a XIX
+
+Dia 22:
+Língua Portuguesa – 11. Pontuação e sinais gráficos
+Língua Portuguesa – 12. Organização sintática das frases: termos e orações
+
+Dia 23:
+Raciocínio Lógico Matemático – 7. Compreensão e análise da lógica de uma situação: raciocínio verbal, matemático, sequencial
+
+Dia 24:
+Geografia – 2. Aspectos físicos do Brasil: relevo e hidrografia; ecossistemas
+
+Dia 25:
+Noções de Informática – 1.3.2. Microsoft Excel: inserção de dados em células; operações básicas: soma, média, porcentagem; fórmulas simples
+
+Dia 26:
+Língua Portuguesa – 13. Ordem direta e inversa
+Língua Portuguesa – 14. Tipos de discurso
+
+Dia 27:
+Raciocínio Lógico Matemático – 7. Compreensão e análise da lógica de uma situação: orientação espacial e temporal, formação de conceitos, discriminação de elementos
+
+Dia 28:
+Ética no Serviço Público – 2. Lei nº 8.112/1990 – Art. 118 a 126
+
+Dia 29:
+Língua Portuguesa – 15. Registros de linguagem
+Língua Portuguesa – 16. Funções da linguagem
+
+Dia 30:
+Raciocínio Lógico Matemático – 8. Compreensão de dados apresentados em gráficos e tabelas
+
+Dia 31:
+Geografia – 3. Organização do espaço agrário: atividades econômicas, modernização e conflitos
+
+Dia 32:
+Noções de Informática – 1.3.3. Microsoft PowerPoint: criação de slides; inserção de texto e imagens
+
+Dia 33:
+Língua Portuguesa – 17. Elementos dos atos de comunicação
+Língua Portuguesa – 18. Estrutura e formação de palavras
+
+Dia 34:
+Raciocínio Lógico Matemático – 9. Raciocínio lógico envolvendo problemas aritméticos, geométricos e matriciais
+
+Dia 35:
+Ética no Serviço Público – 2. Lei nº 8.112/1990 – Art. 127, incisos I a III; Art. 132, incisos I a VII e IX a XIII
+
+Dia 36:
+Língua Portuguesa – 19. Formas de abreviação
+Língua Portuguesa – 20. Classes de palavras: aspectos morfológicos, sintáticos, semânticos e textuais
+
+Dia 37:
+Raciocínio Lógico Matemático – 10. Problemas de contagem e noções de probabilidade
+
+Dia 38:
+Geografia – 3. Organização do espaço urbano: atividades econômicas, emprego e pobreza; rede urbana e regiões metropolitanas
+
+Dia 39:
+Noções de Informática – 2.1. Conceitos fundamentais e princípios básicos da Segurança da Informação
+Noções de Informática – 2.2. Ameaças Comuns
+
+Dia 40:
+Língua Portuguesa – 20. Classes de palavras: numerals, pronomes, verbos
+
+Dia 41:
+Raciocínio Lógico Matemático – 11. Geometria básica: ângulos, triângulos, polígonos, distâncias, proporcionalidade, perímetro e área
+
+Dia 42:
+Ética no Serviço Público – 2. Lei nº 8.112/1990 – Art. 136 a 141; Art. 142, incisos I (parte), II e III, e §1º a §4º
+
+Dia 43:
+Língua Portuguesa – 20. Classes de palavras: advérbios, conjunções, interjeições; modalizadores
+
+Dia 44:
+Raciocínio Lógico Matemático – 12. Plano cartesiano: sistema de coordenadas, distância
+Raciocínio Lógico Matemático – 13. Problemas de lógica e raciocínio
+
+Dia 45:
+Geografia – 4. Dinâmica da população brasileira: fluxos migratórios, áreas de crescimento e de perda populacional
+
+Dia 46:
+Noções de Informática – 2.3. Boas Práticas de Segurança
+Noções de Informática – 2.4. Ferramentas e Recursos
+
+Dia 47:
+Língua Portuguesa – 21. Semântica: sentido próprio e figurado; anônimos, sinônimos, parônimos, hiperônimos
+
+Dia 48:
+Geografia – 5. Formação territorial e divisão político-administrativa (organização federativa)
+
+Dia 49:
+Noções de Informática – 3.1. O que é um SIG – Sistema de Informação Geográfica
+Noções de Informática – 3.2. Componentes principais de um SIG
+
+Dia 50:
+Língua Portuguesa – 22. Polissemia e ambiguidade
+Língua Portuguesa – 23. Os dicionários: tipos; organização de verbetes
+
+Dia 51:
+Língua Portuguesa – 24. Vocabulário: neologismos, arcaismos, estrangeirismos; latinismos
+Língua Portuguesa – 25. Ortografia e acentuação gráfica
+
+Dia 52:
+Noções de Informática – 3.3. Tipos de dados geoespaciais: raster (imagem) e vetor (mapas com linhas, pontos, áreas)
+
+Dia 53:
+Língua Portuguesa – 26. A crase
+
+Dia 54:
+Noções de Informática – 3.4. Localização no espaço: coordenadas geográficas e GPS</textarea>
+                        </div>
+                        
+                        <div class="buttons-row">
+                            <button id="start-cycle-btn" class="btn btn-success">
+                                <i class="fas fa-play-circle"></i> Iniciar Ciclo de Estudos
+                            </button>
+                            <button id="load-example-btn" class="btn btn-secondary">
+                                <i class="fas fa-file-alt"></i> Usar Exemplo
+                            </button>
+                            <button id="clear-btn" class="btn btn-secondary">
+                                <i class="fas fa-broom"></i> Limpar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Área principal do ciclo de estudos -->
+                <div id="study-container" class="hidden">
+                    <!-- SEÇÃO DE ESTATÍSTICAS -->
+                    <div class="stats-section">
+                        <p class="section-label"><i class="fas fa-chart-line"></i> RESUMO DO DIA</p>
+                        <div class="stats-container">
+                            <div class="stat-card slide-in">
+                                <div class="stat-value" id="current-day">1</div>
+                                <div class="stat-label">Dia Atual</div>
+                            </div>
+                            <div class="stat-card slide-in" style="animation-delay: 0.1s">
+                                <div class="stat-value" id="total-topics">0</div>
+                                <div class="stat-label">Tópicos no Dia</div>
+                            </div>
+                            <div class="stat-card slide-in" style="animation-delay: 0.2s">
+                                <div class="stat-value" id="completed-topics">0</div>
+                                <div class="stat-label">Concluídos</div>
+                            </div>
+                            <div class="stat-card slide-in" style="animation-delay: 0.3s">
+                                <div class="stat-value" id="pending-topics">0</div>
+                                <div class="stat-label">Pendentes</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- BARRA DE PROGRESSO -->
+                    <div class="progress-section">
+                        <p class="section-label"><i class="fas fa-tasks"></i> PROGRESSO DO DIA</p>
+                        <div class="progress-container">
+                            <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                            <span class="text-muted" style="color: var(--text-muted); font-size: 0.9rem;">0%</span>
+                            <span id="progress-percentage" class="text-muted" style="color: var(--text-muted); font-size: 0.9rem;">0%</span>
+                            <span class="text-muted" style="color: var(--text-muted); font-size: 0.9rem;">100%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- HEADER DO DIA -->
+                    <div class="day-header">
+                        <div>
+                            <span class="day-indicator"><i class="fas fa-calendar-day"></i> <span id="day-title">Dia 1</span></span>
+                            <span class="day-subject" id="day-subject"></span>
+                        </div>
+                        <div class="day-stats">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="day-completed">0</span> de <span id="day-total">0</span> concluídos
+                            <span id="day-percentage" style="margin-left: 8px; color: var(--primary-light);">(0%)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- LISTA DE TÓPICOS -->
+                    <ul id="topic-list" class="topic-list">
+                        <!-- Tópicos serão inseridos aqui pelo JavaScript -->
+                    </ul>
+                    
+                    <!-- CONTROLES -->
+                    <div class="controls-row">
+                        <button id="prev-day-btn" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Dia Anterior
+                        </button>
+                        <button id="next-day-btn" class="btn btn-primary">
+                            <i class="fas fa-arrow-right"></i> Próximo Dia
+                        </button>
+                        <button id="reset-btn" class="btn btn-danger">
+                            <i class="fas fa-redo"></i> Reiniciar Ciclo
+                        </button>
+                        <button id="back-to-setup-btn" class="btn btn-secondary">
+                            <i class="fas fa-cog"></i> Alterar Cronograma
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <i class="fas fa-laptop-code"></i>
+            <p>Sistema Inteligente de Estudos • Dados salvos automaticamente</p>
+            <i class="fas fa-shield-alt"></i>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirmar ação</h3>
+            <p id="modal-message">Tem certeza que deseja realizar esta ação?</p>
+            <div class="modal-buttons">
+                <button id="modal-cancel" class="btn btn-secondary">Cancelar</button>
+                <button id="modal-confirm" class="btn btn-danger">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado global da aplicação
+        const state = {
+            schedule: [],
+            currentDay: 1,
+            completedTopics: new Set(),
+            pendingTopics: {},
+            originalSchedule: []
+        };
+
+        // Elementos DOM
+        const setupContainer = document.getElementById('setup-container');
+        const studyContainer = document.getElementById('study-container');
+        const scheduleInput = document.getElementById('schedule-input');
+        const startCycleBtn = document.getElementById('start-cycle-btn');
+        const loadExampleBtn = document.getElementById('load-example-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const nextDayBtn = document.getElementById('next-day-btn');
+        const prevDayBtn = document.getElementById('prev-day-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const backToSetupBtn = document.getElementById('back-to-setup-btn');
+        const topicList = document.getElementById('topic-list');
+        const currentDayElement = document.getElementById('current-day');
+        const totalTopicsElement = document.getElementById('total-topics');
+        const completedTopicsElement = document.getElementById('completed-topics');
+        const pendingTopicsElement = document.getElementById('pending-topics');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const dayTitle = document.getElementById('day-title');
+        const daySubject = document.getElementById('day-subject');
+        const dayTotalElement = document.getElementById('day-total');
+        const dayCompletedElement = document.getElementById('day-completed');
+        const dayPercentageElement = document.getElementById('day-percentage');
+        
+        // Elementos do modal
+        const confirmModal = document.getElementById('confirm-modal');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCancel = document.getElementById('modal-cancel');
+        const modalConfirm = document.getElementById('modal-confirm');
+        
+        // Variável para controle de ação pendente
+        let pendingAction = null;
+
+        // Carregar exemplo completo
+        loadExampleBtn.addEventListener('click', function() {
+            scheduleInput.scrollIntoView({ behavior: 'smooth' });
+            scheduleInput.focus();
+            
+            // Efeito visual de confirmação
+            loadExampleBtn.innerHTML = '<i class="fas fa-check"></i> Exemplo Carregado';
+            loadExampleBtn.classList.add('btn-success');
+            loadExampleBtn.classList.remove('btn-secondary');
+            
+            setTimeout(() => {
+                loadExampleBtn.innerHTML = '<i class="fas fa-file-alt"></i> Usar Exemplo';
+                loadExampleBtn.classList.remove('btn-success');
+                loadExampleBtn.classList.add('btn-secondary');
+            }, 2000);
+        });
+
+        // Limpar campo de texto
+        clearBtn.addEventListener('click', function() {
+            scheduleInput.value = '';
+            scheduleInput.focus();
+            
+            // Efeito visual
+            clearBtn.innerHTML = '<i class="fas fa-check"></i> Limpo!';
+            setTimeout(() => {
+                clearBtn.innerHTML = '<i class="fas fa-broom"></i> Limpar';
+            }, 1000);
+        });
+
+        // Iniciar ciclo de estudos
+        startCycleBtn.addEventListener('click', function() {
+            const inputText = scheduleInput.value.trim();
+            if (!inputText) {
+                showModal(
+                    'Por favor, cole seu cronograma ou use o exemplo fornecido.',
+                    'Entendi',
+                    () => scheduleInput.focus()
+                );
+                return;
+            }
+            
+            const processedSchedule = parseSchedule(inputText);
+            if (processedSchedule.length === 0) {
+                showModal(
+                    'Não foi possível processar o cronograma. Verifique o formato e tente novamente.',
+                    'Entendi',
+                    () => {}
+                );
+                return;
+            }
+            
+            // Efeito de carregamento
+            startCycleBtn.classList.add('loading');
+            startCycleBtn.disabled = true;
+            
+            setTimeout(() => {
+                state.originalSchedule = JSON.parse(JSON.stringify(processedSchedule));
+                state.schedule = JSON.parse(JSON.stringify(processedSchedule));
+                
+                // Salvar estado imediatamente após configurar
+                saveState();
+                
+                // Adicionar flag de que o cronograma já foi configurado
+                localStorage.setItem('studyCycleConfigured', 'true');
+                
+                setupContainer.classList.add('hidden');
+                studyContainer.classList.remove('hidden');
+                
+                renderCurrentDay();
+                
+                // Efeito visual suave
+                studyContainer.style.opacity = '0';
+                setTimeout(() => {
+                    studyContainer.style.transition = 'opacity 0.5s ease';
+                    studyContainer.style.opacity = '1';
+                }, 10);
+                
+                startCycleBtn.classList.remove('loading');
+                startCycleBtn.disabled = false;
+                
+                // Mostrar mensagem de boas-vindas
+                showModal(
+                    'Ciclo de estudos iniciado com sucesso!<br><br><small>Seu progresso é salvo automaticamente.</small>',
+                    'Vamos estudar!',
+                    () => {}
+                );
+            }, 800);
+        });
+
+        // Próximo dia
+        nextDayBtn.addEventListener('click', function() {
+            const dayIndex = state.currentDay - 1;
+            
+            if (dayIndex >= state.schedule.length - 1) {
+                showModal(
+                    '<div style="text-align:center; padding: 1rem 0;">🎉 <strong>Parabéns!</strong><br><br>Você completou todos os dias do cronograma!</div>',
+                    'Voltar ao início',
+                    () => {
+                        state.currentDay = 1;
+                        saveState();
+                        renderCurrentDay();
+                    }
+                );
+                return;
+            }
+            
+            // Verificar se há tópicos pendentes
+            const pendingCount = calculatePendingTopics();
+            
+            if (pendingCount > 0) {
+                showModal(
+                    `Você tem <strong>${pendingCount} tópico(s) pendente(s)</strong> no Dia ${state.currentDay}.<br><br>Estes serão movidos para o <strong>Dia ${state.currentDay + 1}</strong>.`,
+                    'Mover pendentes',
+                    () => moveToNextDay()
+                );
+            } else {
+                moveToNextDay();
+            }
+        });
+
+        // Função para mover para o próximo dia
+        function moveToNextDay() {
+            const currentDayIndex = state.currentDay - 1;
+            const nextDayIndex = state.currentDay;
+            
+            // Identificar tópicos não concluídos do dia atual
+            const pendingFromCurrentDay = [];
+            state.schedule[currentDayIndex].forEach((topic, index) => {
+                const topicId = `day${state.currentDay}-topic${index}`;
+                if (!state.completedTopics.has(topicId)) {
+                    pendingFromCurrentDay.push(topic);
+                }
+            });
+            
+            // Adicionar tópicos pendentes ao próximo dia (no início)
+            if (pendingFromCurrentDay.length > 0) {
+                state.schedule[nextDayIndex] = [...pendingFromCurrentDay, ...state.schedule[nextDayIndex]];
+                state.pendingTopics[state.currentDay + 1] = pendingFromCurrentDay.length;
+            }
+            
+            // Avançar para o próximo dia
+            state.currentDay++;
+            
+            saveState();
+            renderCurrentDay();
+            
+            // Scroll para o topo com animação
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Dia anterior
+        prevDayBtn.addEventListener('click', function() {
+            if (state.currentDay > 1) {
+                state.currentDay--;
+                saveState();
+                renderCurrentDay();
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // Reiniciar ciclo
+        resetBtn.addEventListener('click', function() {
+            showModal(
+                '<div style="color: var(--warning)"><i class="fas fa-exclamation-circle"></i> <strong>Atenção!</strong></div><br>Tem certeza que deseja reiniciar o ciclo?<br><br><small>TODO o progresso será perdido.</small>',
+                'Sim, reiniciar',
+                () => {
+                    state.currentDay = 1;
+                    state.completedTopics = new Set();
+                    state.pendingTopics = {};
+                    state.schedule = JSON.parse(JSON.stringify(state.originalSchedule));
+                    
+                    localStorage.removeItem('studyCycleState');
+                    renderCurrentDay();
+                    
+                    showModal(
+                        '<div style="text-align:center; padding: 1rem 0;">🔄 <strong>Ciclo reiniciado!</strong><br><br>Pronto para começar novamente!</div>',
+                        'Vamos lá!',
+                        () => {}
+                    );
+                }
+            );
+        });
+
+        // Voltar para configuração
+        backToSetupBtn.addEventListener('click', function() {
+            showModal(
+                'Ao voltar para a configuração, seu progresso atual será mantido.<br><br>Você poderá retomar de onde parou posteriormente.',
+                'Voltar para configuração',
+                () => {
+                    // Não remover a flag de cronograma configurado
+                    setupContainer.classList.remove('hidden');
+                    studyContainer.classList.add('hidden');
+                    
+                    // Efeito visual suave
+                    setupContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        setupContainer.style.transition = 'opacity 0.5s ease';
+                        setupContainer.style.opacity = '1';
+                    }, 10);
+                }
+            );
+        });
+
+        // Função para calcular tópicos pendentes no dia atual
+        function calculatePendingTopics() {
+            const dayIndex = state.currentDay - 1;
+            let pending = 0;
+            
+            if (dayIndex < state.schedule.length && state.schedule[dayIndex]) {
+                state.schedule[dayIndex].forEach((_, index) => {
+                    const topicId = `day${state.currentDay}-topic${index}`;
+                    if (!state.completedTopics.has(topicId)) {
+                        pending++;
+                    }
+                });
+            }
+            
+            return pending;
+        }
+
+        // Função para processar o texto do cronograma
+        function parseSchedule(text) {
+            const lines = text.split('\n');
+            const schedule = [];
+            let currentDay = null;
+            let currentTopics = [];
+            
+            for (const line of lines) {
+                const trimmedLine = line.trim();
+                
+                const dayMatch = trimmedLine.match(/^Dia\s+(\d+):/i);
+                if (dayMatch) {
+                    if (currentDay !== null) {
+                        schedule[currentDay - 1] = currentTopics;
+                    }
+                    
+                    currentDay = parseInt(dayMatch[1]);
+                    currentTopics = [];
+                } 
+                else if (trimmedLine && currentDay !== null) {
+                    currentTopics.push(trimmedLine);
+                }
+            }
+            
+            if (currentDay !== null) {
+                schedule[currentDay - 1] = currentTopics;
+            }
+            
+            return schedule;
+        }
+
+        // Função para renderizar o dia atual - CORREÇÃO DO CLIQUE NO CHECKBOX
+        function renderCurrentDay() {
+            const dayIndex = state.currentDay - 1;
+            
+            if (dayIndex >= state.schedule.length || !state.schedule[dayIndex]) {
+                topicList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-trophy"></i>
+                        <h3>🎉 Missão Cumprida!</h3>
+                        <p>Você completou todos os dias do cronograma!</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary)">
+                            Você pode reiniciar o ciclo ou modificar o cronograma.
+                        </p>
+                    </div>
+                `;
+                dayTitle.textContent = `Dia ${state.currentDay}`;
+                daySubject.textContent = 'Concluído! 🎓';
+                updateStats();
+                return;
+            }
+            
+            const topics = state.schedule[dayIndex];
+            const subject = extractSubject(topics);
+            
+            dayTitle.textContent = `Dia ${state.currentDay}`;
+            daySubject.textContent = subject ? subject : 'Estudos';
+            
+            topicList.innerHTML = '';
+            
+            topics.forEach((topic, index) => {
+                const topicId = `day${state.currentDay}-topic${index}`;
+                const isCompleted = state.completedTopics.has(topicId);
+                const isPendingFromPrevious = state.pendingTopics[state.currentDay] && index < state.pendingTopics[state.currentDay];
+                
+                const li = document.createElement('li');
+                li.className = `topic-item fade-in ${isCompleted ? 'completed' : ''}`;
+                li.style.animationDelay = `${index * 0.05}s`;
+                
+                li.innerHTML = `
+                    <div class="checkbox-container">
+                        <div class="custom-checkbox ${isCompleted ? 'checked' : ''}" data-id="${topicId}"></div>
+                    </div>
+                    <div class="topic-text">${topic}</div>
+                    ${isPendingFromPrevious ? 
+                      '<span class="pending-badge"><i class="fas fa-clock"></i> Pendente</span>' : 
+                      (isCompleted ? '<span class="completed-badge"><i class="fas fa-check"></i> Concluído</span>' : '')}
+                `;
+                
+                // Evento de clique no checkbox - CORREÇÃO APLICADA
+                const checkbox = li.querySelector('.custom-checkbox');
+                checkbox.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Impede que o evento se propague para o li
+                    const topicId = this.getAttribute('data-id');
+                    
+                    if (state.completedTopics.has(topicId)) {
+                        state.completedTopics.delete(topicId);
+                        this.classList.remove('checked');
+                        li.classList.remove('completed');
+                    } else {
+                        state.completedTopics.add(topicId);
+                        this.classList.add('checked');
+                        li.classList.add('completed');
+                        
+                        // Efeito visual ao marcar como concluído
+                        this.style.transform = 'scale(1.2)';
+                        setTimeout(() => {
+                            this.style.transform = 'scale(1)';
+                        }, 300);
+                    }
+                    
+                    updateStats();
+                    saveState();
+                });
+                
+                // Evento de clique em qualquer lugar do item (opcional)
+                li.addEventListener('click', function(e) {
+                    // Se o clique não foi diretamente no checkbox, ativa o checkbox
+                    if (!e.target.classList.contains('custom-checkbox')) {
+                        const checkbox = this.querySelector('.custom-checkbox');
+                        checkbox.click();
+                    }
+                });
+                
+                topicList.appendChild(li);
+            });
+            
+            updateStats();
+            
+            // Atualizar botão "Dia Anterior"
+            prevDayBtn.disabled = state.currentDay <= 1;
+            prevDayBtn.style.opacity = state.currentDay <= 1 ? '0.5' : '1';
+        }
+
+        // Função para extrair a matéria do dia
+        function extractSubject(topics) {
+            if (topics.length === 0) return '';
+            
+            const firstTopic = topics[0];
+            const subjectMatch = firstTopic.match(/^([^–:\d]+)/);
+            
+            if (subjectMatch) {
+                return subjectMatch[1].trim();
+            }
+            
+            return '';
+        }
+
+        // Função para atualizar estatísticas
+        function updateStats() {
+            const dayIndex = state.currentDay - 1;
+            let total = 0;
+            let completed = 0;
+            
+            if (dayIndex < state.schedule.length && state.schedule[dayIndex]) {
+                total = state.schedule[dayIndex].length;
+                
+                state.schedule[dayIndex].forEach((_, index) => {
+                    const topicId = `day${state.currentDay}-topic${index}`;
+                    if (state.completedTopics.has(topicId)) {
+                        completed++;
+                    }
+                });
+            }
+            
+            const pending = total - completed;
+            const progressPercentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            currentDayElement.textContent = state.currentDay;
+            totalTopicsElement.textContent = total;
+            completedTopicsElement.textContent = completed;
+            pendingTopicsElement.textContent = pending;
+            progressBar.style.width = `${progressPercentage}%`;
+            progressPercentage.textContent = `${progressPercentage}%`;
+            
+            dayTotalElement.textContent = total;
+            dayCompletedElement.textContent = completed;
+            dayPercentageElement.textContent = `(${progressPercentage}%)`;
+            
+            // Atualizar título da barra de progresso
+            progressBar.setAttribute('title', `${completed} de ${total} concluídos (${progressPercentage}%)`);
+        }
+
+        // Função para salvar estado no localStorage
+        function saveState() {
+            const stateToSave = {
+                schedule: state.schedule,
+                currentDay: state.currentDay,
+                completedTopics: Array.from(state.completedTopics),
+                pendingTopics: state.pendingTopics,
+                originalSchedule: state.originalSchedule
+            };
+            
+            localStorage.setItem('studyCycleState', JSON.stringify(stateToSave));
+        }
+
+        // Função para carregar estado do localStorage
+        function loadState() {
+            const savedState = localStorage.getItem('studyCycleState');
+            
+            if (savedState) {
+                try {
+                    const parsedState = JSON.parse(savedState);
+                    
+                    // Verificar se o cronograma original foi carregado anteriormente
+                    if (parsedState.originalSchedule && 
+                        JSON.stringify(parsedState.originalSchedule) === JSON.stringify(state.originalSchedule)) {
+                        
+                        state.schedule = parsedState.schedule;
+                        state.currentDay = parsedState.currentDay;
+                        state.completedTopics = new Set(parsedState.completedTopics);
+                        state.pendingTopics = parsedState.pendingTopics;
+                    }
+                } catch (e) {
+                    console.error('Erro ao carregar estado:', e);
+                }
+            }
+        }
+
+        // Função para verificar se o cronograma já foi configurado
+        function checkIfScheduleConfigured() {
+            const savedState = localStorage.getItem('studyCycleState');
+            
+            if (!savedState) return false;
+            
+            try {
+                const parsedState = JSON.parse(savedState);
+                return parsedState.originalSchedule && parsedState.originalSchedule.length > 0;
+            } catch (e) {
+                console.error('Erro ao verificar estado:', e);
+                return false;
+            }
+        }
+
+        // Função para mostrar modal
+        function showModal(message, confirmText, confirmCallback) {
+            modalMessage.innerHTML = message;
+            modalConfirm.textContent = confirmText;
+            
+            confirmModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            pendingAction = confirmCallback;
+        }
+
+        // Event listeners do modal
+        modalCancel.addEventListener('click', function() {
+            confirmModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            pendingAction = null;
+        });
+
+        modalConfirm.addEventListener('click', function() {
+            confirmModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            if (pendingAction) {
+                pendingAction();
+                pendingAction = null;
+            }
+        });
+
+        // Fechar modal clicando fora
+        confirmModal.addEventListener('click', function(e) {
+            if (e.target === confirmModal) {
+                confirmModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                pendingAction = null;
+            }
+        });
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o cronograma já foi configurado
+            const isConfigured = checkIfScheduleConfigured();
+            
+            if (isConfigured) {
+                // Carregar o estado salvo
+                const savedState = localStorage.getItem('studyCycleState');
+                
+                try {
+                    const parsedState = JSON.parse(savedState);
+                    state.originalSchedule = parsedState.originalSchedule;
+                    state.schedule = parsedState.schedule;
+                    state.currentDay = parsedState.currentDay;
+                    state.completedTopics = new Set(parsedState.completedTopics);
+                    state.pendingTopics = parsedState.pendingTopics;
+                    
+                    // Ir diretamente para a tela de estudos
+                    setupContainer.classList.add('hidden');
+                    studyContainer.classList.remove('hidden');
+                    renderCurrentDay();
+                    
+                    // Efeito visual suave
+                    studyContainer.style.opacity = '0';
+                    setTimeout(() => {
+                        studyContainer.style.transition = 'opacity 0.5s ease';
+                        studyContainer.style.opacity = '1';
+                    }, 10);
+                } catch (e) {
+                    console.error('Erro ao carregar estado:', e);
+                    // Se houver erro, mostrar tela de configuração
+                    setupContainer.classList.remove('hidden');
+                    studyContainer.classList.add('hidden');
+                }
+            } else {
+                // Se não estiver configurado, mostrar tela de configuração
+                setupContainer.classList.remove('hidden');
+                studyContainer.classList.add('hidden');
+            }
+            
+            // Adicionar suporte para teclado
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight' && !studyContainer.classList.contains('hidden')) {
+                    nextDayBtn.click();
+                } else if (e.key === 'ArrowLeft' && !studyContainer.classList.contains('hidden')) {
+                    prevDayBtn.click();
+                } else if (e.key === 'Escape' && confirmModal.classList.contains('active')) {
+                    confirmModal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Focar no textarea se estiver na tela de configuração
+            if (!studyContainer.classList.contains('hidden')) {
+                scheduleInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
