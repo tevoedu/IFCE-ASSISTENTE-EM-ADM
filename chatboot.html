@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StudyFlow - ChatBot Central</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
+ <style>
     :root {
       --primary: #25D366;
       --primary-dark: #128C7E;
@@ -23,6 +23,7 @@
       --border-radius: 18px;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --panel-width: 320px; /* Largura inicial do painel */
     }
     
     .dark-theme {
@@ -56,15 +57,119 @@
       overflow: hidden;
     }
     
+    /* Container principal com layout flexível */
+    .main-container {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Área do chat - ocupa o espaço restante */
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0; /* Permite que o chat encolha adequadamente */
+    }
+    
     .chatbot-container {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      height: 100%;
       width: 100%;
       background-color: var(--chat-bg);
       background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
       overflow: hidden;
       position: relative;
+    }
+    
+    /* Painel lateral - agora parte do layout flexível */
+    .side-panel {
+      width: var(--panel-width);
+      min-width: 280px;
+      max-width: 500px;
+      height: 100%;
+      background-color: var(--light);
+      color: var(--dark);
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0; /* Impede que o painel encolha */
+    }
+    
+    .side-panel.collapsed {
+      width: 0 !important;
+      min-width: 0;
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    /* Divisor entre painel e chat */
+    .panel-resizer {
+      position: relative;
+      width: 8px;
+      background-color: transparent;
+      cursor: col-resize;
+      z-index: 101;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background-color 0.2s;
+    }
+    
+    .panel-resizer:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    .panel-resizer:active {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    
+    .resizer-handle {
+      width: 4px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: var(--gray);
+      opacity: 0.5;
+      transition: opacity 0.2s, background-color 0.2s;
+    }
+    
+    .panel-resizer:hover .resizer-handle {
+      opacity: 1;
+      background-color: var(--primary);
+    }
+    
+    .panel-resizer:active .resizer-handle {
+      background-color: var(--primary-dark);
+    }
+    
+    /* Botão de recolher/expandir no cabeçalho */
+    .panel-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--gray);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-left: 10px;
+    }
+    
+    .panel-toggle-btn:hover {
+      background-color: var(--light-gray);
+      color: var(--dark);
     }
     
     .chatbot-header {
@@ -123,6 +228,7 @@
     .header-actions {
       display: flex;
       gap: 10px;
+      align-items: center;
     }
     
     .header-btn {
@@ -346,6 +452,94 @@
       transform: scale(1.05);
     }
     
+    /* Conteúdo do painel lateral */
+    .side-panel-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--light-gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .side-panel-header h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+    
+    .side-panel-toggle {
+      background: transparent;
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .side-panel-toggle:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .side-panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    /* Remover botão FAB e mobile-toggle antigos */
+    .panel-fab, .mobile-toggle {
+      display: none !important;
+    }
+    
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+      }
+      
+      .side-panel {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 50vh; /* Altura inicial em mobile */
+        min-height: 300px;
+        max-height: 70vh;
+      }
+      
+      .panel-resizer {
+        width: 100%;
+        height: 8px;
+        cursor: row-resize;
+        flex-direction: column;
+      }
+      
+      .resizer-handle {
+        width: 40px;
+        height: 4px;
+      }
+      
+      .panel-toggle-btn {
+        display: none; /* Em mobile, usar apenas o botão no painel */
+      }
+      
+      .side-panel.collapsed {
+        height: 0 !important;
+        min-height: 0;
+      }
+    }
+    
+    /* Resto do CSS permanece igual */
     .message-content {
       display: flex;
       flex-direction: column;
@@ -1171,78 +1365,8 @@
       color: var(--success) !important;
       opacity: 0.8 !important;
     }
-
-    /* UI ENHANCEMENTS START */
     
-    /* Painel Lateral - Resumo do Dia */
-    .side-panel {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 28%;
-      min-width: 320px;
-      max-width: 400px;
-      height: 100vh;
-      background-color: var(--light);
-      color: var(--dark);
-      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      transition: var(--transition);
-      transform: translateX(0);
-    }
-    
-    .side-panel.collapsed {
-      transform: translateX(100%);
-    }
-    
-    .side-panel-header {
-      padding: 1.2rem 1.5rem;
-      border-bottom: 1px solid var(--light-gray);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: var(--primary);
-      color: white;
-    }
-    
-    .side-panel-header h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-    }
-    
-    .side-panel-toggle {
-      background: transparent;
-      border: none;
-      color: white;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    
-    .side-panel-toggle:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-    
-    .side-panel-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    
+    /* Conteúdo do painel lateral */
     .side-panel-date {
       font-size: 1rem;
       font-weight: 600;
@@ -1496,67 +1620,6 @@
       gap: 8px;
     }
     
-    /* Botão FAB para reabrir painel */
-    .panel-fab {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 99;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-      transition: var(--transition);
-      font-size: 1.2rem;
-    }
-    
-    .panel-fab:hover {
-      transform: scale(1.1);
-      background-color: var(--primary-dark);
-      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
-    }
-    
-    .panel-fab:active {
-      transform: scale(0.95);
-    }
-    
-    .panel-fab.hidden {
-      opacity: 0;
-      visibility: hidden;
-      transform: scale(0.8);
-    }
-    
-    .mobile-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 99;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-      transition: var(--transition);
-    }
-    
-    .mobile-toggle:hover {
-      transform: scale(1.1);
-      background-color: var(--primary-dark);
-    }
-    
     .tooltip {
       position: relative;
       display: inline-block;
@@ -1585,34 +1648,6 @@
       opacity: 1;
     }
     
-    @media (max-width: 900px) {
-      .side-panel {
-        width: 100%;
-        max-width: 100%;
-        transform: translateX(100%);
-      }
-      
-      .side-panel.collapsed {
-        transform: translateX(100%);
-      }
-      
-      .side-panel:not(.collapsed) {
-        transform: translateX(0);
-      }
-      
-      .mobile-toggle {
-        display: flex;
-      }
-      
-      .panel-fab {
-        display: none;
-      }
-      
-      .chatbot-container {
-        width: 100%;
-      }
-    }
-    
     /* Botão Finalizar Dia - Verde */
     .action-btn.finalizar-dia {
       background-color: var(--success) !important;
@@ -1639,104 +1674,276 @@
     .complete-btn {
       display: none !important;
     }
-    
-    /* UI ENHANCEMENTS END */
-  </style>
+
+  /* ===========================
+     OVERLAY NÃO-INVASIVO — Moderniza visual + scrollbars
+     Cole ESTE bloco APÓS o seu CSS atual.
+     =========================== */
+
+  :root{
+    /* ajustes visuais não invasivos */
+    --soft-radius: 12px;                 /* bordas mais modernas */
+    --card-shadow: 0 8px 22px rgba(13,18,23,0.06);
+    --strong-shadow: 0 12px 30px rgba(13,18,23,0.08);
+    --primary-glow: 0 8px 30px rgba(37,211,102,0.12);
+    --smooth-transition: 220ms cubic-bezier(.2,.9,.3,1);
+    --scrollbar-thumb-alpha: 0.95;
+    --scrollbar-track: rgba(0,0,0,0.03);
+  }
+
+  /* reduz movimento se usuário preferir */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+
+  /* pequenas modernizações globais (não altera layout) */
+  body, .chatbot-container, .side-panel, .modal-content, .task-card, .message-card, .activity-card, .stat-card {
+    border-radius: var(--soft-radius);
+    transition: box-shadow var(--smooth-transition), transform var(--smooth-transition), background-color var(--smooth-transition), color var(--smooth-transition);
+  }
+
+  /* eleva levemente cards e painéis sem quebrar */
+  .task-card, .message-card, .stat-card, .activity-card {
+    box-shadow: var(--card-shadow);
+    will-change: transform, box-shadow;
+  }
+  .task-card:hover, .message-card:hover, .stat-card:hover, .activity-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--strong-shadow);
+  }
+
+  /* botões — mais modernos, mas compatíveis */
+  .btn, .action-btn, .header-btn, .panel-toggle-btn, .input-btn {
+    transition: transform var(--smooth-transition), background-color var(--smooth-transition), box-shadow var(--smooth-transition);
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  .btn:focus, .action-btn:focus, .input-btn:focus {
+    outline: none;
+    box-shadow: var(--primary-glow);
+  }
+
+  /* send button — leve gradiente e micro-ani */
+  .send-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    box-shadow: 0 6px 18px rgba(37,211,102,0.12);
+    transition: transform 160ms ease, box-shadow var(--smooth-transition);
+  }
+  .send-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 28px rgba(37,211,102,0.14); }
+  .send-btn:active { transform: translateY(-1px) scale(0.995); }
+
+  /* inputs mais limpos — somente estados visuais */
+  .chatbot-input input, .form-group input, .form-group select {
+    transition: box-shadow var(--smooth-transition), background-color var(--smooth-transition), border-color var(--smooth-transition);
+    border-radius: 14px;
+  }
+  .chatbot-input input:focus, .form-group input:focus, .form-group select:focus {
+    box-shadow: 0 6px 18px rgba(37,211,102,0.12);
+    border-color: var(--primary);
+  }
+
+  /* avatar e cabeçalho: leve suavização de gradiente */
+  .bot-avatar, .bot-avatar-small, .user-avatar-small {
+    background-image: linear-gradient(135deg, rgba(37,211,102,0.98), rgba(52,183,241,0.95));
+  }
+
+  /* sombras sutis para chat bubbles */
+  .message-bubble {
+    box-shadow: 0 6px 14px rgba(10,14,18,0.06);
+  }
+
+  /* bot / user bubble contrast fix (keeps original colors but improves readability) */
+  .bot-bubble { color: var(--dark); }
+  .user-bubble { color: #071118; }
+
+  /* progress fill — suaviza animação */
+  .message-progress-fill { transition: width 0.8s cubic-bezier(.2,.9,.3,1); }
+
+  /* tooltips: suaviza */
+  .tooltip .tooltip-text { transition: opacity 180ms ease, transform 180ms ease; transform-origin: 50% 100%; }
+  .tooltip:hover .tooltip-text { transform: translateY(-6px); }
+
+  /* modal backdrop polish */
+  .modal { backdrop-filter: blur(6px); }
+  .modal-content { box-shadow: 0 18px 40px rgba(2,6,23,0.36); }
+
+  /* subtle "badge" shine */
+  .message-badge { box-shadow: 0 6px 14px rgba(0,0,0,0.06); }
+
+  /* tiny typography polish (non invasive) */
+  .header-info h1, .message-title, .task-title, .message-card-title { letter-spacing: -0.01em; }
+  .message-subtitle, .message-text, .activity-details { color: color-mix(in srgb, var(--dark) 85%, transparent); }
+
+  /* ===========================
+     SCROLLBAR STYLING (WebKit + Firefox)
+     Applies to all scrollable elements via the universal selector.
+     Non-invasive: apenas estilos visuais.
+     =========================== */
+
+  /* Firefox */
+  html, body, * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(37,211,102,var(--scrollbar-thumb-alpha)) var(--scrollbar-track);
+  }
+
+  /* WebKit browsers (Chrome, Edge, Safari) */
+  *::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 999px;
+  }
+  *::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    border: 3px solid transparent; /* cria espaço entre conteúdo e thumb (nice padding) */
+    background-clip: padding-box;
+    background-image: linear-gradient(180deg, rgba(37,211,102,var(--scrollbar-thumb-alpha)), rgba(18,140,126,var(--scrollbar-thumb-alpha)));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    min-height: 36px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    filter: brightness(0.95);
+    transform: translateZ(0);
+  }
+  /* dark-theme specific scrollbar tweak */
+  .dark-theme *::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, rgba(0,163,132,0.95), rgba(0,120,105,0.95));
+  }
+  .dark-theme html, .dark-theme body, .dark-theme * {
+    scrollbar-color: rgba(0,163,132,0.95) rgba(255,255,255,0.04);
+  }
+
+  /* target specific scrollable containers if you want tighter control */
+  .chat-messages::-webkit-scrollbar, .side-panel-content::-webkit-scrollbar, .modal-content::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  /* Accessibility: ensure keyboard focus visible */
+  :focus-visible {
+    outline: 3px solid rgba(37,211,102,0.12);
+    outline-offset: 2px;
+  }
+
+  /* small helper — prevent over-aggressive image smoothing when scaled */
+  img { image-rendering: -webkit-optimize-contrast; }
+
+  /* keep existing classes behaviors but make transitions a bit snappier */
+  .panel-resizer, .resizer-handle { transition: background-color 140ms ease, opacity 140ms ease; }
+
+  /* final safety: reduce risk of layout shifts by setting transform on hover rather than margin changes */
+  .action-btn:hover, .task-card:hover, .message-card:hover { transform: translateY(-4px); }
+
+</style>
+
 </head>
 <body>
-  <button class="panel-fab" id="panelFab" aria-label="Abrir painel de resumo" title="Abrir painel de resumo">
-    <i class="fas fa-chart-bar"></i>
-  </button>
+  <!-- Botão FAB removido -->
   
-  <button class="mobile-toggle" id="mobilePanelToggle" aria-label="Abrir painel de resumo">
-    <i class="fas fa-chart-bar"></i>
-  </button>
-  
-  <aside id="sidePanel" class="side-panel" aria-label="Resumo do dia" role="complementary">
-    <header class="side-panel-header">
-      <h3><i class="fas fa-calendar-day"></i> Resumo do Dia</h3>
-      <button class="side-panel-toggle" id="sidePanelToggle" aria-label="Fechar painel" aria-expanded="true">
-        <i class="fas fa-chevron-right"></i>
+  <!-- Estrutura principal dividida -->
+  <div class="chatbot-header">
+    <div class="header-left">
+      <div class="bot-avatar">
+        <i class="fas fa-robot"></i>
+      </div>
+      <div class="header-info">
+        <h1>StudyFlow Assistant</h1>
+        <p><span class="status-dot"></span> Online • Seu assistente de estudos</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <!-- Botão para alternar visibilidade do painel lateral -->
+      <button class="panel-toggle-btn" id="panelToggleBtn" aria-label="Alternar painel lateral" title="Alternar painel lateral">
+        <i class="fas fa-chart-bar"></i>
       </button>
-    </header>
-    <div class="side-panel-content">
-      <div class="side-panel-date" id="sidePanelDate">Carregando...</div>
-      
-      <div class="side-panel-progress">
-        <h4><i class="fas fa-chart-line"></i> Progresso Diário</h4>
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-        </div>
-        <div class="progress-text">
-          <span id="progressCompleted">0 atividades</span>
-          <span id="progressTotal">0 de 0</span>
-        </div>
-      </div>
-      
-      <div class="side-panel-stats" id="sidePanelStats">
-        <!-- Dinamicamente preenchido -->
-      </div>
-      
-      <div class="side-panel-activities">
-        <h4><i class="fas fa-tasks"></i> Atividades de Hoje</h4>
-        <div id="sidePanelActivities">
-          <!-- Dinamicamente preenchido -->
-        </div>
-      </div>
-      
-      <div class="side-panel-status">
-        <div class="day-status pending" id="dayStatus">
-          <div class="day-status-text">
-            <i class="fas fa-clock"></i>
-            <span>Dia em andamento</span>
-          </div>
-          <div class="tooltip">
-            <i class="fas fa-info-circle" style="color: var(--gray)"></i>
-            <span class="tooltip-text">Clique em "Finalizar Dia" para concluir</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </aside>
-  
-  <div class="chatbot-container">
-    <div class="chatbot-header">
-      <div class="header-left">
-        <div class="bot-avatar">
-          <i class="fas fa-robot"></i>
-        </div>
-        <div class="header-info">
-          <h1>StudyFlow Assistant</h1>
-          <p><span class="status-dot"></span> Online • Seu assistente de estudos</p>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button class="header-btn" id="themeToggle">
-          <i class="fas fa-moon"></i>
-        </button>
-        <button class="header-btn" id="infoBtn">
-          <i class="fas fa-info"></i>
-        </button>
-      </div>
-    </div>
-    <div class="chat-messages" id="chatMessages">
-    </div>
-    <div class="chatbot-input">
-      <div class="input-actions">
-        <button class="input-btn" id="attachBtn">
-          <i class="fas fa-paperclip"></i>
-        </button>
-        <button class="input-btn" id="emojiBtn">
-          <i class="far fa-smile"></i>
-        </button>
-      </div>
-      <input type="text" id="messageInput" placeholder="Digite uma mensagem...">
-      <button class="send-btn" id="sendMessage">
-        <i class="fas fa-paper-plane"></i>
+      <button class="header-btn" id="themeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="header-btn" id="infoBtn">
+        <i class="fas fa-info"></i>
       </button>
     </div>
   </div>
   
+  <div class="main-container" id="mainContainer">
+    <!-- Área do chat -->
+    <div class="chat-area">
+      <div class="chatbot-container">
+        <div class="chat-messages" id="chatMessages">
+        </div>
+        <div class="chatbot-input">
+          <div class="input-actions">
+            <button class="input-btn" id="attachBtn">
+              <i class="fas fa-paperclip"></i>
+            </button>
+            <button class="input-btn" id="emojiBtn">
+              <i class="far fa-smile"></i>
+            </button>
+          </div>
+          <input type="text" id="messageInput" placeholder="Digite uma mensagem...">
+          <button class="send-btn" id="sendMessage">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Divisor redimensionável -->
+    <div class="panel-resizer" id="panelResizer">
+      <div class="resizer-handle"></div>
+    </div>
+    
+    <!-- Painel lateral -->
+    <aside id="sidePanel" class="side-panel" aria-label="Resumo do dia" role="complementary">
+      <header class="side-panel-header">
+        <h3><i class="fas fa-calendar-day"></i> Resumo do Dia</h3>
+        <button class="side-panel-toggle" id="sidePanelToggle" aria-label="Fechar painel" aria-expanded="true">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </header>
+      <div class="side-panel-content">
+        <div class="side-panel-date" id="sidePanelDate">Carregando...</div>
+        
+        <div class="side-panel-progress">
+          <h4><i class="fas fa-chart-line"></i> Progresso Diário</h4>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text">
+            <span id="progressCompleted">0 atividades</span>
+            <span id="progressTotal">0 de 0</span>
+          </div>
+        </div>
+        
+        <div class="side-panel-stats" id="sidePanelStats">
+          <!-- Dinamicamente preenchido -->
+        </div>
+        
+        <div class="side-panel-activities">
+          <h4><i class="fas fa-tasks"></i> Atividades de Hoje</h4>
+          <div id="sidePanelActivities">
+            <!-- Dinamicamente preenchido -->
+          </div>
+        </div>
+        
+        <div class="side-panel-status">
+          <div class="day-status pending" id="dayStatus">
+            <div class="day-status-text">
+              <i class="fas fa-clock"></i>
+              <span>Dia em andamento</span>
+            </div>
+            <div class="tooltip">
+              <i class="fas fa-info-circle" style="color: var(--gray)"></i>
+              <span class="tooltip-text">Clique em "Finalizar Dia" para concluir</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+  
+  <!-- Modais (mantidos iguais) -->
   <div class="modal" id="registerModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -1909,10 +2116,169 @@
         
         this.checkPartialRegistration();
         
-        // Inicializar painel lateral
-        if (window.UI_ENHANCER && window.UI_ENHANCER.init) {
-          window.UI_ENHANCER.init();
+        // Inicializar sistema de redimensionamento
+        this.initResizablePanel();
+      }
+      
+      initResizablePanel() {
+        const panelResizer = document.getElementById('panelResizer');
+        const sidePanel = document.getElementById('sidePanel');
+        const mainContainer = document.getElementById('mainContainer');
+        
+        // Carregar largura salva ou usar padrão
+        const savedWidth = localStorage.getItem('panelWidth');
+        if (savedWidth) {
+          sidePanel.style.width = savedWidth;
+          document.documentElement.style.setProperty('--panel-width', savedWidth);
         }
+        
+        let isResizing = false;
+        
+        // Desktop: redimensionamento horizontal
+        const startResizeHorizontal = (e) => {
+          e.preventDefault();
+          isResizing = true;
+          
+          const startX = e.clientX || e.touches[0].clientX;
+          const startWidth = sidePanel.offsetWidth;
+          
+          const doResize = (moveEvent) => {
+            if (!isResizing) return;
+            
+            const currentX = moveEvent.clientX || moveEvent.touches[0].clientX;
+            const deltaX = startX - currentX;
+            let newWidth = startWidth + deltaX;
+            
+            // Limitar largura mínima e máxima
+            newWidth = Math.max(280, Math.min(newWidth, 500));
+            
+            // Aplicar nova largura
+            sidePanel.style.width = `${newWidth}px`;
+            document.documentElement.style.setProperty('--panel-width', `${newWidth}px`);
+            
+            // Prevenir seleção de texto durante o redimensionamento
+            document.body.style.userSelect = 'none';
+          };
+          
+          const stopResize = () => {
+            isResizing = false;
+            document.body.style.userSelect = '';
+            
+            // Salvar largura
+            const finalWidth = sidePanel.offsetWidth;
+            localStorage.setItem('panelWidth', `${finalWidth}px`);
+            
+            // Remover event listeners
+            document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('touchmove', doResize);
+            document.removeEventListener('mouseup', stopResize);
+            document.removeEventListener('touchend', stopResize);
+          };
+          
+          document.addEventListener('mousemove', doResize);
+          document.addEventListener('touchmove', doResize);
+          document.addEventListener('mouseup', stopResize);
+          document.addEventListener('touchend', stopResize);
+        };
+        
+        // Mobile: redimensionamento vertical
+        const startResizeVertical = (e) => {
+          e.preventDefault();
+          isResizing = true;
+          
+          const startY = e.clientY || e.touches[0].clientY;
+          const startHeight = sidePanel.offsetHeight;
+          
+          const doResize = (moveEvent) => {
+            if (!isResizing) return;
+            
+            const currentY = moveEvent.clientY || moveEvent.touches[0].clientY;
+            const deltaY = startY - currentY;
+            let newHeight = startHeight + deltaY;
+            
+            // Limitar altura mínima e máxima
+            newHeight = Math.max(300, Math.min(newHeight, window.innerHeight * 0.7));
+            
+            // Aplicar nova altura
+            sidePanel.style.height = `${newHeight}px`;
+            
+            // Prevenir seleção de texto
+            document.body.style.userSelect = 'none';
+          };
+          
+          const stopResize = () => {
+            isResizing = false;
+            document.body.style.userSelect = '';
+            
+            // Salvar altura
+            const finalHeight = sidePanel.offsetHeight;
+            localStorage.setItem('panelHeightMobile', `${finalHeight}px`);
+            
+            // Remover event listeners
+            document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('touchmove', doResize);
+            document.removeEventListener('mouseup', stopResize);
+            document.removeEventListener('touchend', stopResize);
+          };
+          
+          document.addEventListener('mousemove', doResize);
+          document.addEventListener('touchmove', doResize);
+          document.addEventListener('mouseup', stopResize);
+          document.addEventListener('touchend', stopResize);
+        };
+        
+        // Verificar se é mobile
+        const isMobile = window.innerWidth <= 900;
+        
+        if (isMobile) {
+          // Em mobile, usar redimensionamento vertical
+          panelResizer.addEventListener('mousedown', startResizeVertical);
+          panelResizer.addEventListener('touchstart', startResizeVertical);
+          
+          // Carregar altura salva para mobile
+          const savedHeight = localStorage.getItem('panelHeightMobile');
+          if (savedHeight) {
+            sidePanel.style.height = savedHeight;
+          }
+        } else {
+          // Em desktop, usar redimensionamento horizontal
+          panelResizer.addEventListener('mousedown', startResizeHorizontal);
+          panelResizer.addEventListener('touchstart', startResizeHorizontal);
+        }
+        
+        // Atualizar modo de redimensionamento quando a janela for redimensionada
+        window.addEventListener('resize', () => {
+          const isMobileNow = window.innerWidth <= 900;
+          
+          // Remover event listeners antigos
+          panelResizer.removeEventListener('mousedown', startResizeHorizontal);
+          panelResizer.removeEventListener('touchstart', startResizeHorizontal);
+          panelResizer.removeEventListener('mousedown', startResizeVertical);
+          panelResizer.removeEventListener('touchstart', startResizeVertical);
+          
+          if (isMobileNow) {
+            // Mudar para modo vertical
+            panelResizer.addEventListener('mousedown', startResizeVertical);
+            panelResizer.addEventListener('touchstart', startResizeVertical);
+            
+            // Ajustar altura se necessário
+            const savedHeight = localStorage.getItem('panelHeightMobile');
+            if (savedHeight) {
+              sidePanel.style.height = savedHeight;
+            }
+          } else {
+            // Mudar para modo horizontal
+            panelResizer.addEventListener('mousedown', startResizeHorizontal);
+            panelResizer.addEventListener('touchstart', startResizeHorizontal);
+            
+            // Restaurar largura
+            const savedWidth = localStorage.getItem('panelWidth');
+            if (savedWidth) {
+              sidePanel.style.width = savedWidth;
+              document.documentElement.style.setProperty('--panel-width', savedWidth);
+            }
+          }
+        });
       }
       
       initTheme() {
@@ -1934,6 +2300,12 @@
         document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
         
         document.getElementById('infoBtn').addEventListener('click', () => this.showInfo());
+        
+        // Botão de alternar painel lateral no cabeçalho
+        document.getElementById('panelToggleBtn').addEventListener('click', () => this.toggleSidePanel());
+        
+        // Botão de fechar no painel lateral
+        document.getElementById('sidePanelToggle').addEventListener('click', () => this.toggleSidePanel());
         
         document.getElementById('sendMessage').addEventListener('click', () => this.sendMessage());
         document.getElementById('messageInput').addEventListener('keypress', (e) => {
@@ -2006,6 +2378,31 @@
             document.getElementById('postSaveModal').style.display = 'none';
           }
         });
+      }
+      
+      toggleSidePanel() {
+        const sidePanel = document.getElementById('sidePanel');
+        const panelToggleBtn = document.getElementById('panelToggleBtn');
+        const sidePanelToggle = document.getElementById('sidePanelToggle');
+        
+        sidePanel.classList.toggle('collapsed');
+        
+        // Atualizar ícones
+        if (sidePanel.classList.contains('collapsed')) {
+          panelToggleBtn.innerHTML = '<i class="fas fa-chart-bar"></i>';
+          sidePanelToggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        } else {
+          panelToggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+          sidePanelToggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
+          
+          // Atualizar conteúdo do painel quando expandido
+          if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
+            window.UI_ENHANCER.updateSidePanel();
+          }
+        }
+        
+        // Salvar estado
+        localStorage.setItem('panelCollapsed', sidePanel.classList.contains('collapsed'));
       }
       
       showWelcomeMessage() {
@@ -5989,7 +6386,7 @@
     
     let chatBot;
     
-    /* UI ENHANCEMENTS START */
+    /* UI ENHANCER ATUALIZADO */
     window.UI_ENHANCER = {
       init: function() {
         this.initSidePanel();
@@ -6005,114 +6402,28 @@
       initSidePanel: function() {
         const sidePanel = document.getElementById('sidePanel');
         const sidePanelToggle = document.getElementById('sidePanelToggle');
-        const panelFab = document.getElementById('panelFab');
-        const mobilePanelToggle = document.getElementById('mobilePanelToggle');
+        const panelToggleBtn = document.getElementById('panelToggleBtn');
         
-        // Verificar se está em tela pequena
-        if (window.innerWidth <= 900) {
+        // Verificar se o painel estava recolhido
+        const panelCollapsed = localStorage.getItem('panelCollapsed') === 'true';
+        if (panelCollapsed) {
           sidePanel.classList.add('collapsed');
-          panelFab.classList.add('hidden');
+          panelToggleBtn.innerHTML = '<i class="fas fa-chart-bar"></i>';
+          sidePanelToggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
         } else {
-          panelFab.classList.remove('hidden');
+          panelToggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+          sidePanelToggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
         }
-        
-        // Estado do painel no localStorage
-        const panelState = localStorage.getItem('ui_enhancer.panel.visible');
-        if (panelState === 'false' && window.innerWidth > 900) {
-          sidePanel.classList.add('collapsed');
-        }
-        
-        // Alternar painel lateral
-        sidePanelToggle.addEventListener('click', () => {
-          sidePanel.classList.toggle('collapsed');
-          this.updateToggleIcon();
-          this.updateFabVisibility();
-          this.savePanelState();
-        });
-        
-        // Botão FAB para alternar
-        panelFab.addEventListener('click', () => {
-          sidePanel.classList.remove('collapsed');
-          this.updateToggleIcon();
-          this.updateFabVisibility();
-          this.savePanelState();
-        });
-        
-        // Botão mobile para alternar
-        mobilePanelToggle.addEventListener('click', () => {
-          sidePanel.classList.toggle('collapsed');
-          this.updateToggleIcon();
-          this.updateFabVisibility();
-          this.savePanelState();
-        });
-        
-        this.updateToggleIcon();
-        this.updateFabVisibility();
       },
       
       loadDailyActivitiesOnOpen: function() {
         // Carregar atividades automaticamente ao abrir a página
-        if (typeof window['getDailySummary'] === 'function') {
-          try {
-            window.getDailySummary();
-          } catch (e) {
-            console.log('getDailySummary não disponível');
-          }
-        } else if (typeof window['fetchActivities'] === 'function') {
-          try {
-            window.fetchActivities().then(() => this.updateSidePanel());
-          } catch (e) {
-            console.log('fetchActivities não disponível');
-          }
-        } else if (typeof window['getActivitiesForToday'] === 'function') {
-          try {
-            window.getActivitiesForToday();
-            this.updateSidePanel();
-          } catch (e) {
-            console.log('getActivitiesForToday não disponível');
-          }
-        } else if (chatBot) {
-          // Usar a função do chatBot para carregar atividades
+        if (chatBot) {
           chatBot.showDailySummary();
         }
         
         // Atualizar o painel lateral imediatamente
         this.updateSidePanel();
-      },
-      
-      updateToggleIcon: function() {
-        const sidePanel = document.getElementById('sidePanel');
-        const sidePanelToggle = document.getElementById('sidePanelToggle');
-        const mobilePanelToggle = document.getElementById('mobilePanelToggle');
-        
-        if (sidePanel.classList.contains('collapsed')) {
-          sidePanelToggle.innerHTML = '<i class="fas fa-chevron-left"></i>';
-          sidePanelToggle.setAttribute('aria-expanded', 'false');
-          mobilePanelToggle.innerHTML = '<i class="fas fa-chart-bar"></i>';
-          mobilePanelToggle.setAttribute('aria-label', 'Abrir painel de resumo');
-        } else {
-          sidePanelToggle.innerHTML = '<i class="fas fa-chevron-right"></i>';
-          sidePanelToggle.setAttribute('aria-expanded', 'true');
-          mobilePanelToggle.innerHTML = '<i class="fas fa-times"></i>';
-          mobilePanelToggle.setAttribute('aria-label', 'Fechar painel de resumo');
-        }
-      },
-      
-      updateFabVisibility: function() {
-        const sidePanel = document.getElementById('sidePanel');
-        const panelFab = document.getElementById('panelFab');
-        
-        if (sidePanel.classList.contains('collapsed') && window.innerWidth > 900) {
-          panelFab.classList.remove('hidden');
-        } else {
-          panelFab.classList.add('hidden');
-        }
-      },
-      
-      savePanelState: function() {
-        const sidePanel = document.getElementById('sidePanel');
-        const isVisible = !sidePanel.classList.contains('collapsed');
-        localStorage.setItem('ui_enhancer.panel.visible', isVisible);
       },
       
       setupActivityListeners: function() {
@@ -6129,19 +6440,6 @@
           };
         }
         
-        // Patch para window.completeActivity se existir
-        if (typeof window['completeActivity'] === 'function') {
-          const originalComplete = window['completeActivity'];
-          window['completeActivity'] = function(...args) {
-            const result = originalComplete.apply(this, args);
-            // Atualizar painel após completar
-            setTimeout(() => {
-              window.UI_ENHANCER.updateSidePanel();
-            }, 100);
-            return result;
-          };
-        }
-        
         // Monitorar mudanças no localStorage
         window.addEventListener('storage', (e) => {
           if (e.key && e.key.includes('dailyActivities') || 
@@ -6151,22 +6449,6 @@
               e.key === 'ciclos_focus_v1') {
             this.updateSidePanel();
           }
-        });
-        
-        // Atualizar painel ao redimensionar a janela
-        window.addEventListener('resize', () => {
-          const sidePanel = document.getElementById('sidePanel');
-          const panelFab = document.getElementById('panelFab');
-          
-          if (window.innerWidth > 900) {
-            sidePanel.classList.remove('collapsed');
-            panelFab.classList.add('hidden');
-          } else {
-            sidePanel.classList.add('collapsed');
-            panelFab.classList.add('hidden');
-          }
-          this.updateToggleIcon();
-          this.updateFabVisibility();
         });
         
         // Atualizar painel quando o chat for atualizado
@@ -6202,18 +6484,6 @@
       },
       
       addFinalizarDiaButton: function() {
-        // Verificar se há um candidato para a função de finalizar dia
-        const candidates = ['finalizeDay', 'finishDay', 'completeDay', 'endDay', 'closeDay'];
-        const foundCandidate = candidates.find(name => typeof window[name] === 'function');
-        
-        if (!foundCandidate) {
-          // Se não houver candidato global, verificar se chatBot tem finalizeDay
-          if (!chatBot || typeof chatBot.finalizeDay !== 'function') {
-            console.warn('Nenhuma função candidata encontrada para Finalizar Dia');
-            return;
-          }
-        }
-        
         // Adicionar botão Finalizar Dia aos quick-actions
         const originalShowQuickActions = chatBot.showQuickActions;
         if (originalShowQuickActions) {
@@ -6265,89 +6535,8 @@
       },
       
       callFinalizeDay: function() {
-        // Encontrar a função candidata
-        const candidates = ['finalizeDay', 'finishDay', 'completeDay', 'endDay', 'closeDay'];
-        let finalizeFunc = null;
-        let foundCandidate = null;
-        
-        // Primeiro procurar no escopo global
-        for (const name of candidates) {
-          if (typeof window[name] === 'function') {
-            finalizeFunc = window[name];
-            foundCandidate = name;
-            break;
-          }
-        }
-        
-        // Se não encontrou no global, verificar no chatBot
-        if (!finalizeFunc && chatBot && typeof chatBot.finalizeDay === 'function') {
-          finalizeFunc = chatBot.finalizeDay.bind(chatBot);
-          foundCandidate = 'chatBot.finalizeDay';
-        }
-        
-        if (!finalizeFunc) {
-          console.error('Nenhuma função Finalizar Dia encontrada');
-          return;
-        }
-        
-        // Chamar a função com feedback visual
-        const button = event?.target?.closest('.action-btn.finalizar-dia');
-        if (button) {
-          button.classList.add('action-btn.finalizar-dia-success');
-          button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizando...';
-          button.disabled = true;
-        }
-        
-        try {
-          const result = finalizeFunc();
-          
-          if (result && typeof result.then === 'function') {
-            // É uma Promise
-            result.then(() => {
-              if (button) {
-                button.innerHTML = '<i class="fas fa-check"></i> Dia Finalizado!';
-                setTimeout(() => {
-                  button.innerHTML = '<i class="fas fa-check-double"></i> Finalizar Dia';
-                  button.classList.remove('action-btn.finalizar-dia-success');
-                  button.disabled = false;
-                }, 2000);
-              }
-              // Atualizar painel lateral
-              this.updateSidePanel();
-            }).catch(error => {
-              console.error('Erro ao finalizar dia:', error);
-              if (button) {
-                button.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro';
-                button.classList.remove('action-btn.finalizar-dia-success');
-                setTimeout(() => {
-                  button.innerHTML = '<i class="fas fa-check-double"></i> Finalizar Dia';
-                  button.disabled = false;
-                }, 2000);
-              }
-            });
-          } else {
-            // Não é uma Promise
-            if (button) {
-              button.innerHTML = '<i class="fas fa-check"></i> Dia Finalizado!';
-              setTimeout(() => {
-                button.innerHTML = '<i class="fas fa-check-double"></i> Finalizar Dia';
-                button.classList.remove('action-btn.finalizar-dia-success');
-                button.disabled = false;
-              }, 2000);
-            }
-            // Atualizar painel lateral
-            this.updateSidePanel();
-          }
-        } catch (error) {
-          console.error('Erro ao chamar função Finalizar Dia:', error);
-          if (button) {
-            button.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro';
-            button.classList.remove('action-btn.finalizar-dia-success');
-            setTimeout(() => {
-              button.innerHTML = '<i class="fas fa-check-double"></i> Finalizar Dia';
-              button.disabled = false;
-            }, 2000);
-          }
+        if (chatBot && typeof chatBot.finalizeDay === 'function') {
+          chatBot.finalizeDay();
         }
       },
       
@@ -6706,18 +6895,6 @@
           }
         });
         
-        // Atualizar painel ao redimensionar a janela
-        window.addEventListener('resize', () => {
-          const sidePanel = document.getElementById('sidePanel');
-          if (window.innerWidth > 900) {
-            sidePanel.classList.remove('collapsed');
-          } else {
-            sidePanel.classList.add('collapsed');
-          }
-          this.updateToggleIcon();
-          this.updateFabVisibility();
-        });
-        
         // Atualizar painel quando a aba voltar a ficar visível
         document.addEventListener('visibilitychange', () => {
           if (!document.hidden) {
@@ -6731,7 +6908,6 @@
         });
       }
     };
-    /* UI ENHANCEMENTS END */
     
     document.addEventListener('DOMContentLoaded', function() {
       chatBot = new StudyFlowChatBot();
