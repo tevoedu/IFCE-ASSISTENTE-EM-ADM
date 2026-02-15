@@ -1,16 +1,3 @@
-<!-- 
-CHANGELOG - Data: 2025-01-24
-Adicionada funcionalidade de exportação/importação completa de dados
-- Adicionado botão flutuante no canto inferior direito com ícone de backup
-- Adicionado modal de exportação/importação com ID 'importExportModal'
-- Adicionadas funções: detectStorageType, exportAllData, validateImportData, 
-  importAllData, createBackup, showImportExportModal, hideImportExportModal
-- Adicionado CSS específico com prefixo 'importExport__' para evitar conflitos
-- Adicionado script de testes automático acessível via console (window.runImportExportTests)
-- Todas as funções existentes permanecem inalteradas
-- Chaves de armazenamento existentes não foram modificadas
--->
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -854,10 +841,9 @@ Adicionada funcionalidade de exportação/importação completa de dados
         }
 
         /* ============================================= */
-        /* ESTILOS PARA EXPORTAÇÃO/IMPORTAÇÃO - NÃO ALTERAR ESTILOS EXISTENTES */
+        /* ESTILOS PARA EXPORTAÇÃO/IMPORTAÇÃO */
         /* ============================================= */
         
-        /* Botão flutuante */
         .importExport__floating-btn {
             position: fixed;
             bottom: 20px;
@@ -883,7 +869,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
             transform: scale(1.05);
         }
 
-        /* Modal */
         .importExport__modal {
             position: fixed;
             top: 0;
@@ -1375,11 +1360,7 @@ Adicionada funcionalidade de exportação/importação completa de dados
         </div>
     </footer>
 
-    <!-- ============================================= -->
-    <!-- ELEMENTOS ADICIONADOS PARA EXPORTAÇÃO/IMPORTAÇÃO -->
-    <!-- ============================================= -->
-    
-    <!-- Botão flutuante para abrir o modal -->
+    <!-- Botão flutuante para abrir o modal de exportação/importação -->
     <button class="importExport__floating-btn" id="importExportBtn" title="Exportar/Importar Dados">
         <i class="fas fa-database"></i>
     </button>
@@ -1500,7 +1481,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
         // =============================================
         // SOLUÇÃO UNIFICADA DE ARMAZENAMENTO
         // =============================================
-        // Usamos um prefixo único para evitar conflitos com outras aplicações
         const STORAGE_PREFIX = 'StudyFlow_';
         
         // ======================
@@ -1547,41 +1527,39 @@ Adicionada funcionalidade de exportação/importação completa de dados
         // Inicialização
         // ======================
         document.addEventListener('DOMContentLoaded', () => {
-            // Carregar preferências de tema
             loadThemePreference();
-            
-            // Carregar dados do storage
             loadData();
-            
-            // Atualizar a interface
             updateUI();
-            
-            // Configurar eventos
             setupEventListeners();
             
-            // Configurar eventos dos sliders
             weightSlider.addEventListener('input', updateSliderValue);
             importanceSlider.addEventListener('input', updateSliderValue);
             
-            // Inicializar grupos opcionais como ocultos
             revisionDaysGroup.style.display = 'none';
             simulatedDaysGroup.style.display = 'none';
             
-            // Inicializar informações do sistema de exportação/importação
             updateSystemInfo();
         });
 
         // ======================
-        // Funções de Dados
+        // Funções de Dados (com tratamento de erros)
         // ======================
         function loadData() {
-            // Carregar ciclo ativo
-            const activeCycleData = localStorage.getItem(STORAGE_PREFIX + ACTIVE_CYCLE_KEY);
-            activeCycle = activeCycleData ? JSON.parse(activeCycleData) : null;
+            try {
+                const activeCycleData = localStorage.getItem(STORAGE_PREFIX + ACTIVE_CYCLE_KEY);
+                activeCycle = activeCycleData ? JSON.parse(activeCycleData) : null;
+            } catch (e) {
+                console.error('Erro ao carregar ciclo ativo:', e);
+                activeCycle = null;
+            }
             
-            // Carregar todos os ciclos
-            const allCyclesData = localStorage.getItem(STORAGE_PREFIX + ALL_CYCLES_KEY);
-            allCycles = allCyclesData ? JSON.parse(allCyclesData) : [];
+            try {
+                const allCyclesData = localStorage.getItem(STORAGE_PREFIX + ALL_CYCLES_KEY);
+                allCycles = allCyclesData ? JSON.parse(allCyclesData) : [];
+            } catch (e) {
+                console.error('Erro ao carregar todos os ciclos:', e);
+                allCycles = [];
+            }
             
             // Migração: se tivermos um ciclo ativo mas não na lista de todos os ciclos, adicionamos
             if (activeCycle && !allCycles.some(c => c.id === activeCycle.id)) {
@@ -1591,15 +1569,17 @@ Adicionada funcionalidade de exportação/importação completa de dados
         }
 
         function saveData() {
-            // Salvar ciclo ativo
-            if (activeCycle) {
-                localStorage.setItem(STORAGE_PREFIX + ACTIVE_CYCLE_KEY, JSON.stringify(activeCycle));
-            } else {
-                localStorage.removeItem(STORAGE_PREFIX + ACTIVE_CYCLE_KEY);
+            try {
+                if (activeCycle) {
+                    localStorage.setItem(STORAGE_PREFIX + ACTIVE_CYCLE_KEY, JSON.stringify(activeCycle));
+                } else {
+                    localStorage.removeItem(STORAGE_PREFIX + ACTIVE_CYCLE_KEY);
+                }
+                localStorage.setItem(STORAGE_PREFIX + ALL_CYCLES_KEY, JSON.stringify(allCycles));
+            } catch (e) {
+                console.error('Erro ao salvar dados:', e);
+                showToast('Erro ao salvar dados: ' + e.message, 'error');
             }
-            
-            // Salvar todos os ciclos
-            localStorage.setItem(STORAGE_PREFIX + ALL_CYCLES_KEY, JSON.stringify(allCycles));
         }
 
         function loadThemePreference() {
@@ -1630,10 +1610,7 @@ Adicionada funcionalidade de exportação/importação completa de dados
         // Funções de UI
         // ======================
         function updateUI() {
-            // Atualizar dashboard
             renderDashboard();
-            
-            // Atualizar lista de ciclos
             renderCyclesList();
         }
 
@@ -1645,14 +1622,12 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 const completedSubjects = activeCycle.completedSubjects || {};
                 const todayCompleted = completedSubjects[currentDay] || false;
                 
-                // Calcular progresso geral
                 const completedCount = Object.values(completedSubjects).filter(v => v).length;
                 let progressPercentage = Math.round((completedCount / totalDays) * 100);
                 
-                // Verificar se o ciclo foi concluído (100%)
                 if (progressPercentage === 100) {
                     resetCycleProgress();
-                    progressPercentage = 0; // Reset para 0% após reiniciar
+                    progressPercentage = 0;
                 }
                 
                 dashboardCard.innerHTML = `
@@ -1725,10 +1700,8 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     </div>
                 `;
                 
-                // Atualizar a barra de progresso circular
                 updateProgressRing(progressPercentage);
                 
-                // Adicionar eventos aos botões do dashboard
                 document.getElementById('editCycleBtn')?.addEventListener('click', () => openCycleForm(activeCycle));
                 document.getElementById('deleteCycleBtn')?.addEventListener('click', deleteActiveCycle);
                 document.getElementById('exportCycleBtn')?.addEventListener('click', exportCycle);
@@ -1746,41 +1719,27 @@ Adicionada funcionalidade de exportação/importação completa de dados
             }
         }
         
-        // Reiniciar o progresso do ciclo quando atingir 100%
         function resetCycleProgress() {
             if (!activeCycle) return;
             
-            // Incrementar contador de ciclos completos
             activeCycle.completedCycles = (activeCycle.completedCycles || 0) + 1;
-            
-            // Resetar progresso
             activeCycle.currentDay = 0;
             activeCycle.completedSubjects = {};
             
-            // Salvar alterações
             saveData();
-            
-            // Mostrar notificação
             showToast('Ciclo concluído! Progresso reiniciado.');
         }
         
-        // Atualizar a barra de progresso circular
         function updateProgressRing(percentage) {
             const progressRingFill = document.querySelector('.progress-ring-fill');
             if (!progressRingFill) return;
             
-            // Calcular a circunferência
             const radius = 45;
             const circumference = 2 * Math.PI * radius;
-            
-            // Calcular o deslocamento com base na porcentagem
             const offset = circumference - (percentage / 100) * circumference;
             
-            // Aplicar os valores
             progressRingFill.style.strokeDasharray = `${circumference} ${circumference}`;
             progressRingFill.style.strokeDashoffset = offset;
-            
-            // Animar
             progressRingFill.style.transition = 'stroke-dashoffset 1s ease-out';
         }
 
@@ -1835,26 +1794,21 @@ Adicionada funcionalidade de exportação/importação completa de dados
         function distributeSubjects(subjects, totalDays) {
             if (subjects.length === 0) return [];
             
-            // 1. Calcular prioridade para cada matéria
             let totalPriority = 0;
             subjects.forEach(subject => {
                 subject.priority = (subject.weight + subject.importance) / 2;
                 totalPriority += subject.priority;
             });
             
-            // 2. Calcular frequência ideal (número de aparições)
             subjects.forEach(subject => {
                 subject.freqIdeal = Math.round((subject.priority / totalPriority) * totalDays);
             });
             
-            // 3. Ajustar frequências para soma exata de dias
             const totalFreq = subjects.reduce((sum, subject) => sum + subject.freqIdeal, 0);
             let diff = totalDays - totalFreq;
             
-            // Ordenar matérias por prioridade (para ajuste de frequência)
             subjects.sort((a, b) => b.priority - a.priority);
             
-            // Ajustar frequências
             let i = 0;
             while (diff !== 0) {
                 if (diff > 0) {
@@ -1869,7 +1823,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 i++;
             }
             
-            // 4. Criar lista expandida
             let expandedList = [];
             subjects.forEach(subject => {
                 for (let i = 0; i < subject.freqIdeal; i++) {
@@ -1877,25 +1830,15 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 }
             });
             
-            // 5. Embaralhar com controle para evitar repetições consecutivas
             let schedule = [];
             let lastSubject = null;
             
             while (expandedList.length > 0) {
-                // Encontrar matérias candidatas (diferentes da última)
                 let candidates = expandedList.filter(subject => subject !== lastSubject);
-                
-                // Se não houver candidatos, permitir repetição
                 if (candidates.length === 0) candidates = [...expandedList];
-                
-                // Escolher aleatoriamente um candidato
                 const chosen = candidates[Math.floor(Math.random() * candidates.length)];
-                
-                // Adicionar à agenda
                 schedule.push(chosen);
                 lastSubject = chosen;
-                
-                // Remover uma ocorrência da lista expandida
                 const index = expandedList.indexOf(chosen);
                 if (index > -1) expandedList.splice(index, 1);
             }
@@ -1905,23 +1848,18 @@ Adicionada funcionalidade de exportação/importação completa de dados
 
         function generateStudyCycle(subjects, revisionDays = 0, simulatedDays = 0, totalDays = 30) {
             let cycle = [];
-            
-            // Calcular dias disponíveis para matérias
             const subjectDays = totalDays - revisionDays - simulatedDays;
             
-            // Gerar distribuição de matérias
             if (subjects.length > 0) {
                 cycle = distributeSubjects(subjects, subjectDays);
             } else {
                 cycle = Array(subjectDays).fill("Matéria não definida");
             }
             
-            // Adicionar dias de revisão
             for (let i = 1; i <= revisionDays; i++) {
                 cycle.push(`Revisão ${i}`);
             }
             
-            // Adicionar dias de simulado
             for (let i = 1; i <= simulatedDays; i++) {
                 cycle.push(`Simulado ${i}`);
             }
@@ -1933,7 +1871,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
             const isNew = !cycleData.id;
             
             if (isNew) {
-                // Novo ciclo
                 cycleData.id = Date.now().toString();
                 cycleData.createdAt = new Date().toISOString();
                 cycleData.currentDay = 0;
@@ -1941,31 +1878,29 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 cycleData.completedCycles = 0;
                 allCycles.push(cycleData);
             } else {
-                // Atualizar ciclo existente
                 const index = allCycles.findIndex(c => c.id === cycleData.id);
                 if (index !== -1) {
-                    // Preservar progresso
                     const oldCycle = allCycles[index];
                     cycleData.currentDay = oldCycle.currentDay || 0;
                     cycleData.completedSubjects = oldCycle.completedSubjects || {};
                     cycleData.completedCycles = oldCycle.completedCycles || 0;
+                    cycleData.createdAt = oldCycle.createdAt; // Preserva a data original
                     allCycles[index] = cycleData;
+                } else {
+                    // Se não encontrar (improvável), cria como novo
+                    cycleData.id = Date.now().toString();
+                    cycleData.createdAt = new Date().toISOString();
+                    cycleData.currentDay = 0;
+                    cycleData.completedSubjects = {};
+                    cycleData.completedCycles = 0;
+                    allCycles.push(cycleData);
                 }
             }
             
-            // Definir como ciclo ativo
             activeCycle = cycleData;
-            
-            // Salvar dados
             saveData();
-            
-            // Atualizar UI
             updateUI();
-            
-            // Fechar formulário
             closeCycleForm();
-            
-            // Mostrar notificação
             showToast(`Ciclo ${isNew ? 'criado' : 'atualizado'} com sucesso!`);
         }
 
@@ -1981,26 +1916,17 @@ Adicionada funcionalidade de exportação/importação completa de dados
 
         function deleteActiveCycle() {
             if (!activeCycle) return;
-            
             if (confirm('Tem certeza que deseja excluir o ciclo ativo?')) {
                 deleteCycle(activeCycle.id);
-                activeCycle = null;
-                saveData();
-                updateUI();
-                showToast('Ciclo excluído com sucesso!');
             }
         }
 
         function deleteCycle(cycleId) {
             if (confirm('Tem certeza que deseja excluir este ciclo?')) {
-                // Remover da lista de todos os ciclos
                 allCycles = allCycles.filter(c => c.id !== cycleId);
-                
-                // Se era o ciclo ativo, remover
                 if (activeCycle?.id === cycleId) {
                     activeCycle = null;
                 }
-                
                 saveData();
                 updateUI();
                 showToast('Ciclo excluído com sucesso!');
@@ -2010,7 +1936,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
         function exportCycle() {
             if (!activeCycle) return;
             
-            // Formatar dados para exportação
             const exportData = {
                 nome: activeCycle.name,
                 dataCriacao: new Date(activeCycle.createdAt).toLocaleDateString(),
@@ -2022,10 +1947,8 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 }))
             };
             
-            // Criar e baixar arquivo JSON
             const dataStr = JSON.stringify(exportData, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
             const exportFileDefaultName = `${activeCycle.name.replace(/\s+/g, '_')}_ciclo_estudos.json`;
             
             const linkElement = document.createElement('a');
@@ -2043,20 +1966,16 @@ Adicionada funcionalidade de exportação/importação completa de dados
             
             const currentDay = activeCycle.currentDay || 0;
             
-            // Criar objeto se não existir
             if (!activeCycle.completedSubjects) {
                 activeCycle.completedSubjects = {};
             }
             
-            // Alternar estado de conclusão
             activeCycle.completedSubjects[currentDay] = !activeCycle.completedSubjects[currentDay];
             
-            // Avançar para o próximo dia se concluído
             if (activeCycle.completedSubjects[currentDay]) {
                 activeCycle.currentDay = Math.min(currentDay + 1, activeCycle.generatedCycle.length - 1);
             }
             
-            // Salvar e atualizar
             saveData();
             renderDashboard();
         }
@@ -2065,42 +1984,29 @@ Adicionada funcionalidade de exportação/importação completa de dados
         // Formulário de Ciclo
         // ======================
         function openCycleForm(cycle = null) {
-            // Limpar formulário
             cycleForm.reset();
             materiaCardsContainer.innerHTML = '';
             revisionDaysGroup.style.display = 'none';
             simulatedDaysGroup.style.display = 'none';
-            
-            // Reiniciar currentSubjects
             currentSubjects = [];
             
-            // Preencher com dados existentes se for edição
             if (cycle) {
                 document.getElementById('formTitle').innerHTML = `
                     <i class="fas fa-edit"></i>
                     Editar Ciclo: ${cycle.name}
                 `;
-                
                 cycleNameInput.value = cycle.name;
                 document.getElementById('cycleId').value = cycle.id;
-                
-                // Preencher total de dias
-                totalDaysInput.value = cycle.totalDays || 
-                                      (cycle.generatedCycle ? cycle.generatedCycle.length : 30) || 
-                                      30;
-                
-                // Preencher matérias
+                totalDaysInput.value = cycle.totalDays || cycle.generatedCycle.length || 30;
                 currentSubjects = [...cycle.subjects];
                 updateMateriaCards();
                 
-                // Configurar revisões
                 if (cycle.revisionDays > 0) {
                     includeRevision.checked = true;
                     revisionDaysGroup.style.display = 'block';
                     revisionDays.value = cycle.revisionDays;
                 }
                 
-                // Configurar simulados
                 if (cycle.simulatedDays > 0) {
                     includeSimulated.checked = true;
                     simulatedDaysGroup.style.display = 'block';
@@ -2115,10 +2021,7 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 totalDaysInput.value = 30;
             }
             
-            // Atualizar valores iniciais dos sliders
             updateSliderValue();
-            
-            // Mostrar overlay
             cycleFormOverlay.classList.add('active');
         }
 
@@ -2126,13 +2029,11 @@ Adicionada funcionalidade de exportação/importação completa de dados
             cycleFormOverlay.classList.remove('active');
         }
 
-        // Atualizar os valores dos sliders
         function updateSliderValue() {
             weightValue.textContent = weightSlider.value;
             importanceValue.textContent = importanceSlider.value;
         }
 
-        // Atualizar os cards das matérias
         function updateMateriaCards() {
             materiaCardsContainer.innerHTML = '';
             
@@ -2146,10 +2047,8 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 return;
             }
             
-            // Calcular total de prioridades
             const totalPriority = currentSubjects.reduce((sum, subject) => sum + (subject.weight + subject.importance)/2, 0);
             
-            // Adicionar cards para cada matéria
             currentSubjects.forEach((subject, index) => {
                 const percentage = totalPriority > 0 
                     ? Math.round(((subject.weight + subject.importance)/2 / totalPriority) * 100) 
@@ -2165,7 +2064,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     </button>
                 `;
                 
-                // Adicionar evento de remoção
                 const deleteBtn = card.querySelector('.delete-card-btn');
                 deleteBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -2180,30 +2078,25 @@ Adicionada funcionalidade de exportação/importação completa de dados
         function handleCycleFormSubmit(e) {
             e.preventDefault();
             
-            // Validar nome do ciclo
             if (!cycleNameInput.value.trim()) {
                 showToast('Por favor, insira um nome para o ciclo', 'error');
                 return;
             }
             
-            // Validar total de dias
             const totalDays = parseInt(totalDaysInput.value);
             if (isNaN(totalDays) || totalDays <= 0) {
                 showToast('Por favor, insira um número válido de dias (maior que 0)', 'error');
                 return;
             }
             
-            // Validar matérias
             if (currentSubjects.length === 0) {
                 showToast('Adicione pelo menos uma matéria', 'error');
                 return;
             }
             
-            // Coletar revisões e simulados
             const revisionDaysValue = includeRevision.checked ? parseInt(revisionDays.value) || 0 : 0;
             const simulatedDaysValue = includeSimulated.checked ? parseInt(simulatedDays.value) || 0 : 0;
             
-            // Validar dias
             if (revisionDaysValue < 0 || simulatedDaysValue < 0) {
                 showToast('Dias de revisão/simulado não podem ser negativos', 'error');
                 return;
@@ -2214,27 +2107,18 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 return;
             }
             
-            // Gerar ciclo de estudos
             const generatedCycle = generateStudyCycle(currentSubjects, revisionDaysValue, simulatedDaysValue, totalDays);
             
-            // Criar objeto do ciclo
             const cycleData = {
-                id: document.getElementById('cycleId').value || Date.now().toString(),
+                id: document.getElementById('cycleId').value,
                 name: cycleNameInput.value.trim(),
                 subjects: currentSubjects,
                 revisionDays: revisionDaysValue,
                 simulatedDays: simulatedDaysValue,
                 generatedCycle,
                 totalDays: totalDays,
-                createdAt: document.getElementById('cycleId').value 
-                    ? (activeCycle && activeCycle.createdAt) 
-                    : new Date().toISOString(),
-                completedCycles: document.getElementById('cycleId').value 
-                    ? (activeCycle && activeCycle.completedCycles) || 0
-                    : 0
             };
             
-            // Salvar o ciclo
             saveCycle(cycleData);
         }
 
@@ -2259,7 +2143,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
         // Configuração de Eventos
         // ======================
         function setupEventListeners() {
-            // Navegação
             document.getElementById('dashboardBtn').addEventListener('click', () => {
                 dashboardSection.style.display = 'block';
                 cyclesSection.style.display = 'none';
@@ -2280,7 +2163,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 document.getElementById('createBtn').classList.add('active');
             });
             
-            // Formulário
             addMateriaBtn.addEventListener('click', () => {
                 const name = materiaNameInput.value.trim();
                 const weight = parseFloat(weightSlider.value);
@@ -2291,13 +2173,8 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     return;
                 }
                 
-                // Adicionar ao array de matérias
                 currentSubjects.push({ name, weight, importance });
-               
-                // Atualizar os cards
                 updateMateriaCards();
-                
-                // Limpar o campo de nome
                 materiaNameInput.value = '';
             });
             
@@ -2310,21 +2187,14 @@ Adicionada funcionalidade de exportação/importação completa de dados
             });
             
             cycleForm.addEventListener('submit', handleCycleFormSubmit);
-            
             document.getElementById('closeOverlay').addEventListener('click', closeCycleForm);
-            
-            // Tema
             themeToggle.addEventListener('click', toggleTheme);
             
-            // Mobile menu
             document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-                const navButtons = document.querySelector('.nav-buttons');
-                navButtons.classList.toggle('show');
+                document.querySelector('.nav-buttons').classList.toggle('show');
             });
             
-            // Event delegation para elementos dinâmicos (ciclos)
             document.addEventListener('click', (e) => {
-                // Tratar botões na lista de ciclos
                 if (e.target.closest('.btn-set-active')) {
                     const card = e.target.closest('.cycle-card');
                     const cycleId = card.dataset.id;
@@ -2353,11 +2223,9 @@ Adicionada funcionalidade de exportação/importação completa de dados
         // =============================================
         // FUNCIONALIDADE DE EXPORTAÇÃO/IMPORTAÇÃO
         // =============================================
-        // IIFE para encapsular o código e evitar poluição do escopo global
         (function() {
             'use strict';
             
-            // Elementos DOM da funcionalidade de exportação/importação
             const importExportBtn = document.getElementById('importExportBtn');
             const importExportModal = document.getElementById('importExportModal');
             const importExportCloseBtn = document.getElementById('importExportCloseBtn');
@@ -2380,31 +2248,24 @@ Adicionada funcionalidade de exportação/importação completa de dados
             const storageTypeLabel = document.getElementById('storageTypeLabel');
             const keyCountLabel = document.getElementById('keyCountLabel');
             
-            // Variáveis de estado
             let currentImportData = null;
             let validationResult = null;
             
-            // Inicializar eventos
             function initImportExport() {
-                // Abrir/fechar modal
                 importExportBtn.addEventListener('click', showImportExportModal);
                 importExportCloseBtn.addEventListener('click', hideImportExportModal);
                 
-                // Fechar modal ao clicar fora
                 importExportModal.addEventListener('click', function(e) {
                     if (e.target === importExportModal) {
                         hideImportExportModal();
                     }
                 });
                 
-                // Exportar todos os dados
                 exportAllBtn.addEventListener('click', exportAllData);
                 
-                // Área de drag and drop
                 dropArea.addEventListener('click', () => fileInput.click());
                 fileInput.addEventListener('change', handleFileSelect);
                 
-                // Eventos de drag and drop
                 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                     dropArea.addEventListener(eventName, preventDefaults, false);
                 });
@@ -2432,43 +2293,31 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 
                 dropArea.addEventListener('drop', handleDrop, false);
                 
-                // Validar dados
                 validateBtn.addEventListener('click', validateImportData);
-                
-                // Ações de importação
                 createBackupBtn.addEventListener('click', executeImportWithBackup);
                 cancelImportBtn.addEventListener('click', resetImportUI);
                 
-                // Atualizar informações do sistema
                 updateSystemInfo();
             }
             
-            // Atualizar informações do sistema
             function updateSystemInfo() {
-                // Detectar tipo de armazenamento (apenas localStorage neste sistema)
                 storageTypeLabel.textContent = 'localStorage';
-                
-                // Contar chaves do StudyFlow
                 const keys = Object.keys(localStorage).filter(key => key.startsWith(STORAGE_PREFIX));
                 keyCountLabel.textContent = keys.length;
             }
             
-            // Mostrar modal
             function showImportExportModal() {
                 importExportModal.classList.add('active');
                 resetImportUI();
                 updateSystemInfo();
             }
             
-            // Esconder modal
             function hideImportExportModal() {
                 importExportModal.classList.remove('active');
             }
             
-            // Exportar todos os dados
             function exportAllData() {
                 try {
-                    // Coletar todos os dados do localStorage com o prefixo StudyFlow_
                     const allData = {};
                     const keys = Object.keys(localStorage).filter(key => key.startsWith(STORAGE_PREFIX));
                     
@@ -2476,12 +2325,10 @@ Adicionada funcionalidade de exportação/importação completa de dados
                         try {
                             allData[key] = JSON.parse(localStorage.getItem(key));
                         } catch (e) {
-                            // Se não for JSON válido, armazenar como string
                             allData[key] = localStorage.getItem(key);
                         }
                     });
                     
-                    // Criar objeto de exportação
                     const exportData = {
                         format_version: 1,
                         exported_at: new Date().toISOString(),
@@ -2489,10 +2336,7 @@ Adicionada funcionalidade de exportação/importação completa de dados
                         data: allData
                     };
                     
-                    // Converter para JSON
                     const jsonString = JSON.stringify(exportData, null, 2);
-                    
-                    // Criar e baixar arquivo
                     const blob = new Blob([jsonString], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -2503,22 +2347,13 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                     
-                    // Mostrar mensagem de sucesso
                     showExportStatus('Exportação concluída com sucesso! O arquivo foi baixado.', 'success');
-                    
-                    // Registrar no console para testes
-                    console.log('Exportação realizada:', {
-                        keys: keys.length,
-                        tamanho: jsonString.length,
-                        arquivo: a.download
-                    });
                 } catch (error) {
                     console.error('Erro na exportação:', error);
                     showExportStatus(`Erro na exportação: ${error.message}`, 'error');
                 }
             }
             
-            // Mostrar status da exportação
             function showExportStatus(message, type) {
                 exportStatus.textContent = message;
                 exportStatus.className = `importExport__status ${type}`;
@@ -2529,7 +2364,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 }, 5000);
             }
             
-            // Manipular seleção de arquivo
             function handleFileSelect(e) {
                 const file = e.target.files[0];
                 if (file) {
@@ -2537,7 +2371,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 }
             }
             
-            // Manipular drop de arquivo
             function handleDrop(e) {
                 const dt = e.dataTransfer;
                 const file = dt.files[0];
@@ -2546,7 +2379,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 }
             }
             
-            // Ler arquivo
             function readFile(file) {
                 if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
                     showImportStatus('Por favor, selecione um arquivo JSON válido.', 'error');
@@ -2569,11 +2401,9 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 reader.readAsText(file);
             }
             
-            // Validar dados de importação
             function validateImportData() {
                 let jsonString = '';
                 
-                // Obter JSON do textarea ou do arquivo
                 if (jsonInput.value.trim()) {
                     jsonString = jsonInput.value;
                 } else {
@@ -2582,10 +2412,8 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 }
                 
                 try {
-                    // Parse do JSON
                     const importData = JSON.parse(jsonString);
                     
-                    // Validar estrutura básica
                     if (!importData.format_version || importData.format_version !== 1) {
                         showImportStatus('Formato de arquivo inválido. Versão não suportada.', 'error');
                         return;
@@ -2601,13 +2429,8 @@ Adicionada funcionalidade de exportação/importação completa de dados
                         return;
                     }
                     
-                    // Armazenar dados para possível importação
                     currentImportData = importData;
-                    
-                    // Validar compatibilidade
                     validationResult = validateCompatibility(importData.data);
-                    
-                    // Mostrar resultados
                     showValidationResult(validationResult, importData);
                     
                 } catch (error) {
@@ -2616,7 +2439,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 }
             }
             
-            // Validar compatibilidade dos dados
             function validateCompatibility(importData) {
                 const result = {
                     compatible: true,
@@ -2630,19 +2452,15 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     }
                 };
                 
-                // Obter chaves atuais do sistema
                 const currentKeys = Object.keys(localStorage).filter(key => key.startsWith(STORAGE_PREFIX));
                 result.summary.currentKeys = currentKeys.length;
                 
-                // Verificar chaves do importData
                 const importKeys = Object.keys(importData);
                 
-                // Encontrar chaves correspondentes
                 for (const key of importKeys) {
                     if (currentKeys.includes(key)) {
                         result.summary.matchingKeys++;
                         
-                        // Verificar tipo de dados (básico)
                         const importValue = importData[key];
                         const currentValue = localStorage.getItem(key);
                         
@@ -2652,11 +2470,8 @@ Adicionada funcionalidade de exportação/importação completa de dados
                         try {
                             JSON.parse(currentValue);
                             currentType = 'object';
-                        } catch (e) {
-                            // Não é JSON, manter como string
-                        }
+                        } catch (e) {}
                         
-                        // Para objetos JSON, verificar se a análise é possível
                         if (importType === 'object' && currentType === 'string') {
                             result.compatible = false;
                             result.differences.push(`Chave "${key}": Tipo incompatível (Importação: objeto, Sistema: string)`);
@@ -2667,16 +2482,13 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     } else {
                         result.summary.extraKeys++;
                         result.differences.push(`Chave "${key}": Presente na importação mas não no sistema atual`);
-                        // Não marcamos como incompatível apenas por ter chaves extras
                     }
                 }
                 
-                // Encontrar chaves faltantes
                 for (const key of currentKeys) {
                     if (!importKeys.includes(key)) {
                         result.summary.missingKeys++;
                         result.differences.push(`Chave "${key}": Presente no sistema mas não na importação`);
-                        // Chaves faltantes tornam a importação incompatível
                         result.compatible = false;
                     }
                 }
@@ -2684,9 +2496,7 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 return result;
             }
             
-            // Mostrar resultado da validação
             function showValidationResult(result, importData) {
-                // Atualizar grid de resumo
                 summaryGrid.innerHTML = `
                     <div class="importExport__summary-item">
                         <div class="importExport__summary-label">Chaves na Importação</div>
@@ -2708,7 +2518,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     </div>
                 `;
                 
-                // Mostrar detalhes se houver diferenças
                 if (result.differences.length > 0) {
                     validationList.innerHTML = '';
                     result.differences.forEach(diff => {
@@ -2721,10 +2530,8 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     validationDetails.style.display = 'none';
                 }
                 
-                // Mostrar seção de resumo
                 validationSummary.style.display = 'block';
                 
-                // Mostrar status
                 if (result.compatible) {
                     showImportStatus('✓ Dados compatíveis! Você pode prosseguir com a importação.', 'success');
                     importActions.style.display = 'flex';
@@ -2732,39 +2539,24 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     showImportStatus('✗ Dados incompatíveis. Verifique as diferenças listadas abaixo.', 'error');
                     importActions.style.display = 'none';
                 }
-                
-                // Mostrar informações adicionais
-                const exportDate = importData.exported_at ? new Date(importData.exported_at).toLocaleString() : 'Desconhecida';
-                console.log('Validação concluída:', {
-                    compatível: result.compatible,
-                    diferenças: result.differences.length,
-                    dataExportação: exportDate
-                });
             }
             
-            // Criar backup e importar
             function executeImportWithBackup() {
                 if (!currentImportData || !validationResult || !validationResult.compatible) {
                     showImportStatus('Não é possível importar: dados não validados ou incompatíveis.', 'error');
                     return;
                 }
                 
-                // Confirmar com o usuário
                 if (!confirm('ATENÇÃO: Esta ação substituirá todos os seus dados atuais. Um backup automático será criado antes. Deseja continuar?')) {
                     return;
                 }
                 
-                // Criar backup primeiro
                 createBackupBeforeImport();
-                
-                // Executar importação
                 executeImport();
             }
             
-            // Criar backup antes da importação
             function createBackupBeforeImport() {
                 try {
-                    // Coletar dados atuais
                     const backupData = {};
                     const keys = Object.keys(localStorage).filter(key => key.startsWith(STORAGE_PREFIX));
                     
@@ -2776,7 +2568,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                         }
                     });
                     
-                    // Criar objeto de backup
                     const backup = {
                         format_version: 1,
                         exported_at: new Date().toISOString(),
@@ -2784,10 +2575,7 @@ Adicionada funcionalidade de exportação/importação completa de dados
                         data: backupData
                     };
                     
-                    // Converter para JSON
                     const jsonString = JSON.stringify(backup, null, 2);
-                    
-                    // Criar e baixar arquivo de backup
                     const blob = new Blob([jsonString], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -2798,32 +2586,23 @@ Adicionada funcionalidade de exportação/importação completa de dados
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
                     
-                    console.log('Backup criado antes da importação:', {
-                        chaves: keys.length,
-                        arquivo: a.download
-                    });
-                    
+                    console.log('Backup criado antes da importação');
                 } catch (error) {
                     console.error('Erro ao criar backup:', error);
-                    // Continuar mesmo se o backup falhar (mas informar o usuário)
                     showImportStatus('Aviso: Não foi possível criar o backup automático, mas a importação continuará.', 'warning');
                 }
             }
             
-            // Executar importação
             function executeImport() {
                 try {
-                    // Mostrar progresso
                     importProgress.style.display = 'block';
                     importProgressBar.style.width = '0%';
                     
-                    // Limpar apenas as chaves do StudyFlow
                     const keysToRemove = Object.keys(localStorage).filter(key => key.startsWith(STORAGE_PREFIX));
                     keysToRemove.forEach(key => {
                         localStorage.removeItem(key);
                     });
                     
-                    // Importar novos dados
                     const importKeys = Object.keys(currentImportData.data);
                     let processed = 0;
                     
@@ -2837,46 +2616,33 @@ Adicionada funcionalidade de exportação/importação completa de dados
                         }
                         
                         processed++;
-                        // Atualizar barra de progresso
                         const percent = Math.round((processed / importKeys.length) * 100);
                         importProgressBar.style.width = `${percent}%`;
                     });
                     
-                    // Recarregar dados e atualizar UI
                     setTimeout(() => {
                         loadData();
                         updateUI();
                         updateSystemInfo();
                         
-                        // Mostrar mensagem de sucesso
                         showImportStatus('✓ Importação concluída com sucesso! Os dados foram restaurados.', 'success');
                         
-                        // Esconder barra de progresso após um tempo
                         setTimeout(() => {
                             importProgress.style.display = 'none';
                             hideImportExportModal();
                             showToast('Importação concluída com sucesso!');
                         }, 2000);
-                        
-                        console.log('Importação realizada:', {
-                            chavesImportadas: importKeys.length,
-                            dataExportação: currentImportData.exported_at
-                        });
-                        
                     }, 500);
                     
                 } catch (error) {
                     console.error('Erro na importação:', error);
                     showImportStatus(`Erro na importação: ${error.message}`, 'error');
                     importProgress.style.display = 'none';
-                    
-                    // Tentar recarregar dados originais (embora o backup já tenha sido feito)
                     loadData();
                     updateUI();
                 }
             }
             
-            // Redefinir UI de importação
             function resetImportUI() {
                 currentImportData = null;
                 validationResult = null;
@@ -2889,28 +2655,21 @@ Adicionada funcionalidade de exportação/importação completa de dados
                 importProgress.style.display = 'none';
             }
             
-            // Mostrar status da importação
             function showImportStatus(message, type) {
                 importStatus.textContent = message;
                 importStatus.className = `importExport__status ${type}`;
                 importStatus.style.display = 'block';
             }
             
-            // Inicializar quando o DOM estiver pronto
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', initImportExport);
             } else {
                 initImportExport();
             }
             
-            // =============================================
-            // FUNÇÕES DE TESTE PARA CONSOLE
-            // =============================================
             window.runImportExportTests = function() {
                 console.log('=== INICIANDO TESTES DE EXPORTAÇÃO/IMPORTAÇÃO ===');
-                
-                // Teste 1: Exportação
-                console.log('Teste 1: Exportação de dados...');
+                console.log('Teste 1: Exportação...');
                 try {
                     const exportData = {
                         format_version: 1,
@@ -2918,8 +2677,6 @@ Adicionada funcionalidade de exportação/importação completa de dados
                         storage_type: 'localStorage',
                         data: {}
                     };
-                    
-                    // Simular dados
                     const testKeys = Object.keys(localStorage).filter(key => key.startsWith(STORAGE_PREFIX));
                     testKeys.forEach(key => {
                         try {
@@ -2928,23 +2685,18 @@ Adicionada funcionalidade de exportação/importação completa de dados
                             exportData.data[key] = localStorage.getItem(key);
                         }
                     });
-                    
                     const jsonString = JSON.stringify(exportData, null, 2);
                     console.log('✓ Teste de exportação PASSADO');
                     console.log(`  Chaves exportadas: ${testKeys.length}`);
                     console.log(`  Tamanho do JSON: ${jsonString.length} bytes`);
-                    
                 } catch (error) {
                     console.error('✗ Teste de exportação FALHOU:', error);
                 }
                 
-                // Teste 2: Validação com dados idênticos
                 console.log('\nTeste 2: Validação com dados idênticos...');
                 try {
-                    // Criar dados de teste idênticos
                     const testData = {};
                     const currentKeys = Object.keys(localStorage).filter(key => key.startsWith(STORAGE_PREFIX));
-                    
                     currentKeys.forEach(key => {
                         try {
                             testData[key] = JSON.parse(localStorage.getItem(key));
@@ -2952,88 +2704,20 @@ Adicionada funcionalidade de exportação/importação completa de dados
                             testData[key] = localStorage.getItem(key);
                         }
                     });
-                    
                     const validation = validateCompatibility(testData);
-                    
                     if (validation.compatible) {
                         console.log('✓ Teste de validação (idêntico) PASSADO');
                         console.log(`  Chaves correspondentes: ${validation.summary.matchingKeys}`);
                     } else {
                         console.log('✗ Teste de validação (idêntico) FALHOU');
-                        console.log(`  Diferenças: ${validation.differences.length}`);
                     }
-                    
-                } catch (error) {
-                    console.error('✗ Teste de validação FALHOU:', error);
-                }
-                
-                // Teste 3: Validação com chaves faltantes
-                console.log('\nTeste 3: Validação com chaves faltantes...');
-                try {
-                    // Criar dados de teste com algumas chaves removidas
-                    const testData = {};
-                    const currentKeys = Object.keys(localStorage).filter(key => key.startsWith(STORAGE_PREFIX));
-                    
-                    // Remover algumas chaves (se houver pelo menos 2)
-                    if (currentKeys.length >= 2) {
-                        // Manter apenas a primeira metade das chaves
-                        const halfKeys = Math.floor(currentKeys.length / 2);
-                        for (let i = 0; i < halfKeys; i++) {
-                            const key = currentKeys[i];
-                            try {
-                                testData[key] = JSON.parse(localStorage.getItem(key));
-                            } catch (e) {
-                                testData[key] = localStorage.getItem(key);
-                            }
-                        }
-                        
-                        const validation = validateCompatibility(testData);
-                        
-                        if (!validation.compatible && validation.summary.missingKeys > 0) {
-                            console.log('✓ Teste de validação (chaves faltantes) PASSADO');
-                            console.log(`  Chaves faltantes detectadas: ${validation.summary.missingKeys}`);
-                        } else {
-                            console.log('✗ Teste de validação (chaves faltantes) FALHOU');
-                            console.log(`  Compatível: ${validation.compatible}`);
-                        }
-                    } else {
-                        console.log('⚠ Teste de validação (chaves faltantes) PULADO - não há chaves suficientes');
-                    }
-                    
                 } catch (error) {
                     console.error('✗ Teste de validação FALHOU:', error);
                 }
                 
                 console.log('\n=== TESTES CONCLUÍDOS ===');
-                console.log('Instruções para teste manual:');
-                console.log('1. Clique no botão de banco de dados no canto inferior direito');
-                console.log('2. Use "Exportar Todos os Dados" para criar um backup');
-                console.log('3. Tente importar o mesmo arquivo (deve ser compatível)');
-                console.log('4. Modifique o arquivo JSON para testar rejeição');
-            };
-            
-            // Expor funções para testes (apenas em desenvolvimento)
-            window._importExportUtils = {
-                validateCompatibility,
-                updateSystemInfo,
-                exportAllData
             };
         })();
-
-        // =============================================
-        // INSTRUÇÕES DE TESTE (apenas para desenvolvedores)
-        // =============================================
-        // As seguintes funções estão disponíveis no console do navegador:
-        // 1. runImportExportTests() - Executa testes automáticos
-        // 2. _importExportUtils - Utilitários para testes avançados
-        // 
-        // Para testar manualmente:
-        // 1. Clique no botão de banco de dados (canto inferior direito)
-        // 2. Exporte os dados atuais
-        // 3. Tente importar o arquivo exportado (deve funcionar)
-        // 4. Modifique o arquivo JSON para testar validação
-        // 5. Verifique se o backup automático é criado antes da importação
-
     </script>
 </body>
 </html>
