@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>colmeia de estudos · painel escuro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: #0b0d10;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='64' viewBox='0 0 56 64' opacity='0.12'%3E%3Cpath fill='%23333' d='M28 0L0 16v32l28 16 28-16V16L28 0z'/%3E%3Cpath fill='%23222' d='M28 8L8 20v24l20 12 20-12V20L28 8z'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px 16px 40px;
+            color: #e5e7eb;
+        }
+
+        .hive-container {
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        /* painel de abas — estilo colmeia / hexágonos suaves */
+        .tab-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px 8px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .tab-btn {
+            background: #1f2328;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #a0a4ac;
+            border-radius: 30px 30px 12px 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 0 #0b0d10, 0 10px 15px -5px rgba(0,0,0,0.6);
+            letter-spacing: 0.5px;
+            clip-path: polygon(10% 0%, 90% 0%, 100% 25%, 100% 75%, 90% 100%, 10% 100%, 0% 75%, 0% 25%);
+            transform: scale(1);
+            border-bottom: 2px solid #fbbf24 transparent;
+            flex: 0 1 auto;
+            min-width: 160px;
+        }
+
+        .tab-btn.active {
+            background: #2d3748;
+            color: #fbbf24;
+            box-shadow: 0 8px 0 #0b0d10, 0 0 0 2px #fbbf2440, 0 15px 20px -8px black;
+            transform: scale(1.02);
+            z-index: 2;
+        }
+
+        .tab-btn:hover {
+            background: #2a313e;
+            color: #f0f2f5;
+        }
+
+        /* painel com cartões das disciplinas */
+        .disciplines-panel {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+            gap: 28px;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        .disciplines-panel.active-panel {
+            display: grid;
+        }
+
+        @keyframes fadeSlide {
+            0% { opacity: 0.4; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* cartão disciplina */
+        .discipline-card {
+            background: #161a1f;
+            border-radius: 32px 32px 28px 28px;
+            padding: 24px 20px 20px;
+            box-shadow: 0 25px 35px -12px black, 0 0 0 1px #2e384b inset;
+            backdrop-filter: blur(2px);
+            transition: box-shadow 0.2s;
+            border-left: 3px solid #3b4252;
+        }
+
+        .discipline-card:hover {
+            box-shadow: 0 30px 45px -12px #000, 0 0 0 1px #5f6b7f inset;
+        }
+
+        .discipline-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            border-bottom: 2px dashed #334155;
+            color: #fbbf24;
+            text-shadow: 0 2px 5px #00000060;
+            word-break: break-word;
+        }
+
+        /* seções de prioridade */
+        .priority-section {
+            margin-top: 24px;
+        }
+
+        .priority-heading {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            color: #cbd5e1;
+            border-left: 5px solid #fbbf24;
+            padding-left: 12px;
+        }
+
+        .section-note {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            background: #1f2937;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 8px 0 14px 0;
+            font-style: italic;
+            border-left: 3px solid #4b5563;
+        }
+
+        .topics-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .topic-item {
+            padding: 12px 16px 12px 40px;
+            background: #1e242c;
+            border-radius: 100px 18px 18px 100px;
+            font-size: 0.98rem;
+            line-height: 1.45;
+            border: 1px solid #2f3a47;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            position: relative;
+            word-break: break-word;
+            color: #e2e8f0;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+        }
+
+        .topic-item::before {
+            content: "◉";
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5f6b7f;
+            font-size: 1.2rem;
+            transition: color 0.1s;
+        }
+
+        /* estado marcado (estudado) = marca-texto amarelo */
+        .topic-item.studied {
+            background: #fbbf24;        /* amarelo marca-texto */
+            color: #0b0d10;
+            font-weight: 500;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px #fbbf24, 0 4px 10px black;
+        }
+
+        .topic-item.studied::before {
+            content: "✔";
+            color: #0b0d10;
+            font-weight: bold;
+        }
+
+        .topic-item:hover {
+            background: #2c3540;
+            border-color: #fbbf24;
+        }
+
+        .topic-item.studied:hover {
+            background: #fcd34d;
+            border-color: #b45309;
+        }
+
+        /* responsividade */
+        @media (max-width: 650px) {
+            .tab-btn {
+                font-size: 1rem;
+                padding: 12px 16px;
+                min-width: 120px;
+                clip-path: polygon(6% 0%, 94% 0%, 100% 20%, 100% 80%, 94% 100%, 6% 100%, 0% 80%, 0% 20%);
+            }
+            .discipline-title {
+                font-size: 1.5rem;
+            }
+            .topic-item {
+                padding: 10px 12px 10px 36px;
+                border-radius: 30px 12px 12px 30px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .topic-item {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* small reset / utilitário */
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 48px;
+            color: #4b5563;
+            font-size: 0.85rem;
+            border-top: 1px solid #1f2937;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="hive-container">
+        <!-- abas estilo colmeia -->
+        <div class="tab-bar" id="tabBar">
+            <button class="tab-btn active" data-tab="0">📁 01 · arquivos & adm</button>
+            <button class="tab-btn" data-tab="1">📦 02 · materiais & geral</button>
+            <button class="tab-btn" data-tab="2">⚖️ 03 · ética & redação</button>
+        </div>
+
+        <!-- containers das 3 abas (painéis) -->
+        <div id="panel0" class="disciplines-panel active-panel"></div>
+        <div id="panel1" class="disciplines-panel"></div>
+        <div id="panel2" class="disciplines-panel"></div>
+
+        <footer>clique em qualquer tópico para marcar como estudado · progresso salvo automaticamente</footer>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- DADOS EXATOS (fornecidos pelo usuário) ----------
+            const disciplinesData = [
+                // 0: ARQUIVOLOGIA
+                {
+                    name: "Arquivologia",
+                    sections: [
+                        { heading: "🔥 Prioridade máxima — Assuntos gritantes (Começar por estes)", note: null,
+                          topics: [
+                            "Teoria das Três Idades Documentais (O coração da prova)",
+                            "Lei n. 8.159, de 8 de Janeiro de 1991 - Lei dos Arquivos (A base de toda a legislação)",
+                            "Tabela de Temporalidade (Assunto preferido para situações-problema)",
+                            "Princípio da Proveniência ou do Respeito aos Fundos (O princípio mais cobrado)",
+                            "Fases da Gestão de Documentos (Protocolo, Expedição, etc.)"
+                          ] },
+                        { heading: "⚡ Prioridade alta", note: null,
+                          topics: [
+                            "Métodos de Arquivamento (Diferença entre direto, indireto, alfabético e numérico)",
+                            "Transferência de Documentos vs. Recolhimento de Documentos (A banca adora trocar esses conceitos)",
+                            "Valor Primário e Valor Secundário",
+                            "Classificação quanto à Natureza do Assunto (Sigilosos vs. Ostensivos)",
+                            "Lei n. 12.527-2011 - Lei de Acesso à Informação"
+                          ] },
+                        { heading: "📌 Prioridade média", note: null,
+                          topics: [
+                            "Classificação quanto aos Estágios de Evolução dos Documentos",
+                            "Tipos de Arquivamento (Horizontal vs. Vertical)",
+                            "Digitalização e Documentos Digitais",
+                            "Preservação de Documentos Digitais",
+                            "Fatores Biológicos e Fatores Físicos (Agentes de degradação)",
+                            "Princípio da Organicidade e Princípio da Unicidade"
+                          ] },
+                        { heading: "🧩 Baixa prioridade / Deixar para depois", note: null,
+                          topics: [
+                            "Alisamento, Desinfestação e Restauração ou Reparo (Processos técnicos de conservação)",
+                            "Guia-Fora",
+                            "Princípio da Reversibilidade",
+                            "Lei n. 6.546-1978",
+                            "Diagnóstico da Situação Arquivística"
+                          ] }
+                    ]
+                },
+                // 1: DIREITO ADMINISTRATIVO
+                {
+                    name: "Direito Administrativo",
+                    sections: [
+                        { heading: "Prioridade máxima — Assuntos gritantes (Começar por estes)", 
+                          note: "Estes tópicos formam a base das questões da AOCP. A banca adora literalidade e definições.",
+                          topics: [
+                            "4.3. Modalidades de Licitação (O tema \"queridinho\". Foco total em ritos e novos valores).",
+                            "5.1. Inexigibilidade de Licitação (AOCP ama trocar os casos de inexigibilidade pelos de dispensa).",
+                            "5.2. Licitação Dispensável (Dispensa de Licitação).",
+                            "4.2. Fases ou Etapas do Procedimento Licitatório (A sequência do rito é cobrada com frequência exaustiva).",
+                            "2. Princípios e Definições (A base para não cair em pegadinhas de conceitos).",
+                            "4. Prerrogativas da Administração (Coração dos contratos; essencial para entender a supremacia do interesse público)."
+                          ] },
+                        { heading: "⚡ Prioridade alta", note: "Temas com alta incidência em provas de Institutos Federais (IFs).",
+                          topics: [
+                            "5. Duração dos Contratos (Regras novas de 5 e 10 anos são alvos fáceis para a banca).",
+                            "3. Agentes Públicos (Foco nas vedações e segregação de funções).",
+                            "4.1. Alteração ou Modificação Unilateral (As famosas porcentagens de acréscimos e supressões).",
+                            "6. Execução dos Contratos.",
+                            "1.1. Margem de Preferência para Microempresas e Empresas de Pequeno Porte (Tema fortíssimo para o cargo de Assistente)."
+                          ] },
+                        { heading: "📌 Prioridade média", note: "Assuntos técnicos que a banca cobra para diferenciar candidatos no topo da lista.",
+                          topics: [
+                            "4.5. Aplicação de Sanções.",
+                            "11. Impugnações, Pedidos de Esclarecimento e Recursos.",
+                            "4.7. Exigência de Garantias.",
+                            "7. Recebimento do Objeto do Contrato.",
+                            "9. Nulidades dos Contratos.",
+                            "2. Formalização dos Contratos."
+                          ] },
+                        { heading: "🧩 Baixa prioridade / Deixar para depois", note: "Temas muito específicos ou de baixa incidência literal pela AOCP.",
+                          topics: [
+                            "10. Meios Alternativos de Resolução de Controvérsias.",
+                            "3. Alocação de Riscos.",
+                            "12. Controle das Contratações.",
+                            "6. Alienações.",
+                            "9.1. Teoria da imprevisão e 9.2. Áleas Contratuais.",
+                            "14. Atualização de Valores (Geralmente decorrente de outros tópicos)."
+                          ] }
+                    ]
+                },
+                // 2: ADM RECURSOS MATERIAIS
+                {
+                    name: "Administração de Recursos Materiais e Patrimoniais",
+                    sections: [
+                        { heading: "🔥 Prioridade Máxima (O \"Coração\" da Prova)", note: null,
+                          topics: [
+                            "Gestão de Estoques (O tema mais cobrado, focado em indicadores)",
+                            "Classificação de Materiais (Base de tudo para a banca)",
+                            "Material de Consumo Versus Material Permanente (Assunto obrigatório para IFs; a AOCP adora cobrar a distinção baseada no MCASP)",
+                            "Métodos de Controle ou Reposição de Estoque (Cálculos de Ponto de Pedido e Estoque de Segurança)",
+                            "Tipos de Inventários (AOCP foca na diferença entre rotativo e periódico)",
+                            "Incorporação e Tombamento (Essencial para a parte de Gestão Patrimonial em órgãos federais)"
+                          ] },
+                        { heading: "⚡ Prioridade Alta (Garante a Diferenciação)", note: null,
+                          topics: [
+                            "Métodos de Avaliação de Estoques (Foco total em PEPS e Média Ponderada Móvel; UEPS apenas teoria, pois não é aceito pelo fisco)",
+                            "Ciclo ou Sistema de Compras (Fases do processo de aquisição)",
+                            "Atribuições do Almoxarifado",
+                            "Etapas da Classificação (Identificação, especificação, codificação...)",
+                            "Recebimento (Conferência quantitativa e qualitativa)",
+                            "Depreciação (Conceito e métodos simples de cálculo linear)"
+                          ] },
+                        { heading: "📌 Prioridade Média (Assuntos Complementares)", note: null,
+                          topics: [
+                            "Tipologias de Estoques",
+                            "Métodos de Previsão da Demanda (Foco no método do Último Período e Média Aritmética)",
+                            "Critérios de Armazenagem",
+                            "Layout (Arranjo Físico)",
+                            "Custos de Estoques (Custos de pedido vs. Custos de manutenção)",
+                            "Gestão Patrimonial (Conceitos gerais)"
+                          ] },
+                        { heading: "🧩 Baixa Prioridade (Estudar se sobrar tempo)", note: null,
+                          topics: [
+                            "Unitização",
+                            "Sistemas de Codificação",
+                            "Negociação",
+                            "Fornecedores",
+                            "Comprador",
+                            "Objetivos da Administração de Materiais no Setor Público"
+                          ] }
+                    ]
+                },
+                // 3: ADMINISTRAÇÃO GERAL
+                {
+                    name: "Administração Geral",
+                    sections: [
+                        { heading: "🔥 Prioridade máxima — assuntos gritantes (começar por estes)", 
+                          note: "Estes tópicos formam a base de 60-70% das questões da AOCP. Errar aqui é ser eliminado.",
+                          topics: [
+                            "10. Processo Administrativo - Funções de Administração Planejamento, Organização, Direção e Controle (O coração da prova)",
+                            "2.3. Teorias Motivacionais (AOCP ama Maslow, Herzberg e Vroom)",
+                            "10.2. Planejamento Estratégico, Tático e Operacional (Diferenciação clássica de níveis)",
+                            "12. Subsistemas de Gestão de Pessoas (Visão holística obrigatória)",
+                            "8. Eficiência, Eficácia e Efetividade (Conceitos que a banca sempre tenta confundir)",
+                            "4. Fontes de Recrutamento (Interno x Externo: figurinha carimbada)",
+                            "1. Conceito de Recrutamento e 7. Conceito de Seleção (Diferenças básicas)",
+                            "2.2. Ciclo Motivacional (O fluxo do comportamento humano)"
+                          ] },
+                        { heading: "⚡ Prioridade alta", note: null,
+                          topics: [
+                            "2.1. Representações Gráficas (Fluxogramas e organogramas caem muito em OSM)",
+                            "7.2. Papéis do Administrador (Papéis de Mintzberg)",
+                            "7.1. Competências e Habilidades do Administrador (Katz: Técnicas, Humanas e Conceituais)",
+                            "8. Gestão Estratégica de Pessoas e Planejamento Estratégico de Pessoas",
+                            "9. Indicadores de Desempenho na Gestão Pública (Crítico para Institutos Federais)",
+                            "10. Técnicas de Seleção (Entrevistas, testes, provas)",
+                            "9. Princípio da Responsabilidade de Linha e Função de Staff (Clássico de Gestão de Pessoas)",
+                            "3.2. Tipos de Arranjos Físicos (Layouts em OSM)"
+                          ] },
+                        { heading: "📌 Prioridade média", note: null,
+                          topics: [
+                            "10.1. Funções Administrativas nos Diversos Níveis Organizacionais",
+                            "3. Modelos Estruturais Mecanicistas e Orgânicos",
+                            "5. Formulários e Manuais Administrativos",
+                            "1.3. Modelo da Espiral do Conhecimento (Nokaka e Takeuchi)",
+                            "11.2. Índice de Turnover (Rotatividade)",
+                            "10. Terceirização (Foco na legislação e impacto administrativo)",
+                            "1.7. Personalidade, Atitude e Valores",
+                            "4. Stakeholders e Shareholders"
+                          ] },
+                        { heading: "🧩 Baixa prioridade / deixar para depois", note: null,
+                          topics: [
+                            "1.1. Processos Relacionados ao Indivíduo Aprendizagem e Percepção",
+                            "1.5. Educação Corporativa e 1.6. Educação a Distância",
+                            "11. Auditoria de Recursos Humanos",
+                            "12. Demissão",
+                            "1.8. Estresse no Ambiente de Trabalho",
+                            "1.1. Evolução Histórica (Sistemas Administrativos)"
+                          ] }
+                    ]
+                },
+                // 4: ÉTICA NO SERVIÇO PÚBLICO
+                {
+                    name: "Ética no Serviço Público",
+                    sections: [
+                        { heading: "🔥 Prioridade Máxima — Começar por estes", 
+                          note: "Estes tópicos formam a base de 80% das questões de Legislação e Ética da AOCP.",
+                          topics: [
+                            "3.2 Deveres do Servidor Público (Decreto 1.171)",
+                            "3.3 Vedações ao Servidor Público (Decreto 1.171)",
+                            "4.2 Proibições (Lei 8.112)",
+                            "4.5 Penalidades (Lei 8.112)",
+                            "1.2. Provimento (Lei 8.112)",
+                            "5.3. Incentivo à Qualificação (Lei 11.091 - Crucial para IFs)"
+                          ] },
+                        { heading: "⚡ Prioridade Alta — Decidem a classificação", note: null,
+                          topics: [
+                            "5. Processo Administrativo Disciplinar (Lei 8.112)",
+                            "3.1. Regras Deontológicas (Decreto 1.171)",
+                            "1.7. Vacância (Lei 8.112)",
+                            "5.2. Desenvolvimento (Lei 11.091)",
+                            "3.1. Vencimento e Remuneração (Lei 8.112)",
+                            "3.5. Licenças (Lei 8.112)"
+                          ] },
+                        { heading: "📌 Prioridade Média — Temas recorrentes, mas diretos", note: null,
+                          topics: [
+                            "3.4 Comissões de Ética (Decreto 1.171)",
+                            "1.5. Estágio Probatório (Lei 8.112)",
+                            "1.6. Estabilidade (Lei 8.112)",
+                            "4. Estrutura do Plano de Carreira (Lei 11.091)",
+                            "Moral e Ética - Diferenças Essenciais entre os Conceitos (Ética Profissional)",
+                            "4.3. Acumulação de Cargos (Lei 8.112)"
+                          ] },
+                        { heading: "🧩 Baixa Prioridade — Deixar para o final", note: null,
+                          topics: [
+                            "Ética Kantiana / Ética Aristotélica / Ética Utilitarista (AOCP foca mais na lei do que em filosofia).",
+                            "8. Disposições Finais e Transitórias (Lei 11.091)",
+                            "3.8. Direito de Petição (Lei 8.112)",
+                            "2.1. Remoção / 2.2. Redistribuição (Lei 8.112)"
+                          ] }
+                    ]
+                },
+                // 5: REDAÇÃO OFICIAL
+                {
+                    name: "Redação Oficial",
+                    sections: [
+                        { heading: "🔥 Prioridade máxima — Assuntos gritantes (Começar por estes)", note: null,
+                          topics: [
+                            "Atributos da Redação Oficial: (O coração da matéria; a AOCP ama trocar os conceitos de impessoalidade, clareza e concisão).",
+                            "O Padrão Ofício: (Estrutura física do documento; margens, fontes e diagramação são cobrados no detalhe).",
+                            "Partes do Documento no Padrão Ofício: (Local e data, assunto, destinatário; a banca foca na ordem e pontuação dessas partes).",
+                            "Lei n. 15.263 de 14 de Novembro de 2025 - Política Nacional de Linguagem Simples: (Tema novíssimo e de altíssima relevância para 2026; a banca usará para diferenciar candidatos)."
+                          ] },
+                        { heading: "⚡ Prioridade alta", note: null,
+                          topics: [
+                            "Vocativo: (Regras específicas para autoridades e o uso do \"Senhor\" vs. \"Vossa Excelência\").",
+                            "Concordância com os Pronomes de Tratamento: (A pegadinha clássica: o tratamento é \"Vossa\", mas o verbo e o adjetivo são sempre em 3ª pessoa).",
+                            "Novidade na Redação Oficial As Formas de Tratamento Segundo o Decreto n. 9.758-2019: (Fundamental para o cargo de Assistente, pois veda o uso de termos como \"Doutor\" ou \"Ilustríssimo\" no serviço público federal)."
+                          ] },
+                        { heading: "📌 Prioridade média", note: null,
+                          topics: [
+                            "Signatário: (Regras sobre a identificação de quem assina e a vedação de linhas de assinatura).",
+                            "As Comunicações Oficiais (Subdeck específico): (Diferenciação entre Ofício, Circular e Memoriais — embora o padrão seja unificado, a banca ainda cobra as finalidades).",
+                            "A Definição de Redação Oficial: (Base teórica que ajuda na exclusão de alternativas absurdas)."
+                          ] },
+                        { heading: "🧩 Baixa prioridade / Deixar para depois", note: null,
+                          topics: [
+                            "Cargos Interino e Substituto: (Incidência menor, apenas regras de nomenclatura).",
+                            "Grafia de Cargos Compostos: (Assunto mais ligado à Gramática/Ortografia pura).",
+                            "Signatárias do Sexo Feminino: (Regra simples de flexão de gênero, raramente derruba candidatos).",
+                            "Metodologia / Apresentação / Panorama da Comunicação Oficial: (Geralmente são subdecks introdutórios ou de contexto histórico com pouca cobrança objetiva)."
+                          ] }
+                    ]
+                }
+            ];
+
+            // distribuição das disciplinas nas abas (índices)
+            const tabDisciplines = [
+                [0, 1],   // aba 0: Arquivologia, Direito Administrativo
+                [2, 3],   // aba 1: Adm Materiais, Adm Geral
+                [4, 5]    // aba 2: Ética, Redação
+            ];
+
+            // ---------- renderização ----------
+            const panels = [document.getElementById('panel0'), document.getElementById('panel1'), document.getElementById('panel2')];
+            const tabButtons = document.querySelectorAll('.tab-btn');
+
+            function buildTopicId(disciplineIdx, sectionIdx, topicIdx) {
+                return `d${disciplineIdx}_s${sectionIdx}_t${topicIdx}`;
+            }
+
+            function renderPanel(panel, disciplineIndices) {
+                panel.innerHTML = ''; // limpa
+                for (let dIdx of disciplineIndices) {
+                    const disc = disciplinesData[dIdx];
+                    const card = document.createElement('div');
+                    card.className = 'discipline-card';
+
+                    // título
+                    const title = document.createElement('h2');
+                    title.className = 'discipline-title';
+                    title.textContent = disc.name;
+                    card.appendChild(title);
+
+                    // seções
+                    disc.sections.forEach((section, sIdx) => {
+                        const sectionDiv = document.createElement('div');
+                        sectionDiv.className = 'priority-section';
+
+                        const heading = document.createElement('div');
+                        heading.className = 'priority-heading';
+                        heading.textContent = section.heading;
+                        sectionDiv.appendChild(heading);
+
+                        if (section.note) {
+                            const noteP = document.createElement('div');
+                            noteP.className = 'section-note';
+                            noteP.textContent = section.note;
+                            sectionDiv.appendChild(noteP);
+                        }
+
+                        const list = document.createElement('ul');
+                        list.className = 'topics-list';
+
+                        section.topics.forEach((topic, tIdx) => {
+                            const li = document.createElement('li');
+                            li.className = 'topic-item';
+                            li.textContent = topic;
+                            const id = buildTopicId(dIdx, sIdx, tIdx);
+                            li.dataset.topicId = id;
+                            list.appendChild(li);
+                        });
+
+                        sectionDiv.appendChild(list);
+                        card.appendChild(sectionDiv);
+                    });
+
+                    panel.appendChild(card);
+                }
+            }
+
+            // render inicial (aba 0)
+            renderPanel(panels[0], tabDisciplines[0]);
+            renderPanel(panels[1], tabDisciplines[1]);
+            renderPanel(panels[2], tabDisciplines[2]);
+
+            // ---------- localStorage (progresso) ----------
+            const STORAGE_KEY = 'hiveStudyProgress';
+
+            function loadStudied() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (!stored) return;
+                try {
+                    const studiedMap = JSON.parse(stored);
+                    document.querySelectorAll('.topic-item').forEach(item => {
+                        const id = item.dataset.topicId;
+                        if (studiedMap[id]) {
+                            item.classList.add('studied');
+                        }
+                    });
+                } catch (e) {}
+            }
+
+            function saveStudied() {
+                const studied = {};
+                document.querySelectorAll('.topic-item.studied').forEach(item => {
+                    studied[item.dataset.topicId] = true;
+                });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(studied));
+            }
+
+            // Evento de clique nos tópicos (delegação)
+            document.querySelector('.hive-container').addEventListener('click', (e) => {
+                const topic = e.target.closest('.topic-item');
+                if (!topic) return;
+                topic.classList.toggle('studied');
+                saveStudied();
+            });
+
+            // carregar estado salvo
+            loadStudied();
+
+            // ---------- abas: navegação ----------
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const tabIndex = btn.dataset.tab;
+                    panels.forEach((p, i) => {
+                        if (i == tabIndex) {
+                            p.classList.add('active-panel');
+                        } else {
+                            p.classList.remove('active-panel');
+                        }
+                    });
+                });
+            });
+
+            // pequeno ajuste: garantir que o painel ativo corresponda ao botão ativo inicial
+            // (já está ok, mas reaplicamos por segurança)
+            const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab || '0';
+            panels.forEach((p, i) => p.classList.toggle('active-panel', i == activeTab));
+        })();
+    </script>
+</body>
+</html>
