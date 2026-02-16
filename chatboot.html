@@ -2662,7 +2662,9 @@
       isDayFinished() {
         const hojeStr = this.getDynamicDateString();
         const dayData = JSON.parse(localStorage.getItem(`dailyActivities_${hojeStr}`)) || {};
-        return dayData.completed === true || this.partialRegistration.completed === true;
+        // Only consider partialRegistration.completed if its date matches today
+        const partialCompleted = (this.partialRegistration.date === hojeStr) && this.partialRegistration.completed === true;
+        return dayData.completed === true || partialCompleted;
       }
       
       updateYesterdayMemory() {
