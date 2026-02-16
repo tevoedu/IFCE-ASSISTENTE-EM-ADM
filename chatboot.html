@@ -2072,7 +2072,7 @@
     </div>
   </div>
 
-  <script>
+<script>
     class StudyFlowChatBot {
       constructor() {
         this.currentTheme = localStorage.getItem('theme') || 'light';
@@ -2097,7 +2097,33 @@
           completed: false
         };
         
+        // --- NOVO: Controle de última data verificada para refresh automático ---
+        this.lastDateChecked = localStorage.getItem('studyFlow_lastDateChecked') || this.getDynamicDateString();
+        
         this.init();
+        
+        // --- NOVO: Intervalo para verificar mudança de data a cada minuto ---
+        setInterval(() => this.checkDateChange(), 60000);
+      }
+      
+      // --- NOVO: Verifica se a data mudou e dispara atualizações ---
+      checkDateChange() {
+        const hoje = this.getDynamicDateString();
+        if (hoje !== this.lastDateChecked) {
+          this.lastDateChecked = hoje;
+          localStorage.setItem('studyFlow_lastDateChecked', hoje);
+          this.refreshDailyData();
+        }
+      }
+      
+      // --- NOVO: Atualiza dados diários (Anki e resumo) ---
+      refreshDailyData() {
+        this.updateAnkiProgress();
+        this.showDailySummary();
+        // Atualiza painel lateral
+        if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
+          window.UI_ENHANCER.updateSidePanel();
+        }
       }
       
       formatTime(date) {
@@ -2118,6 +2144,9 @@
         
         // Inicializar sistema de redimensionamento
         this.initResizablePanel();
+        
+        // --- NOVO: Garantir que os dados do dia sejam carregados e o total fixo seja salvo ---
+        this.refreshDailyData();
       }
       
       initResizablePanel() {
@@ -2867,6 +2896,11 @@
         
         this.updateAnkiProgress();
         
+        // --- NOVO: Salvar total fixo de atividades do dia ---
+        const todayTasks = this.getTodayTasks(hojeStr);
+        const totalAtividades = todayTasks.questoes.length + todayTasks.anki.length + todayTasks.teoria.length;
+        localStorage.setItem(`dailyTotalTasks_${hojeStr}`, totalAtividades);
+        
         if (this.isDayFinished()) {
           this.showTodaySummary(hojeStr);
         } else if (this.hasPartialRegistration()) {
@@ -3080,6 +3114,7 @@
         }
       }
       
+      // --- MODIFICADO: Agora usa dailyCompleted para armazenar matérias por data e implementa avanço automático ---
       updateStudyCycle(materiaId, tempo, specificDate = null) {
         const activeCycle = this.getActiveCycle();
         const studyDate = specificDate || new Date().toISOString().split('T')[0];
@@ -3107,16 +3142,17 @@
           }
           
           if (materiaEncontrada) {
-            if (!activeCycle.completedSubjects) {
-              activeCycle.completedSubjects = {};
+            // --- NOVO: Usar campo dailyCompleted para armazenar conclusões por data ---
+            if (!activeCycle.dailyCompleted) {
+              activeCycle.dailyCompleted = {};
             }
             
-            if (!activeCycle.completedSubjects[studyDate]) {
-              activeCycle.completedSubjects[studyDate] = [];
+            if (!activeCycle.dailyCompleted[studyDate]) {
+              activeCycle.dailyCompleted[studyDate] = [];
             }
             
-            if (!activeCycle.completedSubjects[studyDate].includes(materiaId)) {
-              activeCycle.completedSubjects[studyDate].push(materiaId);
+            if (!activeCycle.dailyCompleted[studyDate].includes(materiaId)) {
+              activeCycle.dailyCompleted[studyDate].push(materiaId);
             }
             
             if (!activeCycle.studyTime) {
@@ -3138,14 +3174,57 @@
             
             this.setModuleData('teoriaProgress', teoriaProgress);
             
+            // --- NOVO: Verificar se todas as matérias do dia foram concluídas e avançar ---
+            this.tryAdvanceCycleDay(studyDate, activeCycle);
+            
             this.setModuleData('StudyFlow_activeCycle', activeCycle);
             
+            // Sincronizar com Planos (apenas tempo e currentDay, que já foram atualizados)
             this.syncWithPlansModule(activeCycle);
             
             return true;
           }
         }
         return false;
+      }
+      
+      // --- NOVO: Função que verifica e avança o dia do ciclo teórico ---
+      tryAdvanceCycleDay(studyDate, activeCycle) {
+        const currentDay = activeCycle.currentDay || 0;
+        const materiasPorDia = this.materiasPorDia;
+        const dailyCompleted = activeCycle.dailyCompleted || {};
+        const completedToday = dailyCompleted[studyDate] || [];
+        
+        // Obter as matérias previstas para o dia atual (baseado em currentDay)
+        const todaySubjects = this.getTodaySubjects(new Date(studyDate + 'T00:00:00'));
+        
+        // Verificar se todas as matérias do dia foram registradas
+        const allCompleted = todaySubjects.every(subject => completedToday.includes(subject));
+        
+        if (allCompleted && todaySubjects.length > 0) {
+          // Calcular índice do dia no formato do Planos (0-based)
+          const planDay = Math.floor(currentDay / materiasPorDia);
+          
+          // Marcar como concluído no formato do Planos (booleano por índice)
+          if (!activeCycle.completedSubjects) {
+            activeCycle.completedSubjects = {};
+          }
+          activeCycle.completedSubjects[planDay] = true;
+          
+          // Avançar currentDay para o próximo grupo de matérias
+          let nextDay = currentDay + materiasPorDia;
+          const cycleLength = activeCycle.generatedCycle.length;
+          
+          if (nextDay >= cycleLength) {
+            // Ciclo completo: resetar
+            activeCycle.completedCycles = (activeCycle.completedCycles || 0) + 1;
+            activeCycle.currentDay = 0;
+            // Opcional: limpar completedSubjects? Manter para histórico, ou resetar?
+            // Vamos manter como está, o Planos já usa completedSubjects para marcar dias concluídos.
+          } else {
+            activeCycle.currentDay = nextDay;
+          }
+        }
       }
       
       syncWithPlansModule(activeCycle) {
@@ -3156,22 +3235,7 @@
             const cicloPlano = planosData.ciclos.find(c => c.id === activeCycle.id);
             
             if (cicloPlano) {
-              if (!cicloPlano.completedSubjects) {
-                cicloPlano.completedSubjects = {};
-              }
-              
-              Object.keys(activeCycle.completedSubjects || {}).forEach(date => {
-                if (!cicloPlano.completedSubjects[date]) {
-                  cicloPlano.completedSubjects[date] = [];
-                }
-                
-                activeCycle.completedSubjects[date].forEach(materia => {
-                  if (!cicloPlano.completedSubjects[date].includes(materia)) {
-                    cicloPlano.completedSubjects[date].push(materia);
-                  }
-                });
-              });
-              
+              // Sincronizar apenas tempo de estudo e currentDay (completedSubjects já foi atualizado em tryAdvanceCycleDay)
               if (!cicloPlano.studyTime) {
                 cicloPlano.studyTime = {};
               }
@@ -3182,6 +3246,11 @@
               
               if (activeCycle.currentDay !== undefined) {
                 cicloPlano.currentDay = activeCycle.currentDay;
+              }
+              
+              // Sincronizar completedSubjects (índices booleanos)
+              if (activeCycle.completedSubjects) {
+                cicloPlano.completedSubjects = { ...activeCycle.completedSubjects };
               }
               
               localStorage.setItem('StudyFlow_planos', JSON.stringify(planosData));
@@ -3288,36 +3357,6 @@
                (dailyActivities.activities.questoes?.length > 0 ||
                 dailyActivities.activities.anki?.length > 0 ||
                 dailyActivities.activities.teoria?.length > 0);
-      } 
-      
-      showDailySummary() { 
-        const hoje = this.getDynamicDateObject();
-        const hojeStr = this.getDynamicDateString();
-        
-        this.checkSimuladoDay();
-        
-        this.updateAnkiProgress(); 
-        
-        if (this.isDayFinished()) {
-          this.showTodaySummary(hojeStr);
-          return;
-        }
-        
-        if (this.hasPartialRegistration()) {
-          this.showPartialSummary(hojeStr, true);
-          return;
-        }
-        
-        if (this.hasStudiedToday()) { 
-          this.showTodaySummary(hojeStr); 
-        } else { 
-          this.showPendingTasks(hojeStr); 
-        } 
-        
-        // Atualizar painel lateral
-        if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
-          window.UI_ENHANCER.updateSidePanel();
-        }
       } 
       
       checkSimuladoDay() {
@@ -4742,10 +4781,13 @@
             if (Array.isArray(data) && data.length > 0) {
               const cycle = data[0];
               if (cycle && cycle.generatedCycle && Array.isArray(cycle.generatedCycle)) {
+                // --- NOVO: Garantir que dailyCompleted exista ---
+                if (!cycle.dailyCompleted) cycle.dailyCompleted = {};
                 return cycle;
               }
             }
             else if (data.generatedCycle && Array.isArray(data.generatedCycle)) {
+              if (!data.dailyCompleted) data.dailyCompleted = {};
               return data;
             }
           }
@@ -4760,10 +4802,12 @@
                 if (Array.isArray(data) && data.length > 0) {
                   const cycle = data[0];
                   if (cycle && cycle.generatedCycle && Array.isArray(cycle.generatedCycle)) {
+                    if (!cycle.dailyCompleted) cycle.dailyCompleted = {};
                     return cycle;
                   }
                 }
                 else if (data.generatedCycle && Array.isArray(data.generatedCycle)) {
+                  if (!data.dailyCompleted) data.dailyCompleted = {};
                   return data;
                 }
               }
@@ -6627,9 +6671,11 @@
           totalTeoria++;
         });
         
-        // Calcular progresso
-        const todayTasks = chatBot.getTodayTasks();
-        const totalTasks = todayTasks.questoes.length + todayTasks.anki.length + todayTasks.teoria.length;
+        // --- NOVO: Obter total fixo de atividades do dia ---
+        const totalTasks = parseInt(localStorage.getItem(`dailyTotalTasks_${hojeStr}`)) || 
+                           (chatBot.getTodayTasks().questoes.length + 
+                            chatBot.getTodayTasks().anki.length + 
+                            chatBot.getTodayTasks().teoria.length);
         const completedTasks = atividades.questoes.length + atividades.anki.length + atividades.teoria.length;
         const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
         
@@ -6673,7 +6719,7 @@
         activitiesContainer.innerHTML = '';
         
         // Obter atividades pendentes
-        const pendingActivities = this.getPendingActivities(todayTasks, atividades);
+        const pendingActivities = this.getPendingActivities(chatBot.getTodayTasks(), atividades);
         
         // Adicionar atividades pendentes como cards individuais
         if (!chatBot.isDayFinished()) {
