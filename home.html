@@ -3,92 +3,69 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calendário de Estudos - Colmeia Elegante</title>
+<title>Calendário de Estudos Moderno</title>
 <style>
-/* ============================================= */
-/* TEMA ESCURO SOFISTICADO - INSPIRADO EM COLMEIA */
-/* ============================================= */
 :root {
-  --honey-deep: #1C1C1E;        /* base escura neutra */
-  --honey-charcoal: #2C2C2E;     /* fundo elevado */
-  --honey-warm: #3A3A3C;         /* tom intermediário */
-  --honey-gold: #B89B5E;         /* dourado suave, menos saturado */
-  --honey-amber: #A6894A;        /* âmbar queimado */
-  --honey-glow: rgba(184, 155, 94, 0.2); /* brilho suave */
-  --honey-soft: rgba(184, 155, 94, 0.08); /* fundo sutil */
-
-  --bg: #1C1C1E;
-  --bg-light: #2C2C2E;
-  --bg-lighter: #3A3A3C;
-  --bg-glass: rgba(44, 44, 46, 0.8);
-  --bg-glass-light: rgba(58, 58, 60, 0.5);
-
-  --text: #F5F5F7;
-  --text-secondary: #D2D2D6;
-  --text-muted: #A8A8B0;
-
-  --primary: var(--honey-gold);
-  --primary-light: #C9AE7C;
-  --primary-glow: var(--honey-glow);
-  --secondary: var(--honey-amber);
-  --secondary-light: #B89B5E;
-  --secondary-glow: rgba(166, 137, 74, 0.2);
-  --danger: #C45D5D;
-  --danger-glow: rgba(196, 93, 93, 0.2);
-  --warning: #B89B5E;
-  --warning-glow: rgba(184, 155, 94, 0.2);
-
+  --primary: #4caf50;
+  --primary-light: #5cb860;
+  --primary-glow: rgba(76, 175, 80, 0.3);
+  --secondary: #2196f3;
+  --secondary-light: #4dabf5;
+  --secondary-glow: rgba(33, 150, 243, 0.3);
+  --danger: #f44336;
+  --danger-glow: rgba(244, 67, 54, 0.3);
+  --warning: #ff9800;
+  --warning-glow: rgba(255, 152, 0, 0.3);
+  
+  /* Paleta de cores modernizada */
+  --bg: #0f172a;
+  --bg-light: #1e293b;
+  --bg-lighter: #334155;
+  --bg-glass: rgba(30, 41, 59, 0.7);
+  --bg-glass-light: rgba(51, 65, 85, 0.5);
+  
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  
   --dashboard-width: 300px;
   --slider-handle-size: 24px;
-  --border-radius: 24px;
-  --border-radius-sm: 14px;
-  --transition: all 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
-  --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(184, 155, 94, 0.1);
-  --shadow-lg: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(184, 155, 94, 0.2);
-  --shadow-inner: inset 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(184, 155, 94, 0.05);
-
-  --chart-color-1: #B89B5E;
-  --chart-color-2: #A6894A;
-  --chart-color-3: #8F7A42;
-  --chart-color-4: #7A683A;
-  --chart-color-5: #665632;
-
-  --gradient-primary: linear-gradient(145deg, #B89B5E, #8F7A42);
-  --gradient-secondary: linear-gradient(145deg, #A6894A, #7A683A);
-  --gradient-bg: radial-gradient(circle at 30% 40%, #2C2C2E, #1C1C1E 90%);
+  --border-radius: 16px;
+  --border-radius-sm: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  
+  --chart-color-1: #A8D5BA;
+  --chart-color-2: #90CAF9;
+  --chart-color-3: #FFCC80;
+  --chart-color-4: #EF9A9A;
+  --chart-color-5: #C5B4E3;
+  
+  /* Gradientes modernos */
+  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-light));
+  --gradient-secondary: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+  --gradient-bg: linear-gradient(135deg, var(--bg), var(--bg-light));
 }
 
-/* TEMA CLARO adaptado */
+/* TEMA CLARO ATUALIZADO - mais moderno e tecnológico */
 .light-theme {
-  --bg: #F5F5F7;
-  --bg-light: #FFFFFF;
-  --bg-lighter: #E9E9ED;
+  --bg: #f8fafc;
+  --bg-light: #ffffff;
+  --bg-lighter: #f1f5f9;
   --bg-glass: rgba(255, 255, 255, 0.7);
-  --bg-glass-light: rgba(233, 233, 237, 0.5);
-
-  --text: #1C1C1E;
-  --text-secondary: #3A3A3C;
-  --text-muted: #6C6C70;
-
-  --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(184, 155, 94, 0.2);
-  --shadow-lg: 0 30px 60px -20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(184, 155, 94, 0.3);
-  --gradient-bg: radial-gradient(circle at 30% 40%, #FFFFFF, #F0F0F2);
-}
-
-/* ============================================= */
-/* PADRÃO HEXAGONAL SUTIL - MENOS INTENSO        */
-/* ============================================= */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='46' viewBox='0 0 40 46'%3E%3Cpath fill='%23B89B5E' fill-opacity='0.02' d='M20 0L0 11.5v23L20 46l20-11.5v-23L20 0z'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  z-index: 0;
+  --bg-glass-light: rgba(241, 245, 249, 0.5);
+  
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.12);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  
+  --gradient-bg: linear-gradient(135deg, #f8fafc, #e2e8f0);
 }
 
 * {
@@ -110,7 +87,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Camada extra de hexágonos ainda mais suave */
+/* Efeito de partículas de fundo */
 body::before {
   content: '';
   position: fixed;
@@ -119,8 +96,9 @@ body::before {
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(184, 155, 94, 0.02) 0%, transparent 30%),
-    radial-gradient(circle at 90% 40%, rgba(166, 137, 74, 0.02) 0%, transparent 30%);
+    radial-gradient(circle at 10% 20%, rgba(76, 175, 80, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 90% 40%, rgba(33, 150, 243, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 50% 80%, rgba(255, 152, 0, 0.05) 0%, transparent 20%);
   z-index: -1;
   pointer-events: none;
 }
@@ -132,18 +110,17 @@ body::before {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  position: relative;
-  z-index: 2;
 }
 
+/* Botão de alternância de tema - Design moderno */
 .theme-toggle {
   position: fixed;
   top: 20px;
   right: 20px;
   background: var(--bg-glass);
   backdrop-filter: blur(10px);
-  color: var(--primary);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -160,15 +137,15 @@ body::before {
 .theme-toggle:hover {
   transform: scale(1.1) rotate(15deg);
   box-shadow: 0 0 20px var(--primary-glow);
-  border-color: var(--primary);
 }
 
+/* Botão para abrir métricas */
 .metrics-button {
   position: fixed;
   bottom: 30px;
   left: 30px;
   background: var(--gradient-secondary);
-  color: var(--text);
+  color: white;
   border: none;
   padding: 14px 25px;
   border-radius: 50px;
@@ -183,14 +160,14 @@ body::before {
   z-index: 9999;
   box-shadow: var(--shadow);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(184, 155, 94, 0.3);
 }
 
 .metrics-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px -5px var(--secondary-glow), 0 0 0 2px var(--primary);
+  box-shadow: 0 10px 25px -5px var(--secondary-glow);
 }
 
+/* Estilos do Calendário - Design modernizado */
 .calendar {
   background: var(--bg-glass);
   backdrop-filter: blur(10px);
@@ -199,13 +176,12 @@ body::before {
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: var(--transition);
 }
 
 .calendar:hover {
   box-shadow: var(--shadow-lg);
-  border-color: rgba(184, 155, 94, 0.2);
 }
 
 .calendar-header {
@@ -213,18 +189,17 @@ body::before {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
-  background: var(--bg-lighter);
+  background: var(--gradient-primary);
   padding: 18px;
   border-radius: var(--border-radius-sm);
-  box-shadow: var(--shadow-inner);
-  border: 1px solid rgba(184, 155, 94, 0.15);
+  box-shadow: var(--shadow);
 }
 
 .calendar-header button {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(5px);
-  border: 1px solid rgba(184, 155, 94, 0.2);
-  color: var(--primary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text);
   font-size: 20px;
   cursor: pointer;
   padding: 10px 14px;
@@ -236,10 +211,8 @@ body::before {
 }
 
 .calendar-header button:hover {
-  background: rgba(184, 155, 94, 0.2);
-  color: var(--text);
+  background: rgba(255, 255, 255, 0.25);
   transform: scale(1.05);
-  border-color: var(--primary);
 }
 
 .calendar-grid {
@@ -249,52 +222,31 @@ body::before {
 }
 
 .calendar-grid .day {
-  font-weight: 500;
-  color: var(--primary);
+  font-weight: 600;
+  color: var(--text-secondary);
   padding: 14px 8px;
   text-align: center;
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  opacity: 0.8;
 }
 
-/* ============================================= */
-/* ESTILO DOS DIAS - FAVOS DE MEL COM VARIAÇÃO   */
-/* ============================================= */
 .calendar-grid .date {
   aspect-ratio: 1.1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--bg-light);
+  background: var(--bg-glass-light);
+  backdrop-filter: blur(5px);
   cursor: pointer;
-  border-radius: 0;
+  border-radius: var(--border-radius-sm);
   transition: var(--transition);
   position: relative;
   font-size: 16px;
   font-weight: 500;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   overflow: hidden;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.05);
-  background: linear-gradient(145deg, var(--bg-light), var(--bg));
-  border: 1px solid rgba(184, 155, 94, 0.15);
-}
-
-/* Variação sutil entre os dias usando nth-child */
-.calendar-grid .date:nth-child(odd) {
-  background: linear-gradient(145deg, var(--bg), var(--bg-light));
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(184, 155, 94, 0.05);
-}
-
-.calendar-grid .date:nth-child(3n) {
-  border-color: rgba(184, 155, 94, 0.25);
-}
-
-.calendar-grid .date:nth-child(5n+2) {
-  filter: brightness(1.02);
 }
 
 .calendar-grid .date::before {
@@ -304,15 +256,14 @@ body::before {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(184, 155, 94, 0.1), transparent);
-  transition: left 0.6s;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
 }
 
 .calendar-grid .date:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(184, 155, 94, 0.3);
-  border-color: transparent;
-  background: linear-gradient(145deg, var(--bg-lighter), var(--bg-light));
+  background: var(--bg-lighter);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .calendar-grid .date:hover::before {
@@ -322,36 +273,23 @@ body::before {
 .calendar-grid .today {
   background: var(--gradient-primary);
   font-weight: bold;
-  color: var(--bg);
-  box-shadow: 0 4px 12px rgba(184, 155, 94, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: linear-gradient(145deg, #B89B5E, #8F7A42);
-}
-
-.calendar-grid .today::after {
-  content: '';
-  position: absolute;
-  bottom: 4px;
-  width: 4px;
-  height: 4px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 0 6px white;
+  color: white;
+  box-shadow: 0 5px 15px var(--primary-glow);
 }
 
 .task-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--primary);
+  width: 8px;
+  height: 8px;
+  background: var(--secondary);
   border-radius: 50%;
-  margin-top: 4px;
+  margin-top: 6px;
   position: absolute;
-  bottom: 6px;
-  box-shadow: 0 0 6px var(--primary-glow);
+  bottom: 8px;
+  box-shadow: 0 0 5px var(--secondary-glow);
 }
 
 /* ============================================= */
-/* MODAL DO DIA - refinado                       */
+/* MODAL DO DIA - Design modernizado */
 /* ============================================= */
 .day-details {
   position: fixed;
@@ -365,16 +303,16 @@ body::before {
   z-index: 100;
   flex-direction: column;
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .day-details.active {
   display: flex;
-  animation: modalSlideIn 0.4s ease-out;
+  animation: modalSlideIn 0.3s ease-out;
 }
 
 @keyframes modalSlideIn {
@@ -390,18 +328,18 @@ body::before {
 
 .day-details-header {
   padding: 20px;
-  border-bottom: 1px solid rgba(184, 155, 94, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  background: var(--bg-lighter);
+  background: var(--gradient-primary);
 }
 
 .close-details {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.2);
   border: none;
-  color: var(--primary);
+  color: var(--text);
   font-size: 24px;
   cursor: pointer;
   width: 36px;
@@ -414,8 +352,7 @@ body::before {
 }
 
 .close-details:hover {
-  background: rgba(184, 155, 94, 0.3);
-  color: var(--text);
+  background: rgba(0, 0, 0, 0.4);
   transform: rotate(90deg);
 }
 
@@ -439,19 +376,19 @@ body::before {
   border-radius: 4px;
 }
 
+/* Estilos do Sistema de Estudos - Design modernizado */
 .study-tracker {
   margin-bottom: 25px;
   background: var(--bg-glass-light);
   backdrop-filter: blur(5px);
   border-radius: var(--border-radius);
   padding: 20px;
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   transition: var(--transition);
 }
 
 .study-tracker:hover {
   box-shadow: var(--shadow);
-  border-color: rgba(184, 155, 94, 0.2);
 }
 
 .study-form {
@@ -464,7 +401,7 @@ body::before {
 .study-input {
   padding: 14px;
   border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--bg-light);
   color: var(--text);
   width: 100%;
@@ -496,7 +433,7 @@ body::before {
   border-radius: var(--border-radius-sm);
   padding: 20px;
   position: relative;
-  border: 1px solid rgba(184, 155, 94, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .slider-header {
@@ -514,9 +451,9 @@ body::before {
 .time-slider {
   -webkit-appearance: none;
   width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(0, 0, 0, 0.5);
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.1);
   outline: none;
   margin: 15px 0;
   transition: var(--transition);
@@ -530,8 +467,8 @@ body::before {
   background: var(--primary);
   cursor: pointer;
   transition: var(--transition);
-  border: 2px solid var(--bg);
-  box-shadow: 0 0 8px var(--primary-glow);
+  border: 2px solid white;
+  box-shadow: 0 0 10px var(--primary-glow);
 }
 
 .time-slider::-webkit-slider-thumb:hover {
@@ -550,7 +487,7 @@ body::before {
   position: relative;
   text-align: center;
   width: 0;
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
 }
 
@@ -559,11 +496,10 @@ body::before {
   position: absolute;
   top: -10px;
   left: 0;
-  width: 1px;
-  height: 4px;
-  background: var(--primary);
+  width: 2px;
+  height: 5px;
+  background: var(--text-muted);
   transform: translateX(-50%);
-  opacity: 0.5;
 }
 
 .session-list {
@@ -583,13 +519,12 @@ body::before {
   background: var(--bg-light);
   border-radius: var(--border-radius-sm);
   transition: var(--transition);
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .session-item:hover {
   background: var(--bg-lighter);
   transform: translateX(5px);
-  border-color: var(--primary);
 }
 
 .time-total {
@@ -601,25 +536,25 @@ body::before {
   justify-content: space-between;
   font-weight: 600;
   font-size: 16px;
-  border: 1px solid rgba(184, 155, 94, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .progress-bar {
-  height: 6px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 3px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
   margin-top: 10px;
   overflow: hidden;
-  border: 1px solid rgba(184, 155, 94, 0.1);
 }
 
 .progress-fill {
   height: 100%;
   background: var(--gradient-primary);
   transition: width 0.5s ease;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
+/* Botões de tempo */
 .time-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -630,7 +565,7 @@ body::before {
 .time-btn {
   padding: 10px;
   background: var(--bg-light);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius-sm);
   color: var(--text);
   cursor: pointer;
@@ -643,15 +578,14 @@ body::before {
 .time-btn:hover {
   background: var(--primary);
   transform: translateY(-3px);
-  color: var(--bg);
+  color: white;
   box-shadow: 0 5px 15px var(--primary-glow);
-  border-color: var(--primary);
 }
 
 .time-btn.active {
   background: var(--primary);
   border-color: var(--primary-light);
-  color: var(--bg);
+  color: white;
   box-shadow: 0 0 10px var(--primary-glow);
 }
 
@@ -665,21 +599,22 @@ body::before {
   flex: 1;
   padding: 12px;
   border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--bg-light);
   color: var(--text);
   font-family: inherit;
 }
 
+/* Botão de cadastro de disciplinas */
 .subjects-button-container {
   margin-top: 20px;
   text-align: center;
 }
 
 .subjects-button {
-  background: var(--bg-lighter);
-  border: 1px solid rgba(184, 155, 94, 0.3);
-  color: var(--primary);
+  background: var(--gradient-secondary);
+  border: none;
+  color: white;
   padding: 14px 24px;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
@@ -694,17 +629,15 @@ body::before {
 }
 
 .subjects-button:hover {
-  background: var(--primary);
-  color: var(--bg);
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px -5px var(--primary-glow);
-  border-color: var(--primary);
+  box-shadow: 0 10px 25px -5px var(--secondary-glow);
 }
 
+/* Dropdown para disciplinas */
 .subject-select {
   padding: 14px;
   border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--bg-light);
   color: var(--text);
   width: 100%;
@@ -712,7 +645,7 @@ body::before {
   font-size: 15px;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B89B5E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 18px;
@@ -730,6 +663,7 @@ body::before {
   color: var(--text);
 }
 
+/* Modal para matérias */
 .modal {
   display: none;
   position: fixed;
@@ -741,7 +675,7 @@ body::before {
   z-index: 1000;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(5px);
 }
 
 .modal.active {
@@ -756,13 +690,13 @@ body::before {
 
 .modal-content {
   background: var(--bg-glass);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
   border-radius: var(--border-radius);
   padding: 30px;
   width: 90%;
   max-width: 450px;
   box-shadow: var(--shadow-lg);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   animation: modalSlideUp 0.3s ease;
 }
 
@@ -786,14 +720,14 @@ body::before {
 
 .modal-header h2 {
   font-size: 24px;
-  font-weight: 600;
-  color: var(--primary);
+  font-weight: 700;
+  color: var(--text);
 }
 
 .close-modal {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.1);
   border: none;
-  color: var(--primary);
+  color: var(--text);
   font-size: 24px;
   cursor: pointer;
   width: 36px;
@@ -806,8 +740,7 @@ body::before {
 }
 
 .close-modal:hover {
-  background: rgba(184, 155, 94, 0.3);
-  color: var(--text);
+  background: rgba(0, 0, 0, 0.2);
   transform: rotate(90deg);
 }
 
@@ -826,13 +759,12 @@ body::before {
   justify-content: space-between;
   align-items: center;
   transition: var(--transition);
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .subject-list-item:hover {
   background: var(--bg-light);
   transform: translateX(5px);
-  border-color: var(--primary);
 }
 
 .subject-list-item:last-child {
@@ -860,7 +792,7 @@ body::before {
 }
 
 .subject-action-btn:hover {
-  background: rgba(184, 155, 94, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   transform: scale(1.1);
 }
 
@@ -884,7 +816,7 @@ body::before {
   flex: 1;
   padding: 14px;
   border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--bg-light);
   color: var(--text);
   font-family: inherit;
@@ -898,6 +830,7 @@ body::before {
   box-shadow: 0 0 0 3px var(--primary-glow);
 }
 
+/* Botões de exportação/importação */
 .study-data-buttons {
   position: fixed;
   bottom: 30px;
@@ -911,7 +844,7 @@ body::before {
   background: var(--bg-glass);
   backdrop-filter: blur(10px);
   color: var(--text);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 14px 25px;
   border-radius: 50px;
   cursor: pointer;
@@ -926,20 +859,19 @@ body::before {
 }
 
 .study-data-btn.import {
-  background: rgba(166, 137, 74, 0.1);
-  border-color: rgba(184, 155, 94, 0.3);
+  background: rgba(144, 202, 249, 0.2);
+  border-color: rgba(144, 202, 249, 0.4);
   color: var(--text);
 }
 
 .study-data-btn:hover {
   background: var(--bg-light);
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px -5px var(--primary-glow);
-  border-color: var(--primary);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
 .study-data-btn.import:hover {
-  background: rgba(184, 155, 94, 0.2);
+  background: rgba(144, 202, 249, 0.3);
   box-shadow: 0 10px 25px -5px var(--secondary-glow);
 }
 
@@ -957,6 +889,7 @@ body::before {
   opacity: 1;
 }
 
+/* Gráfico de rosca */
 .chart-legend {
   max-height: 200px;
   overflow-y: auto;
@@ -967,7 +900,7 @@ body::before {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 10px;
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .legend-item {
@@ -990,6 +923,7 @@ body::before {
   color: var(--text-secondary);
 }
 
+/* BARRA DE PROGRESSO DE METAS */
 .goal-progress {
   display: flex;
   flex-direction: column;
@@ -1021,6 +955,7 @@ body::before {
   color: var(--text-secondary);
 }
 
+/* Modal para metas */
 .goal-modal {
   max-width: 400px;
 }
@@ -1036,6 +971,7 @@ body::before {
   color: var(--text-secondary);
 }
 
+/* ANIMAÇÃO DE META ATINGIDA */
 @keyframes confetti {
   0% { transform: translateY(0) rotate(0); opacity: 1; }
   100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
@@ -1051,13 +987,14 @@ body::before {
   animation: confetti 1s ease-out forwards;
 }
 
+/* Notificação temporária */
 .notification {
   position: fixed;
   top: 20px;
   right: 20px;
   padding: 15px 25px;
   background: var(--gradient-primary);
-  color: var(--bg);
+  color: white;
   border-radius: var(--border-radius-sm);
   z-index: 2000;
   box-shadow: var(--shadow);
@@ -1065,7 +1002,6 @@ body::before {
   opacity: 0;
   transform: translateX(100%);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .notification.show {
@@ -1074,7 +1010,7 @@ body::before {
 }
 
 /* ============================================= */
-/* DASHBOARD LATERAL DE MÉTRICAS                 */
+/* DASHBOARD LATERAL DE MÉTRICAS - VERSÃO MODERNA */
 /* ============================================= */
 .dashboard-sidebar {
   background: var(--bg-glass);
@@ -1087,27 +1023,26 @@ body::before {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(184, 155, 94, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: var(--transition);
 }
 
 .dashboard-sidebar:hover {
   box-shadow: var(--shadow-lg);
-  border-color: rgba(184, 155, 94, 0.25);
 }
 
 .dashboard-header {
   margin-bottom: 25px;
   text-align: center;
   padding-bottom: 15px;
-  border-bottom: 1px solid rgba(184, 155, 94, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dashboard-header h3 {
   color: var(--primary);
   font-size: 20px;
   margin-bottom: 5px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .dashboard-header p {
@@ -1128,7 +1063,7 @@ body::before {
   border-radius: var(--border-radius);
   padding: 20px;
   transition: var(--transition);
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
   overflow: hidden;
 }
@@ -1141,13 +1076,11 @@ body::before {
   width: 100%;
   height: 3px;
   background: var(--gradient-primary);
-  opacity: 0.6;
 }
 
 .metric-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px -5px rgba(184, 155, 94, 0.15);
-  border-color: var(--primary);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
 }
 
 .metric-icon {
@@ -1160,29 +1093,26 @@ body::before {
   margin-bottom: 15px;
   font-size: 18px;
   box-shadow: var(--shadow);
-  background: var(--bg-lighter);
-  color: var(--primary);
-  border: 1px solid rgba(184, 155, 94, 0.3);
 }
 
 .metric-icon.primary {
   background: var(--gradient-primary);
-  color: var(--bg);
+  color: white;
 }
 
 .metric-icon.secondary {
   background: var(--gradient-secondary);
-  color: var(--bg);
+  color: white;
 }
 
 .metric-icon.warning {
-  background: var(--bg-lighter);
-  color: var(--warning);
+  background: linear-gradient(135deg, var(--warning), #ffb74d);
+  color: white;
 }
 
 .metric-icon.danger {
-  background: var(--bg-lighter);
-  color: var(--danger);
+  background: linear-gradient(135deg, var(--danger), #e57373);
+  color: white;
 }
 
 .metric-value {
@@ -1203,7 +1133,7 @@ body::before {
 .metric-progress {
   margin-top: 15px;
   height: 6px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -1215,6 +1145,9 @@ body::before {
   border-radius: 3px;
 }
 
+/* ============================================= */
+/* NOVO LAYOUT PARA O CARD DE DIAS */
+/* ============================================= */
 .days-container {
   display: flex;
   justify-content: space-between;
@@ -1246,7 +1179,7 @@ body::before {
 }
 
 /* ============================================= */
-/* MODAL PARA CONFIGURAR DATA DA PROVA           */
+/* MODAL PARA CONFIGURAR DATA DA PROVA */
 /* ============================================= */
 .exam-modal {
   max-width: 450px;
@@ -1266,14 +1199,14 @@ body::before {
 
 .exam-form-label {
   font-weight: 500;
-  color: var(--primary);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .exam-form-input {
   padding: 12px;
   border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--bg-light);
   color: var(--text);
   font-family: inherit;
@@ -1290,7 +1223,7 @@ body::before {
 .exam-form-textarea {
   padding: 12px;
   border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--bg-light);
   color: var(--text);
   font-family: inherit;
@@ -1330,7 +1263,7 @@ body::before {
 
 .exam-form-btn.primary {
   background: var(--gradient-primary);
-  color: var(--bg);
+  color: white;
 }
 
 .exam-form-btn.primary:hover {
@@ -1341,7 +1274,6 @@ body::before {
 .exam-form-btn.secondary {
   background: var(--bg-light);
   color: var(--text);
-  border: 1px solid rgba(184, 155, 94, 0.2);
 }
 
 .exam-form-btn.secondary:hover {
@@ -1397,6 +1329,7 @@ body::before {
   }
 }
 
+/* Animações */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1411,6 +1344,7 @@ body::before {
   animation: slideIn 0.5s ease-out;
 }
 
+/* Largura da barra de rolagem */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -1427,6 +1361,13 @@ body::before {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-light);
+}
+
+/* ESTILOS ADICIONAIS PARA AS NOVAS FUNCIONALIDADES */
+.calendar-grid .date.completed {
+  background: var(--bg-lighter);
+  border-radius: var(--border-radius-sm);
+  position: relative;
 }
 
 .calendar-grid .date.completed {
@@ -1473,7 +1414,7 @@ body::before {
 }
 
 /* ============================================= */
-/* MODAL DE MÉTRICAS                             */
+/* ESTILOS DO NOVO MODAL DE MÉTRICAS */
 /* ============================================= */
 .metrics-modal {
   max-width: 95%;
@@ -1499,7 +1440,7 @@ body::before {
   font-size: 32px;
   color: var(--primary);
   margin-bottom: 10px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .metrics-header p {
@@ -1521,7 +1462,7 @@ body::before {
   padding: 25px;
   text-align: center;
   transition: var(--transition);
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
@@ -1535,13 +1476,11 @@ body::before {
   width: 100%;
   height: 3px;
   background: var(--gradient-primary);
-  opacity: 0.6;
 }
 
 .summary-card:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-lg);
-  border-color: var(--primary);
 }
 
 .summary-card i {
@@ -1577,14 +1516,13 @@ body::before {
   backdrop-filter: blur(5px);
   border-radius: var(--border-radius);
   padding: 25px;
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
   transition: var(--transition);
 }
 
 .chart-container-large:hover {
   box-shadow: var(--shadow-lg);
-  border-color: var(--primary);
 }
 
 .chart-container-large h3 {
@@ -1611,7 +1549,7 @@ body::before {
   backdrop-filter: blur(5px);
   border-radius: var(--border-radius);
   padding: 25px;
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
   margin-bottom: 20px;
   transition: var(--transition);
@@ -1619,7 +1557,6 @@ body::before {
 
 .metrics-table-container:hover {
   box-shadow: var(--shadow-lg);
-  border-color: var(--primary);
 }
 
 .metrics-table-container h3 {
@@ -1647,7 +1584,7 @@ body::before {
   padding: 12px 15px;
   text-align: left;
   font-weight: 600;
-  color: var(--primary);
+  color: var(--text);
   cursor: pointer;
   user-select: none;
   border-bottom: 2px solid var(--primary);
@@ -1655,12 +1592,12 @@ body::before {
 }
 
 .metrics-table th:hover {
-  background: rgba(184, 155, 94, 0.1);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .metrics-table td {
   padding: 12px 15px;
-  border-bottom: 1px solid rgba(184, 155, 94, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .metrics-table tr:last-child td {
@@ -1668,7 +1605,7 @@ body::before {
 }
 
 .metrics-table tr:hover {
-  background: rgba(184, 155, 94, 0.05);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .goals-section {
@@ -1682,7 +1619,7 @@ body::before {
   backdrop-filter: blur(5px);
   border-radius: var(--border-radius);
   padding: 25px;
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
   position: relative;
   transition: var(--transition);
@@ -1690,7 +1627,6 @@ body::before {
 
 .goal-card:hover {
   box-shadow: var(--shadow-lg);
-  border-color: var(--primary);
 }
 
 .goal-card h3 {
@@ -1713,11 +1649,10 @@ body::before {
 
 .progress-bar-large {
   height: 12px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   margin-bottom: 10px;
   overflow: hidden;
-  border: 1px solid rgba(184, 155, 94, 0.1);
 }
 
 .progress-fill-large {
@@ -1740,13 +1675,16 @@ body::before {
   color: var(--text);
 }
 
+/* ============================================= */
+/* CORREÇÃO 2: BOTÃO DE CONFIGURAÇÃO DE METAS */
+/* ============================================= */
 .goal-config-button {
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.05);
   border: none;
-  color: var(--primary);
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 8px 12px;
   border-radius: var(--border-radius-sm);
@@ -1756,16 +1694,16 @@ body::before {
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
-  border: 1px solid rgba(184, 155, 94, 0.2);
 }
 
 .goal-config-button:hover {
   background: var(--primary);
-  color: var(--bg);
+  color: white;
   transform: scale(1.05);
   box-shadow: 0 0 10px var(--primary-glow);
 }
 
+/* Responsividade para o modal de métricas */
 @media (max-width: 900px) {
   .metrics-charts {
     grid-template-columns: 1fr;
@@ -1797,9 +1735,12 @@ body::before {
   }
 }
 
+/* ============================================= */
+/* CORREÇÃO 1: RESTAURAR ESTILOS DAS CATEGORIAS NO MODAL DO DIA */
+/* ============================================= */
 .categories {
   margin-top: 25px;
-  border-top: 1px solid rgba(184, 155, 94, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 20px;
 }
 
@@ -1830,7 +1771,7 @@ body::before {
 .task-input {
   flex: 1;
   padding: 12px;
-  border: 1px solid rgba(184, 155, 94, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius-sm);
   background: var(--bg-light);
   color: var(--text);
@@ -1846,9 +1787,9 @@ body::before {
 }
 
 .add-btn {
-  background: var(--bg-lighter);
-  border: 1px solid rgba(184, 155, 94, 0.3);
-  color: var(--primary);
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
   padding: 12px 18px;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
@@ -1863,11 +1804,8 @@ body::before {
 }
 
 .add-btn:hover {
-  background: var(--primary);
-  color: var(--bg);
   transform: translateY(-3px);
   box-shadow: 0 10px 25px -5px var(--primary-glow);
-  border-color: var(--primary);
 }
 
 .tasks-list {
@@ -1889,13 +1827,12 @@ body::before {
   border-radius: var(--border-radius-sm);
   animation: fadeIn 0.3s ease;
   transition: var(--transition);
-  border: 1px solid rgba(184, 155, 94, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .task-item:hover {
   background: var(--bg-light);
   transform: translateX(5px);
-  border-color: var(--primary);
 }
 
 .task-text {
@@ -1905,7 +1842,7 @@ body::before {
 }
 
 .task-text[contenteditable="true"] {
-  background: rgba(184, 155, 94, 0.1);
+  background: rgba(0, 0, 0, 0.05);
   padding: 8px;
   border-radius: var(--border-radius-sm);
   outline: none;
@@ -1933,13 +1870,13 @@ body::before {
 }
 
 .task-btn.complete:hover {
-  background: rgba(184, 155, 94, 0.2);
+  background: rgba(168, 213, 186, 0.3);
   color: var(--primary);
   box-shadow: 0 0 10px var(--primary-glow);
 }
 
 .task-btn.remove:hover {
-  background: rgba(196, 93, 93, 0.2);
+  background: rgba(239, 154, 154, 0.3);
   color: var(--danger);
   box-shadow: 0 0 10px var(--danger-glow);
 }
