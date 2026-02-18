@@ -91,6 +91,12 @@
             background: #1e6080;
         }
 
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .icon-chart::before { content: "▦"; margin-right: 0.3rem; font-size: 1.1rem; }
         .icon-download::before { content: "⬇"; margin-right: 0.3rem; }
         .icon-upload::before { content: "⬆"; margin-right: 0.3rem; }
@@ -388,7 +394,11 @@
     <div id="viewDaily" class="view active">
         <div class="card-daily">
             <div class="daily-header">
-                <h2 id="disciplinaNome">Carregando...</h2>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <h2 id="disciplinaNome">Carregando...</h2>
+                    <button class="btn" id="btnDisciplinaAnterior" style="padding: 0.3rem 0.8rem;" title="disciplina anterior">←</button>
+                    <button class="btn" id="btnDisciplinaProxima" style="padding: 0.3rem 0.8rem;" title="próxima disciplina">→</button>
+                </div>
                 <div id="concluidoBadge" class="status-badge hidden"><span class="icon-check"></span> concluído hoje</div>
             </div>
 
@@ -599,10 +609,7 @@
     function atualizarCiclo(dados) {
         const hoje = obterDataStringHoje();
         if (dados.ciclo.dataUltimoRegistro !== hoje) {
-            const dias = diferencaDias(dados.ciclo.dataUltimoRegistro, hoje);
-            if (dias > 0) {
-                dados.ciclo.indice = (dados.ciclo.indice + dias) % DISCIPLINAS.length;
-            }
+            // Não avança mais automaticamente o índice
             dados.ciclo.dataUltimoRegistro = hoje;
             dados.ciclo.concluidoHoje = false;
         }
@@ -675,6 +682,31 @@
     const inputUltima = document.getElementById('inputUltima');
     const inputTempo = document.getElementById('inputTempo');
     const statsContainer = document.getElementById('statsCardsContainer');
+    const btnAnterior = document.getElementById('btnDisciplinaAnterior');
+    const btnProxima = document.getElementById('btnDisciplinaProxima');
+
+    // ---------- NAVEGAÇÃO MANUAL DO CICLO ----------
+    function avancarDisciplina() {
+        if (dadosEstudo.ciclo.concluidoHoje) {
+            alert('Conclua o bloco de hoje antes de mudar de disciplina.');
+            return;
+        }
+        const total = DISCIPLINAS.length;
+        dadosEstudo.ciclo.indice = (dadosEstudo.ciclo.indice + 1) % total;
+        localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
+        carregarInterfaceDaily();
+    }
+
+    function voltarDisciplina() {
+        if (dadosEstudo.ciclo.concluidoHoje) {
+            alert('Conclua o bloco de hoje antes de mudar de disciplina.');
+            return;
+        }
+        const total = DISCIPLINAS.length;
+        dadosEstudo.ciclo.indice = (dadosEstudo.ciclo.indice - 1 + total) % total;
+        localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
+        carregarInterfaceDaily();
+    }
 
     // ---------- INTERFACE DIÁRIA ----------
     function carregarInterfaceDaily() {
@@ -694,10 +726,14 @@
             elConcluidoBadge.classList.remove('hidden');
             [inputFeitas, inputAcertos, inputUltima, inputTempo].forEach(i => i.disabled = true);
             btnSalvar.disabled = true;
+            if (btnAnterior) btnAnterior.disabled = true;
+            if (btnProxima) btnProxima.disabled = true;
         } else {
             elConcluidoBadge.classList.add('hidden');
             [inputFeitas, inputAcertos, inputUltima, inputTempo].forEach(i => i.disabled = false);
             btnSalvar.disabled = false;
+            if (btnAnterior) btnAnterior.disabled = false;
+            if (btnProxima) btnProxima.disabled = false;
         }
 
         // Filtros
@@ -843,6 +879,9 @@
         e.preventDefault();
         filtrosPanel.classList.toggle('show');
     });
+
+    if (btnAnterior) btnAnterior.addEventListener('click', voltarDisciplina);
+    if (btnProxima) btnProxima.addEventListener('click', avancarDisciplina);
 
     // Inicialização
     carregarInterfaceDaily();
