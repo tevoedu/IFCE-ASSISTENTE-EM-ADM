@@ -375,6 +375,125 @@
         .hidden {
             display: none !important;
         }
+
+        .overview-card {
+            background: #17212b;
+            border-radius: 28px;
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #31435a;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem 3rem;
+        }
+
+        .overview-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .overview-item .value {
+            font-size: 2.2rem;
+            font-weight: 500;
+            color: #d9ecff;
+        }
+
+        .overview-item .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #96abc7;
+            letter-spacing: 0.3px;
+        }
+
+        .streak-card {
+            background: #16222e;
+            border-radius: 28px;
+            padding: 1.4rem 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #2d4057;
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .streak-item {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .streak-item .value {
+            font-size: 2rem;
+            font-weight: 500;
+            color: #f0e68c;
+        }
+
+        .streak-item .label {
+            color: #b0c6e0;
+            font-size: 0.9rem;
+        }
+
+        .critical-section {
+            background: #1e1f2c;
+            border-radius: 28px;
+            padding: 1.4rem 2rem;
+            margin-bottom: 1.8rem;
+            border: 1px solid #803c3c;
+        }
+
+        .critical-title {
+            color: #ffb7b7;
+            font-size: 1.1rem;
+            font-weight: 450;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.3px;
+        }
+
+        .critical-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.5rem;
+        }
+
+        .critical-list li {
+            background: #2c2f3f;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            border-left: 4px solid #d46b6b;
+        }
+
+        .critical-message {
+            color: #afc1db;
+            font-style: italic;
+            padding: 0.3rem 0;
+        }
+
+        .neglected-badge {
+            color: #faa0a0;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 1rem;
+            background: #3e2a2a;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid #a14b4b;
+        }
+
+        .ranking-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.6rem;
+        }
+
+        .indicator-red { background-color: #d44c4c; box-shadow: 0 0 6px #d44c4c; }
+        .indicator-yellow { background-color: #e0b354; box-shadow: 0 0 6px #e0b354; }
+        .indicator-green { background-color: #5fb38b; box-shadow: 0 0 6px #5fb38b; }
     </style>
 </head>
 <body>
@@ -443,7 +562,7 @@
             <button class="btn" id="voltarDailyBtn"><span class="icon-back"></span>voltar</button>
             <h2>estatísticas por disciplina</h2>
         </div>
-        <div class="cards-grid" id="statsCardsContainer"></div>
+        <div id="statsContainer"></div> <!-- substitui cards-grid para layout mais flexível -->
     </div>
 
     <input type="file" id="importFile" accept=".json" style="display: none;">
@@ -557,22 +676,12 @@
     // ---------- FUNÇÕES DE DATA ----------
     function obterDataStringHoje() {
         const d = new Date();
-        // Formato para o ciclo (com zeros, pode ser qualquer um, só não interfere)
         return [String(d.getDate()).padStart(2,'0'), String(d.getMonth()+1).padStart(2,'0'), d.getFullYear()].join('-');
     }
 
-    // Formato EXATO usado pelo calendário: sem zeros (ex: 14-2-2026)
     function getCalendarDateString() {
         const d = new Date();
         return `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
-    }
-
-    function diferencaDias(dataStr1, dataStr2) {
-        const [d1,m1,a1] = dataStr1.split('-').map(Number);
-        const [d2,m2,a2] = dataStr2.split('-').map(Number);
-        const date1 = new Date(a1,m1-1,d1);
-        const date2 = new Date(a2,m2-1,d2);
-        return Math.floor((date2 - date1) / 86400000);
     }
 
     // ---------- GERENCIAMENTO DOS DADOS DO CICLO ----------
@@ -601,53 +710,41 @@
                     concluidoHoje: false
                 }
             };
-            localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dados));
         }
+        if (!dados.ciclo.streakAtual) dados.ciclo.streakAtual = 0;
+        if (!dados.ciclo.maiorStreak) dados.ciclo.maiorStreak = 0;
         return dados;
     }
 
     function atualizarCiclo(dados) {
         const hoje = obterDataStringHoje();
         if (dados.ciclo.dataUltimoRegistro !== hoje) {
-            // Não avança mais automaticamente o índice
             dados.ciclo.dataUltimoRegistro = hoje;
             dados.ciclo.concluidoHoje = false;
         }
         return dados;
     }
 
-    // ---------- INTEGRAÇÃO CORRETA COM O CALENDÁRIO (APPEND SEGURO) ----------
     function registrarNoCalendario(disciplinaNome, minutos) {
         if (!minutos || minutos <= 0) return;
-
-        const calendarDate = getCalendarDateString();          // ex: "14-2-2026"
+        const calendarDate = getCalendarDateString();
         const sessionKey = `sessions-${calendarDate}`;
-
-        // 1. Ler array existente (se houver)
         let sessions = [];
         try {
             const raw = localStorage.getItem(sessionKey);
             if (raw) sessions = JSON.parse(raw);
-            if (!Array.isArray(sessions)) sessions = [];      // segurança
+            if (!Array.isArray(sessions)) sessions = [];
         } catch (e) {
             sessions = [];
         }
-
-        // 2. Criar nova sessão exatamente como o calendário espera
         const novaSessao = {
             subject: `Questões – ${disciplinaNome}`,
             minutes: minutos,
             date: calendarDate,
             timestamp: new Date().toISOString()
         };
-
-        // 3. Adicionar ao array (append)
         sessions.push(novaSessao);
-
-        // 4. Salvar de volta (sem tocar em outras chaves)
         localStorage.setItem(sessionKey, JSON.stringify(sessions));
-
-        // 5. Manter a lista de matérias personalizadas do calendário (customSubjects)
         try {
             let custom = JSON.parse(localStorage.getItem('customSubjects') || '[]');
             if (!Array.isArray(custom)) custom = [];
@@ -658,12 +755,86 @@
         } catch (e) {}
     }
 
+    // ---------- STREAK ----------
+    function calcularEAtualizarStreak() {
+        const todayStr = getCalendarDateString();
+        const [d, m, y] = todayStr.split('-').map(Number);
+        const todayDate = new Date(y, m-1, d);
+        const sessionDates = new Set();
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('sessions-')) {
+                const datePart = key.replace('sessions-', '');
+                try {
+                    const sessions = JSON.parse(localStorage.getItem(key));
+                    if (Array.isArray(sessions) && sessions.length > 0) {
+                        sessionDates.add(datePart);
+                    }
+                } catch (e) {}
+            }
+        }
+
+        let currentStreak = 0;
+        let checkDate = new Date(todayDate);
+        while (true) {
+            const dateStr = `${checkDate.getDate()}-${checkDate.getMonth()+1}-${checkDate.getFullYear()}`;
+            if (sessionDates.has(dateStr)) {
+                currentStreak++;
+                checkDate.setDate(checkDate.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+
+        dadosEstudo.ciclo.streakAtual = currentStreak;
+        if (currentStreak > dadosEstudo.ciclo.maiorStreak) {
+            dadosEstudo.ciclo.maiorStreak = currentStreak;
+        }
+        localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
+    }
+
+    // ---------- NEGLIGENCIADA ----------
+    function disciplinaNegligenciada(disciplinaNome) {
+        const hoje = new Date();
+        hoje.setHours(0,0,0,0);
+        const seteDiasAtras = new Date(hoje);
+        seteDiasAtras.setDate(hoje.getDate() - 6);
+        const datasSet = new Set();
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('sessions-')) {
+                const datePart = key.replace('sessions-', '');
+                const [d, m, y] = datePart.split('-').map(Number);
+                const dataSessao = new Date(y, m-1, d);
+                if (dataSessao >= seteDiasAtras && dataSessao <= hoje) {
+                    datasSet.add(datePart);
+                }
+            }
+        }
+
+        for (let dataStr of datasSet) {
+            const key = `sessions-${dataStr}`;
+            try {
+                const sessions = JSON.parse(localStorage.getItem(key));
+                if (Array.isArray(sessions)) {
+                    for (let s of sessions) {
+                        if (s.subject && s.subject.includes(disciplinaNome)) {
+                            return false;
+                        }
+                    }
+                }
+            } catch (e) {}
+        }
+        return true;
+    }
+
     // ---------- ESTADO GLOBAL ----------
     let dadosEstudo = carregarDados();
     dadosEstudo = atualizarCiclo(dadosEstudo);
     localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
 
-    // Elementos DOM
     const viewDaily = document.getElementById('viewDaily');
     const viewStats = document.getElementById('viewStats');
     const statsBtn = document.getElementById('statsBtnView');
@@ -681,11 +852,10 @@
     const inputAcertos = document.getElementById('inputAcertos');
     const inputUltima = document.getElementById('inputUltima');
     const inputTempo = document.getElementById('inputTempo');
-    const statsContainer = document.getElementById('statsCardsContainer');
+    const statsContainer = document.getElementById('statsContainer');
     const btnAnterior = document.getElementById('btnDisciplinaAnterior');
     const btnProxima = document.getElementById('btnDisciplinaProxima');
 
-    // ---------- NAVEGAÇÃO MANUAL DO CICLO ----------
     function avancarDisciplina() {
         if (dadosEstudo.ciclo.concluidoHoje) {
             alert('Conclua o bloco de hoje antes de mudar de disciplina.');
@@ -708,7 +878,6 @@
         carregarInterfaceDaily();
     }
 
-    // ---------- INTERFACE DIÁRIA ----------
     function carregarInterfaceDaily() {
         const indice = dadosEstudo.ciclo.indice;
         const disciplina = DISCIPLINAS[indice];
@@ -736,7 +905,6 @@
             if (btnProxima) btnProxima.disabled = false;
         }
 
-        // Filtros
         const filtros = FILTROS_POR_DISCIPLINA[disciplina] || [];
         filtrosLista.innerHTML = '';
         if (filtros.length === 0) {
@@ -751,30 +919,82 @@
         filtrosPanel.classList.remove('show');
     }
 
-    // ---------- ESTATÍSTICAS ----------
     function atualizarStats() {
+        calcularEAtualizarStreak();
         const disciplinas = dadosEstudo.disciplinas;
-        let html = '';
-        disciplinas.forEach(d => {
+        const totalQuestoes = disciplinas.reduce((acc, d) => acc + d.feitas, 0);
+        const totalAcertos = disciplinas.reduce((acc, d) => acc + d.acertos, 0);
+        const totalTempo = disciplinas.reduce((acc, d) => acc + d.tempo, 0);
+        const percGeral = totalQuestoes > 0 ? (totalAcertos / totalQuestoes * 100).toFixed(1) : '0.0';
+        const tempoMedioGeral = totalQuestoes > 0 ? (totalTempo / totalQuestoes).toFixed(1) : '0.0';
+
+        let html = `
+            <div class="overview-card">
+                <div class="overview-item"><span class="value">${totalQuestoes}</span><span class="label">questões totais</span></div>
+                <div class="overview-item"><span class="value">${totalAcertos}</span><span class="label">acertos totais</span></div>
+                <div class="overview-item"><span class="value">${percGeral}%</span><span class="label">aproveitamento geral</span></div>
+                <div class="overview-item"><span class="value">${Math.floor(totalTempo/60)}h ${totalTempo%60}m</span><span class="label">tempo acumulado</span></div>
+                <div class="overview-item"><span class="value">${tempoMedioGeral} min</span><span class="label">médio por questão</span></div>
+            </div>
+            <div class="streak-card">
+                <div class="streak-item"><span class="value">${dadosEstudo.ciclo.streakAtual}</span><span class="label">dias consecutivos</span></div>
+                <div class="streak-item"><span class="value">${dadosEstudo.ciclo.maiorStreak}</span><span class="label">maior streak</span></div>
+            </div>
+        `;
+
+        const disciplinasComPerc = disciplinas.map(d => {
+            const perc = d.feitas > 0 ? (d.acertos / d.feitas * 100) : 0;
+            return { ...d, perc };
+        });
+
+        const criticas = disciplinasComPerc.filter(d => d.perc < 70);
+        html += `<div class="critical-section"><div class="critical-title">📌 disciplinas críticas (&lt;70%)</div>`;
+        if (criticas.length === 0) {
+            html += `<div class="critical-message">Nenhuma disciplina crítica no momento</div>`;
+        } else {
+            html += `<ul class="critical-list">`;
+            criticas.forEach(c => {
+                html += `<li>${c.nome} (${c.perc.toFixed(1)}%)</li>`;
+            });
+            html += `</ul>`;
+        }
+        html += `</div>`;
+
+        const ordenadas = disciplinasComPerc.sort((a, b) => a.perc - b.perc);
+
+        ordenadas.forEach(d => {
             const total = d.feitas;
             const acertos = d.acertos;
-            const perc = total > 0 ? ((acertos / total) * 100).toFixed(1) : '0.0';
+            const perc = d.perc.toFixed(1);
             const tempoHoras = Math.floor(d.tempo / 60);
             const tempoMin = d.tempo % 60;
             const tempoStr = tempoHoras > 0 ? `${tempoHoras}h ${tempoMin}m` : `${tempoMin}m`;
+            const tempoMedio = d.feitas > 0 ? (d.tempo / d.feitas).toFixed(1) : '0.0';
+            const negligenciada = disciplinaNegligenciada(d.nome);
+            let indicadorCor = '';
+            if (d.perc < 60) indicadorCor = 'indicator-red';
+            else if (d.perc < 80) indicadorCor = 'indicator-yellow';
+            else indicadorCor = 'indicator-green';
+
             html += `
                 <div class="stat-item-card">
-                    <div class="card-title"><h3>${d.nome}</h3></div>
+                    <div class="card-title">
+                        <h3><span class="ranking-indicator ${indicadorCor}"></span>${d.nome}
+                        ${negligenciada ? '<span class="neglected-badge">⚠ negligenciada</span>' : ''}
+                        </h3>
+                    </div>
                     <div class="stat-metrics">
                         <div class="stat-metric"><span class="value">${perc}%</span><span class="label">aproveitamento</span></div>
                         <div class="stat-metric"><span class="value">${total}</span><span class="label">questões</span></div>
                         <div class="stat-metric"><span class="value">${tempoStr}</span><span class="label">tempo</span></div>
+                        <div class="stat-metric"><span class="value">${tempoMedio} min</span><span class="label">médio/q</span></div>
                     </div>
-                    <div class="progress-indicator"><div class="progress-fill" style="width:${perc}%"></div></div>
+                    <div class="progress-indicator"><div class="progress-fill" style="width:${d.perc}%"></div></div>
                     <div class="ultima-questao">última: ${d.ultimaQuestao || '—'}</div>
                 </div>
             `;
         });
+
         statsContainer.innerHTML = html;
     }
 
@@ -790,7 +1010,6 @@
         carregarInterfaceDaily();
     }
 
-    // ---------- SALVAR (COM INTEGRAÇÃO CORRIGIDA) ----------
     function salvarHandler() {
         if (dadosEstudo.ciclo.concluidoHoje) {
             alert('Você já concluiu o bloco de hoje.');
@@ -825,15 +1044,14 @@
         dadosEstudo.ciclo.dataUltimoRegistro = obterDataStringHoje();
         localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
 
-        // INTEGRAÇÃO COM CALENDÁRIO (agora com o formato de chave correto)
         if (tempo > 0) {
             registrarNoCalendario(disciplina, tempo);
         }
 
+        calcularEAtualizarStreak();
         carregarInterfaceDaily();
     }
 
-    // ---------- EXPORTAÇÃO (APENAS DADOS DO CICLO) ----------
     function exportarDados() {
         const cicloData = localStorage.getItem(CICLO_STORAGE_KEY);
         if (!cicloData) return;
@@ -865,7 +1083,6 @@
         reader.readAsText(arquivo);
     }
 
-    // ---------- EVENTOS ----------
     statsBtn.addEventListener('click', abrirStats);
     voltarBtn.addEventListener('click', fecharStats);
     exportBtn.addEventListener('click', exportarDados);
@@ -883,10 +1100,8 @@
     if (btnAnterior) btnAnterior.addEventListener('click', voltarDisciplina);
     if (btnProxima) btnProxima.addEventListener('click', avancarDisciplina);
 
-    // Inicialização
     carregarInterfaceDaily();
 
-    // Atualizar caso outro contexto mude o ciclo (ex: import)
     window.addEventListener('storage', (e) => {
         if (e.key === CICLO_STORAGE_KEY) {
             dadosEstudo = JSON.parse(e.newValue);
