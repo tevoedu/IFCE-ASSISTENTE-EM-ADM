@@ -1703,13 +1703,285 @@ body::before {
   box-shadow: 0 0 10px var(--primary-glow);
 }
 
-/* Responsividade para o modal de métricas */
+/* ============================================= */
+/* NOVOS ESTILOS PARA INDICADORES ESTRATÉGICOS */
+/* ============================================= */
+.strategic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.strategic-card {
+  background: var(--bg-glass-light);
+  backdrop-filter: blur(5px);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.strategic-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.strategic-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.strategic-header i {
+  font-size: 20px;
+  color: var(--warning);
+}
+
+.strategic-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.strategic-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 5px;
+}
+
+.strategic-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.strategic-alert {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: var(--border-radius-sm);
+  background: rgba(255, 152, 0, 0.1);
+  color: var(--warning);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.strategic-alert i {
+  font-size: 14px;
+}
+
+.neglected-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+}
+
+.neglected-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 14px;
+}
+
+.neglected-item:last-child {
+  border-bottom: none;
+}
+
+.neglected-subject {
+  color: var(--text);
+}
+
+.neglected-time {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* ============================================= */
+/* NOVO BLOCO: PROJEÇÕES ATÉ A PROVA (MOVIDO) */
+/* ============================================= */
+.projections-block {
+  background: var(--bg-glass-light);
+  backdrop-filter: blur(5px);
+  border-radius: var(--border-radius);
+  padding: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+}
+
+.projections-block h3 {
+  margin-bottom: 20px;
+  color: var(--primary);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.projections-block h3 i {
+  font-size: 20px;
+}
+
+.projections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.projection-card {
+  background: var(--bg-glass);
+  border-radius: var(--border-radius-sm);
+  padding: 15px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.projection-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.projection-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--warning);
+}
+
+.projection-unit {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+.risk-indicator {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.risk-low {
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--primary);
+}
+
+.risk-medium {
+  background: rgba(255, 152, 0, 0.1);
+  color: var(--warning);
+}
+
+.risk-high {
+  background: rgba(244, 67, 54, 0.1);
+  color: var(--danger);
+}
+
+/* ============================================= */
+/* NOVO PAINEL ESTRATÉGICO DA PROVA */
+/* ============================================= */
+.exam-panel {
+  background: linear-gradient(135deg, var(--bg-glass-light), var(--bg-glass));
+  border-radius: var(--border-radius);
+  padding: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.exam-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--warning), var(--danger));
+}
+
+.exam-panel h3 {
+  margin-bottom: 20px;
+  color: var(--text);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exam-panel h3 i {
+  color: var(--warning);
+}
+
+.countdown-large {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.countdown-number {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--warning);
+  line-height: 1.2;
+}
+
+.countdown-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.exam-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.exam-stat {
+  background: var(--bg-glass);
+  border-radius: var(--border-radius-sm);
+  padding: 15px;
+  text-align: center;
+}
+
+.exam-stat .value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.exam-stat .label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 5px;
+}
+
+/* Responsividade */
 @media (max-width: 900px) {
   .metrics-charts {
     grid-template-columns: 1fr;
   }
   
   .goals-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .strategic-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .exam-stats {
     grid-template-columns: 1fr;
   }
 }
@@ -1732,6 +2004,14 @@ body::before {
     position: static;
     margin-top: 10px;
     align-self: flex-end;
+  }
+  
+  .strategic-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .projections-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2021,7 +2301,7 @@ Parabéns! Você atingiu sua meta mensal! 🎉
 </div>
 
 <!-- ============================================= -->
-<!-- DASHBOARD LATERAL DE MÉTRICAS - NOVA VERSÃO MINIMALISTA -->
+<!-- DASHBOARD LATERAL DE MÉTRICAS - VERSÃO MINIMALISTA -->
 <!-- ============================================= -->
 <div class="dashboard-sidebar">
     <div class="dashboard-header">
@@ -2081,6 +2361,8 @@ Parabéns! Você atingiu sua meta mensal! 🎉
             <div class="metric-value" id="dashboard-daily-average">0h 00m</div>
             <div class="metric-label">Média Diária</div>
         </div>
+
+        <!-- (Bloco de Projeções removido daqui e movido para o modal de métricas) -->
     </div>
 </div>
 </div>
@@ -2162,7 +2444,7 @@ Parabéns! Você atingiu sua meta mensal! 🎉
     </div>
 </div>
 
-<!-- NOVO MODAL DE MÉTRICAS -->
+<!-- NOVO MODAL DE MÉTRICAS (COM PROJEÇÕES E INDICADORES) -->
 <div class="modal" id="metrics-modal">
 <div class="modal-content metrics-modal">
 <div class="modal-header">
@@ -2196,6 +2478,36 @@ Parabéns! Você atingiu sua meta mensal! 🎉
 <div class="label">Sessões Totais</div>
 </div>
 </div>
+
+<!-- ============================================= -->
+<!-- NOVO BLOCO: PROJEÇÕES ATÉ A PROVA (MOVIDO) -->
+<!-- ============================================= -->
+<div class="projections-block" id="projections-block">
+    <h3><i class="fas fa-rocket"></i> Projeções até a prova</h3>
+    <div class="projections-grid">
+        <div class="projection-card">
+            <div class="projection-label">Dias restantes</div>
+            <span class="projection-number" id="projection-days">-</span><span class="projection-unit">dias</span>
+        </div>
+        <div class="projection-card">
+            <div class="projection-label">Tempo total estimado</div>
+            <span class="projection-number" id="projection-total-time">-</span>
+        </div>
+        <div class="projection-card">
+            <div class="projection-label">Sessões totais estimadas</div>
+            <span class="projection-number" id="projection-sessions">-</span>
+        </div>
+        <div class="projection-card">
+            <div class="projection-label">Média final projetada</div>
+            <span class="projection-number" id="projection-final-avg">-</span>
+        </div>
+    </div>
+    <div class="risk-indicator" id="risk-indicator">
+        <!-- preenchido via js -->
+    </div>
+</div>
+
+<!-- Gráficos existentes -->
 <div class="metrics-charts">
 <div class="chart-container-large">
 <h3><i class="fas fa-chart-pie"></i> Distribuição por Disciplina</h3>
@@ -2210,6 +2522,16 @@ Parabéns! Você atingiu sua meta mensal! 🎉
 </div>
 </div>
 </div>
+
+<!-- NOVO GRÁFICO: DISTRIBUIÇÃO POR TIPO DE ESTUDO -->
+<div class="chart-container-large">
+    <h3><i class="fas fa-tag"></i> Distribuição por Tipo de Estudo</h3>
+    <div class="chart-canvas-container">
+        <canvas id="metrics-type-chart"></canvas>
+    </div>
+    <div id="type-chart-legend" class="chart-legend"></div>
+</div>
+
 <div class="metrics-table-container">
 <h3><i class="fas fa-table"></i> Detalhes por Disciplina</h3>
 <div class="table-responsive">
@@ -2228,9 +2550,10 @@ Parabéns! Você atingiu sua meta mensal! 🎉
 </table>
 </div>
 </div>
+
+<!-- Metas (já existentes) -->
 <div class="goals-section">
 <div class="goal-card">
-<!-- CORREÇÃO 2: BOTÃO DE CONFIGURAÇÃO ADICIONADO -->
 <button class="goal-config-button" onclick="openGoalSettings()">
 <i class="fas fa-cog"></i> Configurar
 </button>
@@ -2246,7 +2569,6 @@ Parabéns! Você atingiu sua meta mensal! 🎉
 </div>
 </div>
 <div class="goal-card">
-<!-- CORREÇÃO 2: BOTÃO DE CONFIGURAÇÃO ADICIONADO -->
 <button class="goal-config-button" onclick="openGoalSettings()">
 <i class="fas fa-cog"></i> Configurar
 </button>
@@ -2264,8 +2586,90 @@ Parabéns! Você atingiu sua meta mensal! 🎉
 </div>
 
 <!-- ============================================= -->
-<!-- NOVA SEÇÃO PARA CONFIGURAR DATA DA PROVA NO MODAL DE MÉTRICAS -->
+<!-- NOVOS INDICADORES ESTRATÉGICOS -->
 <!-- ============================================= -->
+<div class="strategic-grid">
+    <div class="strategic-card">
+        <div class="strategic-header">
+            <i class="fas fa-chart-simple"></i>
+            <h4>Consistência</h4>
+        </div>
+        <div class="strategic-value" id="consistency-value">0%</div>
+        <div class="strategic-desc">dias estudados / dias desde o início</div>
+    </div>
+    <div class="strategic-card">
+        <div class="strategic-header">
+            <i class="fas fa-clock"></i>
+            <h4>Média real</h4>
+        </div>
+        <div class="strategic-value" id="real-avg-value">0h 00m</div>
+        <div class="strategic-desc">por dia disponível (inclui dias sem estudo)</div>
+    </div>
+    <div class="strategic-card">
+        <div class="strategic-header">
+            <i class="fas fa-gauge-high"></i>
+            <h4>Ritmo necessário</h4>
+        </div>
+        <div class="strategic-value" id="required-pace">-</div>
+        <div class="strategic-desc">para bater a meta mensal</div>
+    </div>
+    <div class="strategic-card">
+        <div class="strategic-header">
+            <i class="fas fa-scale-balanced"></i>
+            <h4>Equilíbrio</h4>
+        </div>
+        <div class="strategic-value" id="balance-indicator">-</div>
+        <div class="strategic-desc">teoria × questões × revisão</div>
+        <div class="strategic-alert" id="balance-alert"></div>
+    </div>
+    <div class="strategic-card">
+        <div class="strategic-header">
+            <i class="fas fa-clock"></i>
+            <h4>Eficiência</h4>
+        </div>
+        <div class="strategic-value" id="efficiency-value">-</div>
+        <div class="strategic-desc">média por sessão</div>
+    </div>
+    <div class="strategic-card">
+        <div class="strategic-header">
+            <i class="fas fa-trend-up"></i>
+            <h4>Tendência</h4>
+        </div>
+        <div class="strategic-value" id="trend-value">-</div>
+        <div class="strategic-desc">comparado à semana anterior</div>
+    </div>
+</div>
+
+<!-- Disciplinas negligenciadas -->
+<div class="metrics-table-container">
+    <h3><i class="fas fa-exclamation-triangle"></i> Disciplinas Negligenciadas</h3>
+    <ul class="neglected-list" id="neglected-list">
+        <!-- preenchido via js -->
+    </ul>
+</div>
+
+<!-- ============================================= -->
+<!-- NOVO PAINEL ESTRATÉGICO DA PROVA -->
+<!-- ============================================= -->
+<div class="exam-panel">
+    <h3><i class="fas fa-calendar-check"></i> Painel Estratégico da Prova</h3>
+    <div class="countdown-large">
+        <div class="countdown-number" id="exam-countdown">-</div>
+        <div class="countdown-label">dias até a prova</div>
+    </div>
+    <div class="exam-stats">
+        <div class="exam-stat">
+            <div class="value" id="exam-projected-total">-</div>
+            <div class="label">carga acumulada projetada</div>
+        </div>
+        <div class="exam-stat">
+            <div class="value" id="exam-comparison">-</div>
+            <div class="label">vs meta mensal</div>
+        </div>
+    </div>
+</div>
+
+<!-- Configuração da prova (já existente) -->
 <div class="metrics-table-container">
     <h3><i class="fas fa-calendar-alt"></i> Configurar Data da Prova</h3>
     <div class="exam-form">
@@ -2291,9 +2695,11 @@ Parabéns! Você atingiu sua meta mensal! 🎉
         </div>
     </div>
 </div>
+
+</div> <!-- fim metrics-content -->
+</div> <!-- fim metrics-modal -->
 </div>
-</div>
-</div>
+
 <div class="study-data-buttons">
 <button class="study-data-btn" onclick="exportStudyData()">
 <i class="fas fa-file-export"></i>
@@ -2304,7 +2710,6 @@ Exportar
 Importar
 </button>
 </div>
-
 
 <script>
 // ==============================================
@@ -2319,6 +2724,8 @@ let selectedDate = null;
 let subjectChart = null;
 let metricsSubjectChart = null;
 let metricsWeeklyChart = null;
+// NOVO: variável para o gráfico de tipo
+let metricsTypeChart = null;
 // Metas do usuário
 let weeklyGoal = parseInt(localStorage.getItem('weeklyGoal')) || 20 * 60; // 20 horas em minutos
 let monthlyGoal = parseInt(localStorage.getItem('monthlyGoal')) || 80 * 60; // 80 horas em minutos
@@ -2368,7 +2775,28 @@ const elements = {
     dashboardWeeklyProgress: document.getElementById('dashboard-weekly-progress'),
     dashboardMonthlyProgress: document.getElementById('dashboard-monthly-progress'),
     // Novos elementos para a funcionalidade de provas
-    examModal: document.getElementById('exam-modal')
+    examModal: document.getElementById('exam-modal'),
+    // NOVO: elementos do bloco de projeções (movido)
+    projectionsDays: document.getElementById('projection-days'),
+    projectionsTotalTime: document.getElementById('projection-total-time'),
+    projectionsSessions: document.getElementById('projection-sessions'),
+    projectionsFinalAvg: document.getElementById('projection-final-avg'),
+    riskIndicator: document.getElementById('risk-indicator'),
+    // NOVO: elementos do gráfico de tipo
+    metricsTypeChart: document.getElementById('metrics-type-chart'),
+    // NOVO: elementos dos indicadores estratégicos
+    consistencyValue: document.getElementById('consistency-value'),
+    realAvgValue: document.getElementById('real-avg-value'),
+    requiredPace: document.getElementById('required-pace'),
+    balanceIndicator: document.getElementById('balance-indicator'),
+    balanceAlert: document.getElementById('balance-alert'),
+    efficiencyValue: document.getElementById('efficiency-value'),
+    trendValue: document.getElementById('trend-value'),
+    neglectedList: document.getElementById('neglected-list'),
+    // NOVO: painel estratégico da prova
+    examCountdown: document.getElementById('exam-countdown'),
+    examProjectedTotal: document.getElementById('exam-projected-total'),
+    examComparison: document.getElementById('exam-comparison')
 };
 
 const months = [
@@ -2384,6 +2812,7 @@ function updateDashboard() {
     const stats = calculateStats(allSessions);
     updateMetricsModal(stats);
     updateSidebarDashboard(stats);
+    // Projeções agora são atualizadas dentro do modal, não mais aqui
 }
 
 function updateSidebarDashboard(stats) {
@@ -2913,6 +3342,15 @@ function updateMetricsModal(stats = null) {
         document.getElementById('metrics-exam-date').value = '';
         document.getElementById('metrics-exam-notes').value = '';
     }
+    
+    // NOVO: atualizar gráfico de tipo de estudo
+    updateStudyTypeChart();
+    
+    // NOVO: atualizar indicadores estratégicos
+    updateStrategicIndicators(stats);
+    
+    // NOVO: atualizar projeções e painel estratégico
+    updateProjectionsAndExamPanel(stats);
 }
 
 function updateMetricsSummaryCards(stats) {
@@ -3599,6 +4037,308 @@ function addNewSubject() {
     }
 }
 
+// ==============================================
+// NOVAS FUNÇÕES PARA AS FUNCIONALIDADES SOLICITADAS
+// ==============================================
+
+// FUNCIONALIDADE 1: DISTRIBUIÇÃO POR TIPO DE ESTUDO
+function getStudyTypeDistribution() {
+    const sessions = getAllSessions();
+    const types = {
+        'Questões': { minutes: 0, count: 0 },
+        'Teoria': { minutes: 0, count: 0 },
+        'Anki': { minutes: 0, count: 0 },
+        'Outros': { minutes: 0, count: 0 }
+    };
+
+    sessions.forEach(session => {
+        const subject = session.subject;
+        let type = 'Outros';
+        if (subject.startsWith('Questões') || subject.startsWith('Questoes') || subject.includes('Questão')) {
+            type = 'Questões';
+        } else if (subject.startsWith('Teoria')) {
+            type = 'Teoria';
+        } else if (subject.startsWith('Anki')) {
+            type = 'Anki';
+        }
+        types[type].minutes += session.minutes;
+        types[type].count++;
+    });
+
+    return types;
+}
+
+function updateStudyTypeChart() {
+    const ctx = elements.metricsTypeChart.getContext('2d');
+    const distribution = getStudyTypeDistribution();
+    const labels = Object.keys(distribution);
+    const minutesData = labels.map(l => distribution[l].minutes);
+    const totalMinutes = minutesData.reduce((a, b) => a + b, 0);
+    const backgroundColors = ['#A8D5BA', '#90CAF9', '#FFCC80', '#EF9A9A'];
+
+    if (metricsTypeChart) metricsTypeChart.destroy();
+
+    metricsTypeChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: minutesData,
+                backgroundColor: backgroundColors,
+                borderColor: '#FFFFFF',
+                borderWidth: 2,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+                legend: {
+                    display: false // Vamos usar legenda personalizada abaixo do gráfico
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const minutes = context.raw;
+                            const hours = Math.floor(minutes / 60);
+                            const mins = minutes % 60;
+                            const percentage = ((minutes / totalMinutes) * 100).toFixed(1);
+                            const count = distribution[context.label].count;
+                            return `${context.label}: ${hours}h ${mins}m | ${count} sessões | ${percentage}%`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Criar legenda personalizada com contagem e percentual
+    const legendContainer = document.getElementById('type-chart-legend');
+    legendContainer.innerHTML = '';
+    labels.forEach((label, index) => {
+        const minutes = distribution[label].minutes;
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        const percentage = ((minutes / totalMinutes) * 100).toFixed(1);
+        const count = distribution[label].count;
+        const div = document.createElement('div');
+        div.className = 'legend-item';
+        div.innerHTML = `
+            <span class="legend-color" style="background: ${backgroundColors[index]};"></span>
+            <span class="legend-text">${label}: ${hours}h ${mins}m (${count} sessões, ${percentage}%)</span>
+        `;
+        legendContainer.appendChild(div);
+    });
+}
+
+// FUNCIONALIDADE 2: PROJEÇÕES ATÉ A PROVA (MOVIDA E MELHORADA)
+function updateProjectionsAndExamPanel(stats) {
+    const examData = JSON.parse(localStorage.getItem('examData'));
+    if (!examData) {
+        elements.projectionsDays.textContent = '-';
+        elements.projectionsTotalTime.textContent = '-';
+        elements.projectionsSessions.textContent = '-';
+        elements.projectionsFinalAvg.textContent = '-';
+        elements.riskIndicator.innerHTML = '';
+        elements.examCountdown.textContent = '-';
+        elements.examProjectedTotal.textContent = '-';
+        elements.examComparison.textContent = '-';
+        return;
+    }
+
+    const examDate = new Date(examData.date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffTime = examDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) {
+        elements.projectionsDays.textContent = '0';
+        elements.projectionsTotalTime.textContent = '0h 00m';
+        elements.projectionsSessions.textContent = '0';
+        elements.projectionsFinalAvg.textContent = '-';
+        elements.examCountdown.textContent = '0';
+        elements.examProjectedTotal.textContent = '-';
+        elements.examComparison.textContent = '-';
+        elements.riskIndicator.innerHTML = '<i class="fas fa-check-circle"></i> Prova já ocorreu.';
+        return;
+    }
+    elements.projectionsDays.textContent = diffDays;
+    elements.examCountdown.textContent = diffDays;
+
+    // Usar as estatísticas passadas ou recalcular
+    if (!stats) {
+        const allSessions = getAllSessions();
+        stats = calculateStats(allSessions);
+    }
+
+    const avgDailyMinutes = stats.dailyAverage;
+    const avgSessionsPerDay = stats.totalSessions / Math.max(stats.daysStudied, 1);
+
+    const projectedTotalMinutes = avgDailyMinutes * diffDays;
+    const projectedSessions = Math.round(avgSessionsPerDay * diffDays);
+
+    const projectedHours = Math.floor(projectedTotalMinutes / 60);
+    const projectedMins = Math.round(projectedTotalMinutes % 60);
+    elements.projectionsTotalTime.textContent = `${projectedHours}h ${projectedMins.toString().padStart(2, '0')}m`;
+    elements.projectionsSessions.textContent = projectedSessions;
+
+    const avgHours = Math.floor(avgDailyMinutes / 60);
+    const avgMins = Math.round(avgDailyMinutes % 60);
+    elements.projectionsFinalAvg.textContent = `${avgHours}h ${avgMins.toString().padStart(2, '0')}m/dia`;
+
+    // Projeção de carga acumulada (tempo total + projetado)
+    const totalCurrentMinutes = stats.total;
+    const totalProjectedMinutes = totalCurrentMinutes + projectedTotalMinutes;
+    const totalProjectedHours = Math.floor(totalProjectedMinutes / 60);
+    const totalProjectedMins = totalProjectedMinutes % 60;
+    elements.examProjectedTotal.textContent = `${totalProjectedHours}h ${totalProjectedMins.toString().padStart(2, '0')}m`;
+
+    // Comparação com a meta mensal (se existir)
+    const monthlyGoalMinutes = monthlyGoal;
+    const percentOfGoal = (totalCurrentMinutes / monthlyGoalMinutes) * 100;
+    if (percentOfGoal >= 100) {
+        elements.examComparison.textContent = 'Meta mensal já atingida!';
+    } else {
+        const remainingGoal = monthlyGoalMinutes - totalCurrentMinutes;
+        const remainingDaysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate() - today.getDate() + 1;
+        if (remainingDaysInMonth > 0) {
+            const requiredDaily = remainingGoal / remainingDaysInMonth;
+            const reqHours = Math.floor(requiredDaily / 60);
+            const reqMins = Math.round(requiredDaily % 60);
+            elements.examComparison.textContent = `Precisa de ${reqHours}h ${reqMins.toString().padStart(2, '0')}m/dia para bater a meta mensal.`;
+        } else {
+            elements.examComparison.textContent = 'Fora do mês atual.';
+        }
+    }
+
+    // Indicador de risco
+    const riskDiv = elements.riskIndicator;
+    riskDiv.className = 'risk-indicator';
+    if (projectedTotalMinutes > monthlyGoalMinutes * 1.2) {
+        riskDiv.classList.add('risk-high');
+        riskDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Alerta: você está projetando muito acima da meta mensal.';
+    } else if (projectedTotalMinutes < monthlyGoalMinutes * 0.8) {
+        riskDiv.classList.add('risk-low');
+        riskDiv.innerHTML = '<i class="fas fa-check-circle"></i> Projeção abaixo da meta – pode precisar acelerar.';
+    } else {
+        riskDiv.classList.add('risk-medium');
+        riskDiv.innerHTML = '<i class="fas fa-info-circle"></i> Projeção dentro da faixa da meta.';
+    }
+}
+
+// NOVOS INDICADORES ESTRATÉGICOS
+function updateStrategicIndicators(stats) {
+    if (!stats) {
+        const allSessions = getAllSessions();
+        stats = calculateStats(allSessions);
+    }
+
+    // 1. Consistência: dias estudados / dias desde o primeiro registro
+    let firstDate = null;
+    const sessions = getAllSessions();
+    sessions.forEach(s => {
+        const sessionDate = new Date(s.timestamp);
+        if (!firstDate || sessionDate < firstDate) firstDate = sessionDate;
+    });
+    if (firstDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const diffTime = today - firstDate;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclui o primeiro dia
+        const consistency = (stats.daysStudied / diffDays) * 100;
+        elements.consistencyValue.textContent = consistency.toFixed(1) + '%';
+        // Média real por dia disponível
+        const realAvg = stats.total / diffDays;
+        const realAvgHours = Math.floor(realAvg / 60);
+        const realAvgMins = Math.round(realAvg % 60);
+        elements.realAvgValue.textContent = `${realAvgHours}h ${realAvgMins.toString().padStart(2, '0')}m`;
+    } else {
+        elements.consistencyValue.textContent = '0%';
+        elements.realAvgValue.textContent = '0h 00m';
+    }
+
+    // 2. Ritmo necessário para bater a meta mensal
+    const monthlyGoalMinutes = monthlyGoal;
+    const currentMonthMinutes = calculateMonthlyTime(today.getMonth(), today.getFullYear());
+    const remainingGoal = Math.max(0, monthlyGoalMinutes - currentMonthMinutes);
+    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    const remainingDays = daysInMonth - today.getDate() + 1;
+    if (remainingDays > 0 && remainingGoal > 0) {
+        const requiredDaily = remainingGoal / remainingDays;
+        const reqHours = Math.floor(requiredDaily / 60);
+        const reqMins = Math.round(requiredDaily % 60);
+        elements.requiredPace.textContent = `${reqHours}h ${reqMins.toString().padStart(2, '0')}m/dia`;
+    } else if (remainingGoal <= 0) {
+        elements.requiredPace.textContent = 'Meta já atingida!';
+    } else {
+        elements.requiredPace.textContent = '-';
+    }
+
+    // 3. Equilíbrio teoria vs questões vs revisão
+    const typeDist = getStudyTypeDistribution();
+    const total = typeDist.Questões.minutes + typeDist.Teoria.minutes + typeDist.Anki.minutes + typeDist.Outros.minutes;
+    if (total > 0) {
+        const questPerc = (typeDist.Questões.minutes / total * 100).toFixed(1);
+        const teoriaPerc = (typeDist.Teoria.minutes / total * 100).toFixed(1);
+        const revisaoPerc = (typeDist.Anki.minutes / total * 100).toFixed(1);
+        elements.balanceIndicator.textContent = `Q:${questPerc}% T:${teoriaPerc}% R:${revisaoPerc}%`;
+        // Alerta se algum estiver muito abaixo do ideal (40/30/30)
+        if (questPerc < 30) {
+            elements.balanceAlert.innerHTML = '<i class="fas fa-exclamation-circle"></i> Poucas questões';
+        } else if (teoriaPerc < 20) {
+            elements.balanceAlert.innerHTML = '<i class="fas fa-exclamation-circle"></i> Pouca teoria';
+        } else if (revisaoPerc < 20) {
+            elements.balanceAlert.innerHTML = '<i class="fas fa-exclamation-circle"></i> Pouca revisão (Anki)';
+        } else {
+            elements.balanceAlert.innerHTML = '<i class="fas fa-check-circle"></i> Equilibrado';
+        }
+    } else {
+        elements.balanceIndicator.textContent = '-';
+        elements.balanceAlert.innerHTML = '';
+    }
+
+    // 4. Eficiência de sessão
+    const avgSessionMinutes = stats.totalSessions > 0 ? stats.total / stats.totalSessions : 0;
+    const effHours = Math.floor(avgSessionMinutes / 60);
+    const effMins = Math.round(avgSessionMinutes % 60);
+    elements.efficiencyValue.textContent = `${effHours}h ${effMins.toString().padStart(2, '0')}m`;
+
+    // 5. Tendência: comparar média das últimas 4 semanas com a semana atual
+    const weeklyData = getWeeklyData(); // já retorna as últimas 8 semanas
+    if (weeklyData.data.length >= 2) {
+        const currentWeek = weeklyData.data[weeklyData.data.length - 1];
+        const previousWeek = weeklyData.data[weeklyData.data.length - 2];
+        if (previousWeek > 0) {
+            const trend = ((currentWeek - previousWeek) / previousWeek * 100).toFixed(1);
+            elements.trendValue.textContent = (trend > 0 ? '+' : '') + trend + '%';
+        } else {
+            elements.trendValue.textContent = 'nova semana';
+        }
+    } else {
+        elements.trendValue.textContent = '-';
+    }
+
+    // 6. Disciplinas negligenciadas (as 3 com menor tempo)
+    const subjects = Object.entries(stats.bySubject);
+    subjects.sort((a, b) => a[1].minutes - b[1].minutes);
+    const neglected = subjects.slice(0, 3);
+    const list = elements.neglectedList;
+    list.innerHTML = '';
+    neglected.forEach(([subject, data]) => {
+        const hours = Math.floor(data.minutes / 60);
+        const mins = data.minutes % 60;
+        const li = document.createElement('li');
+        li.className = 'neglected-item';
+        li.innerHTML = `<span class="neglected-subject">${subject}</span> <span class="neglected-time">${hours}h ${mins.toString().padStart(2, '0')}m</span>`;
+        list.appendChild(li);
+    });
+    if (neglected.length === 0) {
+        list.innerHTML = '<li class="neglected-item">Nenhuma disciplina cadastrada</li>';
+    }
+}
+
 // Inicialização
 function init() {
     renderCalendar(currentMonth, currentYear);
@@ -3614,6 +4354,7 @@ function init() {
     markCompletedDays();
     // Atualiza a contagem regressiva das provas
     updateExamCountdown();
+    // Projeções e indicadores serão atualizados ao abrir o modal
 }
 
 // Executa a inicialização quando o documento estiver pronto
