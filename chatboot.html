@@ -1404,6 +1404,263 @@
       from { opacity: 1; transform: translateX(0); }
       to { opacity: 0; transform: translateX(30px); }
     }
+
+    /* ---------- Novas seções para metas e gráfico ---------- */
+    .goals-section {
+      background-color: var(--bg-elevated);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-xs);
+      border: 1px solid var(--border-light);
+    }
+    .goals-section h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .goals-section h4 button {
+      background: var(--accent-soft);
+      border: none;
+      color: var(--accent-solid);
+      font-size: 0.8rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+    }
+    .goal-item {
+      margin-bottom: 1rem;
+    }
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+    .goal-progress-bar {
+      height: 6px;
+      background-color: var(--bg-inset);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .goal-progress-fill {
+      height: 100%;
+      background: var(--accent-solid);
+      border-radius: var(--radius-full);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .chart-section {
+      background-color: var(--bg-elevated);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-xs);
+      border: 1px solid var(--border-light);
+    }
+    .chart-section h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .chart-container {
+      position: relative;
+      height: 140px;
+      width: 100%;
+    }
+
+    /* ---------- Streak section ---------- */
+    .streak-section {
+      background-color: var(--bg-elevated);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-xs);
+      border: 1px solid var(--border-light);
+    }
+    .streak-section h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .streak-display {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background-color: var(--bg-elevated);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-xs);
+    }
+    .streak-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .streak-info {
+      flex: 1;
+    }
+    .streak-current {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .streak-max {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+
+    /* achievements modal */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .achievement-card {
+      background: var(--bg-inset);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border-light);
+      opacity: 0.8;
+    }
+    .achievement-card.unlocked {
+      background: var(--success-bg);
+      border-color: var(--success);
+      opacity: 1;
+    }
+    .achievement-icon {
+      font-size: 2rem;
+      width: 48px;
+      text-align: center;
+    }
+    .achievement-info {
+      flex: 1;
+    }
+    .achievement-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .achievement-desc {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Pomodoro floating modal – melhorias arrastável/minimizar */
+    .pomodoro-floating {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 3000;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-light);
+      width: 240px;
+      padding: 1rem;
+      animation: slideIn 0.3s ease;
+      cursor: default;
+      transition: width 0.2s, padding 0.2s;
+      user-select: none;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .pomodoro-floating.minimized {
+      width: 120px;
+      padding: 0.5rem;
+    }
+    .pomodoro-floating.minimized .pomodoro-controls,
+    .pomodoro-floating.minimized .pomodoro-header span:not(.pomodoro-time),
+    .pomodoro-floating.minimized .pomodoro-close,
+    .pomodoro-floating.minimized #pomodoroMinimizeBtn {
+      display: none;
+    }
+    .pomodoro-floating.minimized .pomodoro-time {
+      font-size: 1.2rem;
+    }
+    .pomodoro-expand-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--accent-solid);
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 4px;
+    }
+    .pomodoro-floating.minimized .pomodoro-expand-btn {
+      display: block;
+    }
+    .pomodoro-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .pomodoro-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--accent-solid);
+      cursor: move; /* indica que pode arrastar */
+      user-select: none;
+    }
+    .pomodoro-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      line-height: 1;
+    }
+    .pomodoro-close:hover {
+      color: var(--text-primary);
+    }
+    .pomodoro-time {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      color: var(--accent-solid);
+      font-variant-numeric: tabular-nums;
+    }
+    .pomodoro-controls {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .pomodoro-btn {
+      background: var(--accent-soft);
+      border: none;
+      color: var(--accent-solid);
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-micro);
+      font-size: 1rem;
+    }
+    .pomodoro-btn:hover {
+      background: var(--accent-solid);
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -1422,7 +1679,16 @@
       <button class="panel-toggle-btn" id="panelToggleBtn" aria-label="Alternar painel lateral">
         <i class="fas fa-chart-bar"></i>
       </button>
-      <!-- METRICS BUTTON REMOVED -->
+      <!-- NOVOS BOTÕES: exportar, importar, conquistas -->
+      <button class="header-btn" id="exportDataBtn" title="Exportar dados (CSV)">
+        <i class="fas fa-download"></i>
+      </button>
+      <button class="header-btn" id="importDataBtn" title="Importar dados (CSV)">
+        <i class="fas fa-upload"></i>
+      </button>
+      <button class="header-btn" id="achievementsBtn" title="Conquistas">
+        <i class="fas fa-trophy"></i>
+      </button>
       <button class="header-btn" id="themeToggle">
         <i class="fas fa-moon"></i>
       </button>
@@ -1478,6 +1744,29 @@
           <div class="progress-text">
             <span id="progressCompleted">0 atividades</span>
             <span id="progressTotal">0 de 0</span>
+          </div>
+        </div>
+        
+        <!-- NOVA SEÇÃO: METAS PESSOAIS -->
+        <div class="goals-section" id="goalsSection">
+          <h4>
+            <span><i class="fas fa-bullseye"></i> Suas Metas</span>
+            <button id="editGoalsBtn" class="btn-small">Ajustar</button>
+          </h4>
+          <div id="goalsContainer"></div>
+        </div>
+
+        <!-- NOVA SEÇÃO: STREAK -->
+        <div class="streak-section" id="streakSection">
+          <h4><i class="fas fa-fire"></i> Sequência de Estudos</h4>
+          <div id="streakDisplay" class="streak-display"></div>
+        </div>
+
+        <!-- NOVA SEÇÃO: GRÁFICO SEMANAL -->
+        <div class="chart-section">
+          <h4><i class="fas fa-chart-bar"></i> Desempenho Semanal</h4>
+          <div class="chart-container">
+            <canvas id="weeklyChart"></canvas>
           </div>
         </div>
         
@@ -1645,6 +1934,68 @@
     </div>
   </div>
 
+  <!-- NOVO MODAL: Configuração de Metas -->
+  <div class="modal" id="goalModal">
+    <div class="modal-content" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-bullseye"></i> Ajustar Metas</h3>
+        <button class="close-modal" id="closeGoalModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="dailyTimeGoal">Tempo diário (minutos)</label>
+          <input type="number" id="dailyTimeGoal" min="0" step="10" value="120">
+        </div>
+        <div class="form-group">
+          <label for="dailyQuestionsGoal">Questões por dia</label>
+          <input type="number" id="dailyQuestionsGoal" min="0" step="5" value="30">
+        </div>
+        <div class="form-group">
+          <label for="weeklyTimeGoal">Tempo semanal (minutos)</label>
+          <input type="number" id="weeklyTimeGoal" min="0" step="60" value="600">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelGoal">Cancelar</button>
+        <button class="btn btn-primary" id="saveGoal">Salvar Metas</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOVO MODAL: Conquistas -->
+  <div class="modal" id="achievementsModal">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-trophy"></i> Suas Conquistas</h3>
+        <button class="close-modal" id="closeAchievementsModal">&times;</button>
+      </div>
+      <div class="modal-body" id="achievementsModalBody">
+        <div class="achievements-grid" id="achievementsGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pomodoro floating modal (persistente) com novos botões: minimizar e concluir -->
+  <div class="pomodoro-floating" id="pomodoroFloating" style="display: none;">
+    <div class="pomodoro-card">
+      <div class="pomodoro-header">
+        <span><i class="fas fa-hourglass-half"></i> Pomodoro</span>
+        <div style="display: flex; gap: 4px;">
+          <button id="pomodoroMinimizeBtn" class="pomodoro-btn" style="background: none; border: none; color: var(--text-tertiary);"><i class="fas fa-minus"></i></button>
+          <button class="pomodoro-close" id="pomodoroCloseBtn">&times;</button>
+        </div>
+      </div>
+      <div class="pomodoro-time" id="pomodoroTimeDisplay">25:00</div>
+      <button id="pomodoroExpandBtn" class="pomodoro-expand-btn" style="display: none;"><i class="fas fa-expand"></i></button>
+      <div class="pomodoro-controls">
+        <button id="pomodoroPauseBtn" class="pomodoro-btn"><i class="fas fa-pause"></i></button>
+        <button id="pomodoroResumeBtn" class="pomodoro-btn" style="display: none;"><i class="fas fa-play"></i></button>
+        <button id="pomodoroCompleteBtn" class="pomodoro-btn"><i class="fas fa-check"></i></button>
+        <button id="pomodoroCancelBtn" class="pomodoro-btn"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+  </div>
+
   <!-- toast container for achievements and notifications -->
   <div class="toast-container" id="toastContainer"></div>
 
@@ -1666,7 +2017,9 @@
         { id: 'help', keywords: ['ajuda', 'comandos', 'o que faz'], example: 'Preciso de ajuda' },
         { id: 'edital', keywords: ['edital', 'progresso edital'], example: 'Ver meu edital' },
         { id: 'finalize_day', keywords: ['finalizar dia', 'encerrar dia'], example: 'Finalizar o dia' },
-        { id: 'yesterday', keywords: ['ontem', 'atividades ontem'], example: 'Registrar atividades de ontem' }
+        { id: 'yesterday', keywords: ['ontem', 'atividades ontem'], example: 'Registrar atividades de ontem' },
+        // NOVO: intenção para histórico
+        { id: 'historico', keywords: ['histórico', 'ultimos dias', 'resumo dos dias', 'últimos 7 dias'], example: 'Ver histórico dos últimos 7 dias' }
       ];
 
       const AUTOCOMPLETE_PHRASES = INTENTS.map(i => i.example).filter(Boolean);
@@ -1729,6 +2082,9 @@
         yesterday: [
           'Abrindo atividades de ontem...',
           'Vamos registrar o que ficou pendente de ontem.'
+        ],
+        historico: [
+          'Aqui está seu resumo dos últimos 7 dias:'
         ],
         fallback: [
           'Desculpe, não entendi. Tente perguntar sobre tempo, questões, streak ou use os botões.',
@@ -1880,6 +2236,7 @@
             if (/sequência|streak|dias seguidos/i.test(text) && intent.id === 'streak') score += 15;
             if (/meta|progresso|andamento/i.test(text) && intent.id === 'progress') score += 10;
             if (/simulado|nota/i.test(text) && intent.id === 'simulated') score += 15;
+            if (/histórico|ultimos dias|resumo dos dias/i.test(text) && intent.id === 'historico') score += 20;
 
             if (score > bestScore) {
               bestScore = score;
@@ -1909,6 +2266,7 @@
           if (context.total !== undefined) template = template.replace('{{total}}', context.total);
           if (context.percent !== undefined) template = template.replace('{{percent}}', context.percent);
           if (context.score !== undefined) template = template.replace('{{score}}', context.score);
+          // para histórico, o contexto terá um array de dias
 
           return template;
         }
@@ -1994,17 +2352,39 @@
         }
       };
 
-      // ---------- ACHIEVEMENT SYSTEM ----------
+      // ---------- ACHIEVEMENT SYSTEM (versão expandida) ----------
       ChatSystem.AchievementSystem = {
-        storageKey: 'studyFlow_achievements',
+        storageKey: 'studyFlow_achievements_unlocked',
         achievements: [
-          { id: 'first_activity', name: 'Primeiro Passo', description: 'Registrou a primeira atividade', condition: (stats) => stats.totalActivities >= 1 },
-          { id: 'streak_3', name: 'Disciplina', description: '3 dias seguidos de estudo', condition: (stats) => stats.streak >= 3 },
-          { id: 'streak_7', name: 'Constante', description: '7 dias seguidos de estudo', condition: (stats) => stats.streak >= 7 },
-          { id: 'streak_30', name: 'Mestre da Consistência', description: '30 dias seguidos de estudo', condition: (stats) => stats.streak >= 30 },
-          { id: 'questions_100', name: 'Resolvedor', description: '100 questões resolvidas no total', condition: (stats) => stats.totalQuestions >= 100 },
-          { id: 'time_1000', name: 'Dedicado', description: '1000 minutos estudados', condition: (stats) => stats.totalTime >= 1000 },
-          { id: 'simulated_first', name: 'Simulado', description: 'Realizou o primeiro simulado', condition: (stats) => stats.simuladoCount >= 1 }
+          // Primeiros Passos
+          { id: 'first_activity', name: 'Primeiro Passo', description: 'Registrou a primeira atividade', icon: '🎯', condition: (stats) => stats.totalActivities >= 1 },
+          // Consistência (streak)
+          { id: 'streak_3', name: 'Disciplina', description: '3 dias seguidos de estudo', icon: '🔥', condition: (stats) => stats.streak >= 3 },
+          { id: 'streak_7', name: 'Constante', description: '7 dias seguidos de estudo', icon: '⭐', condition: (stats) => stats.streak >= 7 },
+          { id: 'streak_15', name: 'Persistente', description: '15 dias seguidos de estudo', icon: '🌟', condition: (stats) => stats.streak >= 15 },
+          { id: 'streak_30', name: 'Mestre da Consistência', description: '30 dias seguidos de estudo', icon: '🏆', condition: (stats) => stats.streak >= 30 },
+          { id: 'streak_60', name: 'Incansável', description: '60 dias seguidos de estudo', icon: '🏅', condition: (stats) => stats.streak >= 60 },
+          { id: 'streak_100', name: 'Lenda', description: '100 dias seguidos de estudo', icon: '👑', condition: (stats) => stats.streak >= 100 },
+          // Quantidade de Questões
+          { id: 'questions_100', name: 'Resolvedor', description: '100 questões resolvidas no total', icon: '🧩', condition: (stats) => stats.totalQuestions >= 100 },
+          { id: 'questions_500', name: 'Resolvedor Avançado', description: '500 questões resolvidas', icon: '🧩', condition: (stats) => stats.totalQuestions >= 500 },
+          { id: 'questions_1000', name: 'Resolvedor Expert', description: '1000 questões resolvidas', icon: '🧩', condition: (stats) => stats.totalQuestions >= 1000 },
+          { id: 'questions_5000', name: 'Mestre das Questões', description: '5000 questões resolvidas', icon: '🏆', condition: (stats) => stats.totalQuestions >= 5000 },
+          // Tempo de Estudo
+          { id: 'time_600', name: 'Dedicado', description: '10 horas estudadas', icon: '⏳', condition: (stats) => stats.totalTime >= 600 },
+          { id: 'time_3000', name: 'Dedicado (50h)', description: '50 horas estudadas', icon: '⏳', condition: (stats) => stats.totalTime >= 3000 },
+          { id: 'time_6000', name: 'Dedicado (100h)', description: '100 horas estudadas', icon: '⌛', condition: (stats) => stats.totalTime >= 6000 },
+          { id: 'time_30000', name: 'Veterano (500h)', description: '500 horas estudadas', icon: '⌛', condition: (stats) => stats.totalTime >= 30000 },
+          // Simulados
+          { id: 'simulated_first', name: 'Simulado', description: 'Realizou o primeiro simulado', icon: '📝', condition: (stats) => stats.simuladoCount >= 1 },
+          { id: 'simulated_5', name: 'Praticante', description: '5 simulados realizados', icon: '📝', condition: (stats) => stats.simuladoCount >= 5 },
+          { id: 'simulated_10', name: 'Estrategista', description: '10 simulados realizados', icon: '📊', condition: (stats) => stats.simuladoCount >= 10 },
+          { id: 'simulated_20', name: 'Veterano de Provas', description: '20 simulados realizados', icon: '📊', condition: (stats) => stats.simuladoCount >= 20 },
+          { id: 'simulated_grade_80', name: 'Nota Alta', description: 'Atingiu 80% ou mais em um simulado', icon: '🎓', condition: (stats) => stats.bestSimulatedGrade >= 80 },
+          // Diversidade
+          { id: 'mixed_day', name: 'Versátil', description: 'Registrou questões, anki e teoria no mesmo dia', icon: '🎭', condition: (stats) => stats.hasMixedDay },
+          // Metas
+          { id: 'goal_daily_7', name: 'Foco Total', description: 'Cumpriu a meta de tempo diário por 7 dias seguidos', icon: '🎯', condition: (stats) => stats.goalStreak >= 7 }
         ],
         unlocked: [],
         load() {
@@ -2039,20 +2419,53 @@
           const streak = adapter.getStreak();
           const totalTime = adapter.getTotalTime();
           let totalQuestions = 0;
+          let simuladoCount = adapter.getSimulados().length;
+          let bestSimulatedGrade = 0;
+          let hasMixedDay = false;
+          let goalStreak = 0;
+          let totalActivities = 0;
+
+          // Calcula total de questões, mixed day e goal streak
+          const goals = JSON.parse(localStorage.getItem('studyFlow_goals')) || { dailyTime: 120 };
+          let consecutiveGoalDays = 0;
           for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.startsWith('dailyActivities_')) {
-              try {
-                const data = JSON.parse(localStorage.getItem(key));
-                const acts = data.activities || {};
-                if (acts.questoes) acts.questoes.forEach(q => totalQuestions += q.feitas || 0);
-              } catch (e) {}
+              const data = JSON.parse(localStorage.getItem(key));
+              const acts = data.activities || {};
+              if (acts.questoes) {
+                acts.questoes.forEach(q => {
+                  totalQuestions += q.feitas || 0;
+                  totalActivities++;
+                });
+              }
+              if (acts.anki) totalActivities += acts.anki.length;
+              if (acts.teoria) totalActivities += acts.teoria.length;
+              // Verifica mixed day
+              if (acts.questoes?.length > 0 && acts.anki?.length > 0 && acts.teoria?.length > 0) {
+                hasMixedDay = true;
+              }
+              // Calcula tempo do dia para meta
+              let dayTime = 0;
+              acts.questoes?.forEach(q => dayTime += q.tempo);
+              acts.anki?.forEach(a => dayTime += a.tempo);
+              acts.teoria?.forEach(t => dayTime += t.tempo);
+              if (dayTime >= goals.dailyTime) {
+                consecutiveGoalDays++;
+                if (consecutiveGoalDays > goalStreak) goalStreak = consecutiveGoalDays;
+              } else {
+                consecutiveGoalDays = 0;
+              }
             }
           }
+
+          // Melhor nota de simulado
           const simulados = adapter.getSimulados();
-          const simuladoCount = simulados.length;
-          const totalActivities = 0; // não vamos contar agora, mas pode ser refinado
-          return { streak, totalTime, totalQuestions, simuladoCount, totalActivities };
+          simulados.forEach(s => {
+            if (s.totalPercentage > bestSimulatedGrade) bestSimulatedGrade = s.totalPercentage;
+          });
+
+          return { streak, totalTime, totalQuestions, simuladoCount, bestSimulatedGrade, hasMixedDay, goalStreak, totalActivities };
         }
       };
 
@@ -2102,6 +2515,343 @@
         }
       };
 
+      // ---------- LEMBRETES INTELIGENTES ----------
+      ChatSystem.ReminderSystem = {
+        permissionGranted: false,
+        init() {
+          if (!("Notification" in window)) return;
+          if (Notification.permission === "granted") {
+            this.permissionGranted = true;
+          } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+              if (permission === "granted") this.permissionGranted = true;
+            });
+          }
+          this.scheduleDailyReminder();
+        },
+        scheduleDailyReminder() {
+          // Agenda para as 20:00 todos os dias
+          const now = new Date();
+          const target = new Date();
+          target.setHours(20, 0, 0, 0); // 20:00
+          if (now > target) target.setDate(target.getDate() + 1);
+          const timeUntilTarget = target - now;
+          setTimeout(() => {
+            this.sendDailyReminder();
+            // Repete a cada 24h
+            setInterval(() => this.sendDailyReminder(), 24 * 60 * 60 * 1000);
+          }, timeUntilTarget);
+        },
+        sendDailyReminder() {
+          if (!this.permissionGranted) return;
+          const todayMinutes = ChatSystem.StateAdapter.getTodayTime();
+          const hours = Math.floor(todayMinutes / 60);
+          const mins = todayMinutes % 60;
+          const notification = new Notification("StudyFlow - Lembrete diário", {
+            body: `Você estudou ${hours}h${mins}m hoje. ${todayMinutes >= 120 ? 'Parabéns, meta diária atingida! 🎉' : 'Ainda dá tempo de bater sua meta!'}`,
+            icon: '/favicon.ico'
+          });
+          notification.onclick = () => {
+            window.focus();
+          };
+        }
+      };
+
+      // ---------- POMODORO MANAGER (REFATORADO PARA USAR TIMESTAMP, PERSISTÊNCIA, ARRASTÁVEL, MINIMIZAR, TÍTULO) ----------
+      ChatSystem.PomodoroManager = class {
+        constructor(chatBotInstance) {
+          this.chatBot = chatBotInstance;
+          this.active = false;
+          this.paused = false;
+          this.startTime = null;
+          this.duration = 25 * 60; // segundos
+          this.remaining = 25 * 60;
+          this.intervalId = null;
+          this.originalTitle = document.title;
+
+          this.floatingModal = document.getElementById('pomodoroFloating');
+          this.timeDisplay = document.getElementById('pomodoroTimeDisplay');
+          this.pauseBtn = document.getElementById('pomodoroPauseBtn');
+          this.resumeBtn = document.getElementById('pomodoroResumeBtn');
+          this.cancelBtn = document.getElementById('pomodoroCancelBtn');
+          this.completeBtn = document.getElementById('pomodoroCompleteBtn');
+          this.closeBtn = document.getElementById('pomodoroCloseBtn');
+          this.minimizeBtn = document.getElementById('pomodoroMinimizeBtn');
+          this.expandBtn = document.getElementById('pomodoroExpandBtn');
+          this.dragHandle = this.floatingModal.querySelector('.pomodoro-header');
+
+          this.initListeners();
+          this.makeDraggable();
+          this.restoreFromStorage();
+          // Sincronizar entre abas
+          window.addEventListener('storage', (e) => {
+            if (e.key === 'pomodoroState') {
+              this.restoreFromStorage();
+            }
+          });
+        }
+
+        initListeners() {
+          this.pauseBtn.addEventListener('click', () => this.pause());
+          this.resumeBtn.addEventListener('click', () => this.resume());
+          this.cancelBtn.addEventListener('click', () => this.cancel());
+          this.completeBtn.addEventListener('click', () => this.complete());
+          this.closeBtn.addEventListener('click', () => this.hideFloating());
+          this.minimizeBtn.addEventListener('click', () => this.toggleMinimize());
+          this.expandBtn.addEventListener('click', () => this.toggleMinimize());
+        }
+
+        makeDraggable() {
+          let offsetX, offsetY, mouseX, mouseY;
+          const dragStart = (e) => {
+            e.preventDefault();
+            const rect = this.floatingModal.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            document.addEventListener('mousemove', dragMove);
+            document.addEventListener('mouseup', dragEnd);
+          };
+          const dragMove = (e) => {
+            e.preventDefault();
+            const left = e.clientX - offsetX;
+            const top = e.clientY - offsetY;
+            this.floatingModal.style.left = left + 'px';
+            this.floatingModal.style.top = top + 'px';
+            this.floatingModal.style.bottom = 'auto';
+            this.floatingModal.style.right = 'auto';
+          };
+          const dragEnd = () => {
+            document.removeEventListener('mousemove', dragMove);
+            document.removeEventListener('mouseup', dragEnd);
+            // Salvar posição
+            const rect = this.floatingModal.getBoundingClientRect();
+            localStorage.setItem('pomodoroPosition', JSON.stringify({ left: rect.left, top: rect.top }));
+          };
+          this.dragHandle.addEventListener('mousedown', dragStart);
+        }
+
+        toggleMinimize() {
+          this.floatingModal.classList.toggle('minimized');
+          const isMinimized = this.floatingModal.classList.contains('minimized');
+          this.minimizeBtn.style.display = isMinimized ? 'none' : 'inline-block';
+          this.expandBtn.style.display = isMinimized ? 'inline-block' : 'none';
+          // Salvar estado
+          localStorage.setItem('pomodoroMinimized', isMinimized);
+        }
+
+        restoreFromStorage() {
+          const state = JSON.parse(localStorage.getItem('pomodoroState') || '{}');
+          if (state.active && state.startTime && state.duration) {
+            const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+            if (elapsed >= state.duration) {
+              // Já terminou enquanto estávamos fora
+              this.finish(true, Math.floor(state.duration / 60)); // silent, tempo real = duração
+            } else {
+              this.active = true;
+              this.paused = state.paused || false;
+              this.startTime = state.startTime;
+              this.duration = state.duration;
+              this.remaining = state.duration - elapsed;
+              this.showFloating();
+              this.startTicking();
+            }
+          }
+        }
+
+        saveState() {
+          const state = {
+            active: this.active && !this.paused,
+            paused: this.paused,
+            startTime: this.startTime,
+            duration: this.duration,
+            remaining: this.remaining
+          };
+          localStorage.setItem('pomodoroState', JSON.stringify(state));
+        }
+
+        clearState() {
+          localStorage.removeItem('pomodoroState');
+        }
+
+        start(durationMinutes = 25) {
+          if (this.active) {
+            this.chatBot.typeMessage("Já existe um pomodoro em andamento. Finalize ou cancele antes de iniciar outro.");
+            return;
+          }
+          this.duration = durationMinutes * 60;
+          this.startTime = Date.now();
+          this.active = true;
+          this.paused = false;
+          this.remaining = this.duration;
+          this.saveState();
+          this.showFloating();
+          this.startTicking();
+          this.chatBot.typeMessage(`⏳ Pomodoro de ${durationMinutes} minutos iniciado! Foque nos estudos.`);
+          if (Notification.permission === "granted") {
+            new Notification("StudyFlow - Pomodoro iniciado", {
+              body: `Foque por ${durationMinutes} minutos. Você será notificado ao final.`
+            });
+          }
+        }
+
+        pause() {
+          if (!this.active || this.paused) return;
+          this.paused = true;
+          this.pauseBtn.style.display = 'none';
+          this.resumeBtn.style.display = 'flex';
+          document.title = '⏸️ Pomodoro pausado - StudyFlow';
+          this.saveState();
+        }
+
+        resume() {
+          if (!this.active || !this.paused) return;
+          // Recalcula startTime para que a diferença seja correta
+          const elapsed = this.duration - this.remaining;
+          this.startTime = Date.now() - elapsed * 1000;
+          this.paused = false;
+          this.pauseBtn.style.display = 'flex';
+          this.resumeBtn.style.display = 'none';
+          // título será atualizado no próximo tick
+          this.saveState();
+        }
+
+        cancel() {
+          this.active = false;
+          this.paused = false;
+          this.startTime = null;
+          this.remaining = 0;
+          this.stopTicking();
+          this.hideFloating();
+          this.clearState();
+          document.title = this.originalTitle;
+          window.pomodoroJustFinished = false;
+          window.lastPomodoroDuration = null;
+          localStorage.removeItem("pomodoroCompleted");
+          localStorage.removeItem("lastPomodoroDuration");
+          this.chatBot.typeMessage("Pomodoro cancelado.");
+        }
+
+        complete() {
+          if (!this.active) return;
+          const realSeconds = Math.floor((Date.now() - this.startTime) / 1000);
+          const realMinutes = Math.floor(realSeconds / 60);
+          this.finish(false, realMinutes);
+        }
+
+        startTicking() {
+          if (this.intervalId) clearInterval(this.intervalId);
+          this.intervalId = setInterval(() => this.tick(), 1000);
+        }
+
+        stopTicking() {
+          if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+          }
+        }
+
+        tick() {
+          if (!this.active || this.paused) return;
+          const now = Date.now();
+          const elapsed = Math.floor((now - this.startTime) / 1000);
+          this.remaining = this.duration - elapsed;
+          if (this.remaining <= 0) {
+            this.remaining = 0;
+            this.updateDisplay();
+            this.finish();
+          } else {
+            this.updateDisplay();
+            this.updateTitle();
+          }
+        }
+
+        updateDisplay() {
+          if (!this.timeDisplay) return;
+          const mins = Math.floor(this.remaining / 60);
+          const secs = this.remaining % 60;
+          this.timeDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        updateTitle() {
+          const mins = Math.floor(this.remaining / 60);
+          const secs = this.remaining % 60;
+          document.title = `⏳ ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')} - StudyFlow`;
+        }
+
+        showFloating() {
+          if (this.floatingModal) {
+            this.floatingModal.style.display = 'block';
+            this.updateDisplay();
+
+            // Restaurar posição
+            const savedPos = localStorage.getItem('pomodoroPosition');
+            if (savedPos) {
+              const { left, top } = JSON.parse(savedPos);
+              this.floatingModal.style.left = left + 'px';
+              this.floatingModal.style.top = top + 'px';
+              this.floatingModal.style.bottom = 'auto';
+              this.floatingModal.style.right = 'auto';
+            }
+
+            // Restaurar estado minimizado
+            const minimized = localStorage.getItem('pomodoroMinimized') === 'true';
+            if (minimized) {
+              this.floatingModal.classList.add('minimized');
+              this.minimizeBtn.style.display = 'none';
+              this.expandBtn.style.display = 'inline-block';
+            } else {
+              this.floatingModal.classList.remove('minimized');
+              this.minimizeBtn.style.display = 'inline-block';
+              this.expandBtn.style.display = 'none';
+            }
+          }
+        }
+
+        hideFloating() {
+          if (this.floatingModal) {
+            this.floatingModal.style.display = 'none';
+          }
+        }
+
+        playSound() {
+          try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.frequency.value = 800;
+            gainNode.gain.value = 0.5;
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.5);
+          } catch (e) {
+            console.warn('Audio not supported');
+          }
+        }
+
+        finish(silent = false, realMinutes = null) {
+          if (!silent) this.playSound();
+          this.active = false;
+          this.paused = false;
+          this.stopTicking();
+          this.hideFloating();
+          this.clearState();
+          document.title = this.originalTitle;
+
+          // Armazenar tempo do pomodoro concluído para preenchimento automático
+          const durationMinutes = realMinutes !== null ? realMinutes : Math.floor(this.duration / 60);
+          window.pomodoroJustFinished = true;
+          window.lastPomodoroDuration = durationMinutes;
+          localStorage.setItem("pomodoroCompleted", "true");
+          localStorage.setItem("lastPomodoroDuration", durationMinutes.toString());
+
+          // Abrir modal de registro padrão
+          if (this.chatBot) {
+            this.chatBot.openRegisterModal();
+          }
+        }
+      };
+
       // ---------- INIT ----------
       ChatSystem.init = function() {
         // autocomplete
@@ -2117,15 +2867,13 @@
         // registrar listeners de eventos nos métodos originais (serão chamados após modificações)
         this.AchievementSystem.load();
         this.NotificationSystem.init();
+        this.ReminderSystem.init();
 
         // verificar conquistas inicialmente (após carregar)
         setTimeout(() => {
           this.AchievementSystem.checkAll();
         }, 1000);
       };
-
-      // Modificar métodos originais para emitir eventos (será feito após definição do chatBot)
-      // Isso será feito depois que a classe StudyFlowChatBot for definida, por isso vamos sobrescrever depois.
     })();
 
     // =========================================================================
@@ -2154,6 +2902,9 @@
         };
         
         this.lastDateChecked = localStorage.getItem('studyFlow_lastDateChecked') || this.getDynamicDateString();
+
+        // Instanciar PomodoroManager
+        this.pomodoro = new ChatSystem.PomodoroManager(this);
         
         this.init();
         
@@ -2384,6 +3135,22 @@
         });
         // METRICS EVENT LISTENERS REMOVED
 
+        // NOVOS EVENT LISTENERS
+        document.getElementById('exportDataBtn').addEventListener('click', () => this.exportData());
+        document.getElementById('importDataBtn').addEventListener('click', () => this.importData());
+        document.getElementById('achievementsBtn').addEventListener('click', () => this.showAchievementsModal());
+
+        // Goals modal
+        document.getElementById('editGoalsBtn').addEventListener('click', () => this.openGoalModal());
+        document.getElementById('closeGoalModal').addEventListener('click', () => this.closeGoalModal());
+        document.getElementById('cancelGoal').addEventListener('click', () => this.closeGoalModal());
+        document.getElementById('saveGoal').addEventListener('click', () => this.saveGoals());
+
+        // Achievements modal close
+        document.getElementById('closeAchievementsModal').addEventListener('click', () => this.closeAchievementsModal());
+
+        // Pomodoro modal (não existe mais, então removemos listeners antigos)
+
         window.addEventListener('click', (e) => {
           const registerModal = document.getElementById('registerModal');
           const yesterdayModal = document.getElementById('yesterdayModal');
@@ -2391,6 +3158,8 @@
           const simuladoModal = document.getElementById('simuladoModal');
           const relatorioModal = document.getElementById('relatorioModal');
           const postSaveModal = document.getElementById('postSaveModal');
+          const goalModal = document.getElementById('goalModal');
+          const achievementsModal = document.getElementById('achievementsModal');
           
           if (e.target === registerModal) this.closeRegisterModal();
           if (e.target === yesterdayModal) this.closeYesterdayModal();
@@ -2398,10 +3167,163 @@
           if (e.target === simuladoModal) this.closeSimuladoModal();
           if (e.target === relatorioModal) this.closeRelatorioModal();
           if (e.target === postSaveModal) document.getElementById('postSaveModal').style.display = 'none';
+          if (e.target === goalModal) this.closeGoalModal();
+          if (e.target === achievementsModal) this.closeAchievementsModal();
         });
       }
 
-      // NEW: show theoretical study summary
+      // NOVO: Exportar dados para CSV
+      exportData() {
+        const rows = [['Data', 'Tipo', 'Assunto/Deck', 'Quantidade', 'Tempo', 'Acertos/Detalhe']];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('dailyActivities_')) {
+            const date = key.replace('dailyActivities_', '');
+            const data = JSON.parse(localStorage.getItem(key));
+            const acts = data.activities || {};
+            // Questões
+            if (acts.questoes) {
+              acts.questoes.forEach(q => {
+                const acertos = q.feitas - q.erradas;
+                rows.push([date, 'Questões', q.assunto, q.feitas, q.tempo, `${acertos} acertos`]);
+              });
+            }
+            // Anki
+            if (acts.anki) {
+              acts.anki.forEach(a => {
+                rows.push([date, 'Anki', a.deck, a.cards, a.tempo, '']);
+              });
+            }
+            // Teoria
+            if (acts.teoria) {
+              acts.teoria.forEach(t => {
+                rows.push([date, 'Teoria', t.materia, '', t.tempo, t.conteudo || t.pagina || '']);
+              });
+            }
+          }
+        }
+        let csvContent = rows.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); // BOM para acentos
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        const today = new Date().toISOString().split('T')[0];
+        link.setAttribute('download', `studyflow_export_${today}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      // NOVO: Importar dados de CSV
+      importData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.csv';
+        input.onchange = (e) => {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const lines = event.target.result.split('\n');
+            const header = lines[0].split(',');
+            // Exemplo de header: Data,Tipo,Assunto/Deck,Quantidade,Tempo,Acertos/Detalhe
+            for (let i = 1; i < lines.length; i++) {
+              if (!lines[i].trim()) continue;
+              const cols = lines[i].split(',');
+              if (cols.length < 6) continue;
+              const [data, tipo, assunto, qtd, tempo, detalhe] = cols.map(s => s.replace(/^"|"$/g, ''));
+              const dataStr = data.trim();
+              const dailyKey = `dailyActivities_${dataStr}`;
+              let daily = JSON.parse(localStorage.getItem(dailyKey)) || { activities: { questoes: [], anki: [], teoria: [] } };
+              
+              if (tipo === 'Questões') {
+                const feitas = parseInt(qtd) || 0;
+                // Tenta extrair acertos do detalhe (formato "X acertos")
+                let acertos = 0;
+                const match = detalhe.match(/(\d+)/);
+                if (match) acertos = parseInt(match[0]);
+                const erradas = feitas - acertos;
+                daily.activities.questoes.push({
+                  assunto: assunto,
+                  feitas: feitas,
+                  erradas: erradas,
+                  tempo: parseInt(tempo) || 0
+                });
+              } else if (tipo === 'Anki') {
+                daily.activities.anki.push({
+                  deck: assunto,
+                  cards: parseInt(qtd) || 0,
+                  tempo: parseInt(tempo) || 0
+                });
+              } else if (tipo === 'Teoria') {
+                daily.activities.teoria.push({
+                  materia: assunto,
+                  conteudo: detalhe || '',
+                  pagina: '',
+                  tempo: parseInt(tempo) || 0
+                });
+              }
+              localStorage.setItem(dailyKey, JSON.stringify(daily));
+            }
+            alert('Importação concluída!');
+            if (window.UI_ENHANCER) window.UI_ENHANCER.updateSidePanel();
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+      }
+
+      // NOVO: Abrir modal de conquistas
+      showAchievementsModal() {
+        const modal = document.getElementById('achievementsModal');
+        const grid = document.getElementById('achievementsGrid');
+        grid.innerHTML = '';
+        const achievements = ChatSystem.AchievementSystem.achievements;
+        const unlocked = ChatSystem.AchievementSystem.unlocked;
+        achievements.forEach(ach => {
+          const isUnlocked = unlocked.includes(ach.id);
+          const card = document.createElement('div');
+          card.className = `achievement-card ${isUnlocked ? 'unlocked' : ''}`;
+          card.innerHTML = `
+            <div class="achievement-icon">${ach.icon}</div>
+            <div class="achievement-info">
+              <div class="achievement-name">${ach.name}</div>
+              <div class="achievement-desc">${ach.description}</div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+        modal.style.display = 'flex';
+      }
+
+      closeAchievementsModal() {
+        document.getElementById('achievementsModal').style.display = 'none';
+      }
+
+      // NOVO: Metas
+      openGoalModal() {
+        const goals = JSON.parse(localStorage.getItem('studyFlow_goals')) || { dailyTime: 120, dailyQuestions: 30, weeklyTime: 600 };
+        document.getElementById('dailyTimeGoal').value = goals.dailyTime;
+        document.getElementById('dailyQuestionsGoal').value = goals.dailyQuestions;
+        document.getElementById('weeklyTimeGoal').value = goals.weeklyTime;
+        document.getElementById('goalModal').style.display = 'flex';
+      }
+
+      closeGoalModal() {
+        document.getElementById('goalModal').style.display = 'none';
+      }
+
+      saveGoals() {
+        const dailyTime = parseInt(document.getElementById('dailyTimeGoal').value) || 0;
+        const dailyQuestions = parseInt(document.getElementById('dailyQuestionsGoal').value) || 0;
+        const weeklyTime = parseInt(document.getElementById('weeklyTimeGoal').value) || 0;
+        const goals = { dailyTime, dailyQuestions, weeklyTime };
+        localStorage.setItem('studyFlow_goals', JSON.stringify(goals));
+        this.closeGoalModal();
+        if (window.UI_ENHANCER) window.UI_ENHANCER.updateSidePanel();
+      }
+
+      // NOVO: show theoretical study summary
       showTeoriaSummary() {
         const teoriaProgress = this.getModuleData('teoriaProgress') || {};
         const estudos = Object.entries(teoriaProgress).map(([materia, data]) => ({
@@ -2512,6 +3434,7 @@
       }
       
       addQuickActions() {
+        // Modificado: incluir campo de tempo personalizado para pomodoro
         const quickActionsHTML = `
           <div class="quick-actions">
             <button class="action-btn secondary" onclick="chatBot.openRegisterModal()">
@@ -2541,6 +3464,12 @@
             <button class="action-btn info" onclick="chatBot.showTeoriaSummary()">
               <i class="fas fa-book-open"></i> Consultar Estudo Teórico
             </button>
+            <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+              <input type="number" id="pomodoroCustomTime" min="1" max="180" value="25" style="width: 70px; padding: 0.3rem; border-radius: var(--radius-full); border: 1px solid var(--border-light); background: var(--bg-inset); color: var(--text-primary);">
+              <button class="action-btn primary" onclick="chatBot.pomodoro.start(parseInt(document.getElementById('pomodoroCustomTime').value) || 25)">
+                <i class="fas fa-hourglass-start"></i> Iniciar Pomodoro
+              </button>
+            </div>
             <button class="action-btn info" onclick="chatBot.showConfigModal()">
               <i class="fas fa-cog"></i> Configurar
             </button>
@@ -3700,6 +4629,12 @@
               <button class="action-btn info" onclick="chatBot.showTeoriaSummary()">
                 <i class="fas fa-book-open"></i> Consultar Estudo Teórico
               </button>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <input type="number" id="pomodoroCustomTime" min="1" max="180" value="25" style="width: 70px; padding: 0.3rem; border-radius: var(--radius-full); border: 1px solid var(--border-light); background: var(--bg-inset); color: var(--text-primary);">
+                <button class="action-btn primary" onclick="chatBot.pomodoro.start(parseInt(document.getElementById('pomodoroCustomTime').value) || 25)">
+                  <i class="fas fa-hourglass-start"></i> Iniciar Pomodoro
+                </button>
+              </div>
               <button class="action-btn info" onclick="chatBot.showHelp()"> 
                 <i class="fas fa-question-circle"></i> Preciso de Ajuda 
               </button> 
@@ -4067,6 +5002,12 @@
                 <button class="action-btn info" onclick="chatBot.showTeoriaSummary()">
                   <i class="fas fa-book-open"></i> Consultar Estudo Teórico
                 </button>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <input type="number" id="pomodoroCustomTime" min="1" max="180" value="25" style="width: 70px; padding: 0.3rem; border-radius: var(--radius-full); border: 1px solid var(--border-light); background: var(--bg-inset); color: var(--text-primary);">
+                  <button class="action-btn primary" onclick="chatBot.pomodoro.start(parseInt(document.getElementById('pomodoroCustomTime').value) || 25)">
+                    <i class="fas fa-hourglass-start"></i> Iniciar Pomodoro
+                  </button>
+                </div>
                 <button class="action-btn info" onclick="chatBot.showHelp()">
                   <i class="fas fa-question-circle"></i> Ajuda
                 </button>
@@ -4254,6 +5195,10 @@
       }
       
       openRegisterModal() {
+        // Resetar flags de pomodoro quando aberto manualmente
+        window.pomodoroJustFinished = false;
+        window.lastPomodoroDuration = null;
+
         const hojeStr = this.getDynamicDateString();
         
         if (this.isDayFinished()) {
@@ -4546,6 +5491,25 @@
           
           const inputs = card.querySelectorAll('input');
           inputs.forEach(input => input.disabled = false);
+
+          // Preenchimento automático se vier do Pomodoro (persistido)
+          const pomodoroCompleted = localStorage.getItem("pomodoroCompleted");
+          const duration = localStorage.getItem("lastPomodoroDuration");
+          if (pomodoroCompleted === "true" && duration) {
+            const id = card.getAttribute('data-id');
+            const type = card.getAttribute('data-type');
+            let tempoInput;
+            if (type === 'questoes') {
+              tempoInput = document.getElementById(`questoes-tempo-${id}`);
+            } else if (type === 'anki') {
+              tempoInput = document.getElementById(`anki-tempo-${id}`);
+            } else if (type === 'teoria') {
+              tempoInput = document.getElementById(`teoria-tempo-${id}`);
+            }
+            if (tempoInput && tempoInput.value.trim() === '') {
+              tempoInput.value = duration;
+            }
+          }
         }
         
         const activeCards = modal.querySelectorAll('.task-card.active:not(.registered)');
@@ -4658,6 +5622,12 @@
           return;
         }
         
+        // Limpar flags de pomodoro após salvar
+        window.pomodoroJustFinished = false;
+        window.lastPomodoroDuration = null;
+        localStorage.removeItem("pomodoroCompleted");
+        localStorage.removeItem("lastPomodoroDuration");
+
         this.closeRegisterModal();
         
         if (savedCount > 0) {
@@ -4726,6 +5696,9 @@
         localStorage.setItem('studyFlow_partialRegistration', JSON.stringify(this.partialRegistration));
         
         this.updateModuleWithActivity(activity);
+        
+        // Verificar conquistas após registrar
+        ChatSystem.AchievementSystem.checkAll();
       }
       
       updateModuleWithActivity(activity) {
@@ -4785,12 +5758,23 @@
           window.UI_ENHANCER.updateSidePanel();
         }
         
+        // Verificar conquistas ao finalizar dia
+        ChatSystem.AchievementSystem.checkAll();
+        
+        // Emitir evento para notificação
+        ChatSystem.EventBus.emit('day:finished');
+        
         setTimeout(() => {
           // não mostra resumo automático, apenas atualiza painel
         }, 1000);
       }
       
       closeRegisterModal() {
+        // Limpar flags de pomodoro ao fechar sem salvar
+        window.pomodoroJustFinished = false;
+        window.lastPomodoroDuration = null;
+        localStorage.removeItem("pomodoroCompleted");
+        localStorage.removeItem("lastPomodoroDuration");
         document.getElementById('registerModal').style.display = 'none';
       }
       
@@ -5446,10 +6430,39 @@
               response = ChatSystem.ResponseGenerator.generate('yesterday');
               this.openYesterdayModal();
               break;
+            case 'historico':
+              // gerar resumo dos últimos 7 dias
+              let historicoHTML = '<div class="message-card"><div class="message-card-header"><i class="fas fa-history"></i><div class="message-card-title">Histórico dos últimos 7 dias</div></div><div class="message-card-content">';
+              let totalTime7 = 0;
+              let totalQuestions7 = 0;
+              for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const ds = d.toISOString().split('T')[0];
+                const daily = JSON.parse(localStorage.getItem(`dailyActivities_${ds}`)) || { activities: {} };
+                const acts = daily.activities || {};
+                let dayTime = 0;
+                let dayQuestions = 0;
+                if (acts.questoes) {
+                  acts.questoes.forEach(q => {
+                    dayTime += q.tempo || 0;
+                    dayQuestions += q.feitas || 0;
+                  });
+                }
+                if (acts.anki) acts.anki.forEach(a => dayTime += a.tempo || 0);
+                if (acts.teoria) acts.teoria.forEach(t => dayTime += t.tempo || 0);
+                totalTime7 += dayTime;
+                totalQuestions7 += dayQuestions;
+                const dataLocal = d.toLocaleDateString('pt-BR');
+                historicoHTML += `<div class="message-list-item"><div class="message-list-icon">📅</div><div class="message-list-content"><div class="message-list-title">${dataLocal}</div><div class="message-list-description">${dayTime} min • ${dayQuestions} questões</div></div></div>`;
+              }
+              historicoHTML += `<div class="message-divider"></div><div class="message-stats"><div class="message-stat"><div class="message-stat-value">${totalTime7}</div><div class="message-stat-label">Min totais</div></div><div class="message-stat"><div class="message-stat-value">${totalQuestions7}</div><div class="message-stat-label">Questões</div></div></div></div></div>`;
+              this.addBotMessage(historicoHTML, true, 'historico');
+              break;
             default:
               response = ChatSystem.ResponseGenerator.generate('fallback');
           }
-          if (response) this.typeMessage(response);
+          if (response && intent.id !== 'historico') this.typeMessage(response);
         } else {
           // fallback para comandos antigos
           const lowerMessage = message.toLowerCase();
@@ -5568,6 +6581,13 @@
                     <div class="message-list-description">Função temporária para corrigir travamentos</div>
                   </div>
                 </div>
+                <div class="message-list-item">
+                  <div class="message-list-icon"><i class="fas fa-hourglass-start"></i></div>
+                  <div class="message-list-content">
+                    <div class="message-list-title">Pomodoro</div>
+                    <div class="message-list-description">Inicie um timer de 25 minutos e registre automaticamente</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -5644,6 +6664,12 @@
                     <div class="message-list-title">Registrar atividades do dia anterior</div>
                   </div>
                 </div>
+                <div class="message-list-item">
+                  <div class="message-list-icon"><i class="fas fa-check"></i></div>
+                  <div class="message-list-content">
+                    <div class="message-list-title">Usar timer Pomodoro integrado</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -5681,6 +6707,12 @@
             <button class="action-btn info" onclick="chatBot.showTeoriaSummary()">
               <i class="fas fa-book-open"></i> Consultar Estudo Teórico
             </button>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <input type="number" id="pomodoroCustomTime" min="1" max="180" value="25" style="width: 70px; padding: 0.3rem; border-radius: var(--radius-full); border: 1px solid var(--border-light); background: var(--bg-inset); color: var(--text-primary);">
+              <button class="action-btn primary" onclick="chatBot.pomodoro.start(parseInt(document.getElementById('pomodoroCustomTime').value) || 25)">
+                <i class="fas fa-hourglass-start"></i> Iniciar Pomodoro
+              </button>
+            </div>
             <button class="action-btn info" onclick="chatBot.showConfigModal()">
               <i class="fas fa-cog"></i> Configurar
             </button>
@@ -6770,6 +7802,12 @@
                 <button class="action-btn info" onclick="chatBot.showTeoriaSummary()">
                   <i class="fas fa-book-open"></i> Consultar Estudo Teórico
                 </button>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <input type="number" id="pomodoroCustomTime" min="1" max="180" value="25" style="width: 70px; padding: 0.3rem; border-radius: var(--radius-full); border: 1px solid var(--border-light); background: var(--bg-inset); color: var(--text-primary);">
+                  <button class="action-btn primary" onclick="chatBot.pomodoro.start(parseInt(document.getElementById('pomodoroCustomTime').value) || 25)">
+                    <i class="fas fa-hourglass-start"></i> Iniciar Pomodoro
+                  </button>
+                </div>
                 <button class="action-btn info" onclick="chatBot.showConfigModal()">
                   <i class="fas fa-cog"></i> Configurar
                 </button>
@@ -6794,6 +7832,39 @@
           chatBot.finalizeDay();
           ChatSystem.EventBus.emit('day:finished');
           ChatSystem.AchievementSystem.checkAll();
+        }
+      },
+
+      // NOVO: formatar minutos para XhYm
+      formatMinutes: function(min) {
+        const hours = Math.floor(min / 60);
+        const minutes = min % 60;
+        return `${hours}h${minutes > 0 ? minutes + 'm' : ''}`;
+      },
+
+      // NOVO: atualizar streak
+      updateStreakDisplay: function() {
+        const streak = ChatSystem.StateAdapter.getStreak();
+        let maxStreak = parseInt(localStorage.getItem('studyFlow_maxStreak')) || 0;
+        
+        if (streak > maxStreak) {
+          maxStreak = streak;
+          localStorage.setItem('studyFlow_maxStreak', maxStreak);
+        }
+        
+        const icon = streak > 0 ? '🔥' : '❄️';
+        const streakText = streak > 0 ? `${streak} dia${streak > 1 ? 's' : ''}` : 'Nenhum dia seguido';
+        const maxText = maxStreak > 0 ? `Recorde: ${maxStreak} dia${maxStreak > 1 ? 's' : ''}` : '';
+        
+        const display = document.getElementById('streakDisplay');
+        if (display) {
+          display.innerHTML = `
+            <div class="streak-icon">${icon}</div>
+            <div class="streak-info">
+              <div class="streak-current">${streakText}</div>
+              <div class="streak-max">${maxText}</div>
+            </div>
+          `;
         }
       },
       
@@ -7090,6 +8161,122 @@
             </div>
           `;
         }
+
+        // Atualizar metas
+        this.updateGoals();
+        // Atualizar streak
+        this.updateStreakDisplay();
+        // Atualizar gráfico
+        this.updateWeeklyChart();
+      },
+      
+      updateGoals: function() {
+        const goals = JSON.parse(localStorage.getItem('studyFlow_goals')) || { dailyTime: 120, dailyQuestions: 30, weeklyTime: 600 };
+        const hojeStr = chatBot.getDynamicDateString();
+        const dailyTime = ChatSystem.StateAdapter.getTodayTime();
+        const dailyQuestions = ChatSystem.StateAdapter.getTodayQuestions();
+        
+        // Calcular tempo semanal
+        let weeklyTime = 0;
+        for (let i = 0; i < 7; i++) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const ds = d.toISOString().split('T')[0];
+          const daily = JSON.parse(localStorage.getItem(`dailyActivities_${ds}`)) || { activities: {} };
+          const acts = daily.activities || {};
+          if (acts.questoes) acts.questoes.forEach(q => weeklyTime += q.tempo || 0);
+          if (acts.anki) acts.anki.forEach(a => weeklyTime += a.tempo || 0);
+          if (acts.teoria) acts.teoria.forEach(t => weeklyTime += t.tempo || 0);
+        }
+
+        const container = document.getElementById('goalsContainer');
+        container.innerHTML = `
+          <div class="goal-item">
+            <div class="goal-header">
+              <span><i class="fas fa-clock"></i> Tempo diário</span>
+              <span>${this.formatMinutes(dailyTime)} / ${this.formatMinutes(goals.dailyTime)}</span>
+            </div>
+            <div class="goal-progress-bar">
+              <div class="goal-progress-fill" style="width: ${Math.min(100, (dailyTime / goals.dailyTime) * 100)}%"></div>
+            </div>
+          </div>
+          <div class="goal-item">
+            <div class="goal-header">
+              <span><i class="fas fa-question-circle"></i> Questões/dia</span>
+              <span>${dailyQuestions} / ${goals.dailyQuestions}</span>
+            </div>
+            <div class="goal-progress-bar">
+              <div class="goal-progress-fill" style="width: ${Math.min(100, (dailyQuestions / goals.dailyQuestions) * 100)}%"></div>
+            </div>
+          </div>
+          <div class="goal-item">
+            <div class="goal-header">
+              <span><i class="fas fa-calendar-week"></i> Tempo semanal</span>
+              <span>${this.formatMinutes(weeklyTime)} / ${this.formatMinutes(goals.weeklyTime)}</span>
+            </div>
+            <div class="goal-progress-bar">
+              <div class="goal-progress-fill" style="width: ${Math.min(100, (weeklyTime / goals.weeklyTime) * 100)}%"></div>
+            </div>
+          </div>
+        `;
+      },
+
+      updateWeeklyChart: function() {
+        const canvas = document.getElementById('weeklyChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        
+        // Destruir gráfico anterior se existir
+        if (window.weeklyChartInstance) {
+          window.weeklyChartInstance.destroy();
+        }
+
+        const labels = [];
+        const data = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const ds = d.toISOString().split('T')[0];
+          const daily = JSON.parse(localStorage.getItem(`dailyActivities_${ds}`)) || { activities: {} };
+          const acts = daily.activities || {};
+          let dayTime = 0;
+          if (acts.questoes) acts.questoes.forEach(q => dayTime += q.tempo || 0);
+          if (acts.anki) acts.anki.forEach(a => dayTime += a.tempo || 0);
+          if (acts.teoria) acts.teoria.forEach(t => dayTime += t.tempo || 0);
+          labels.push(d.toLocaleDateString('pt-BR', { weekday: 'short' }));
+          data.push(dayTime);
+        }
+
+        window.weeklyChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Minutos',
+              data: data,
+              backgroundColor: 'var(--accent-solid)',
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: { color: 'var(--border-light)' },
+                ticks: { color: 'var(--text-tertiary)' }
+              },
+              x: {
+                grid: { display: false },
+                ticks: { color: 'var(--text-tertiary)' }
+              }
+            }
+          }
+        });
       },
       
       getPendingActivities: function(todayTasks, atividades) {
