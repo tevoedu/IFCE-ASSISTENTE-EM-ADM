@@ -1661,6 +1661,90 @@
       background: var(--accent-solid);
       color: white;
     }
+
+    /* ---------- NOVO MODAL DE ESTATÍSTICAS ---------- */
+    .stats-modal .modal-content {
+      max-width: 1300px;
+      width: 95%;
+    }
+    .stats-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 1.5rem;
+      gap: 0.5rem;
+    }
+    .stats-tab {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition-micro);
+      font-size: 1rem;
+    }
+    .stats-tab:hover {
+      color: var(--accent-solid);
+    }
+    .stats-tab.active {
+      color: var(--accent-solid);
+      border-bottom-color: var(--accent-solid);
+    }
+    .stats-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .period-selector {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .period-btn {
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-inset);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: var(--transition-micro);
+    }
+    .period-btn.active {
+      background: var(--accent-solid);
+      color: white;
+      border-color: var(--accent-solid);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .chart-box {
+      background: var(--bg-inset);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+    .chart-box h4 {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+    .chart-canvas-container {
+      flex: 1;
+      position: relative;
+      min-height: 250px;
+    }
+    .donut-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
@@ -1679,7 +1763,7 @@
       <button class="panel-toggle-btn" id="panelToggleBtn" aria-label="Alternar painel lateral">
         <i class="fas fa-chart-bar"></i>
       </button>
-      <!-- NOVOS BOTÕES: exportar, importar, conquistas -->
+      <!-- NOVOS BOTÕES: exportar, importar, conquistas, estatísticas -->
       <button class="header-btn" id="exportDataBtn" title="Exportar dados (CSV)">
         <i class="fas fa-download"></i>
       </button>
@@ -1688,6 +1772,10 @@
       </button>
       <button class="header-btn" id="achievementsBtn" title="Conquistas">
         <i class="fas fa-trophy"></i>
+      </button>
+      <!-- NOVO BOTÃO DE ESTATÍSTICAS apenas com ícone -->
+      <button class="header-btn" id="statsBtn" title="Estatísticas">
+        <i class="fas fa-chart-pie"></i>
       </button>
       <button class="header-btn" id="themeToggle">
         <i class="fas fa-moon"></i>
@@ -1975,6 +2063,46 @@
     </div>
   </div>
 
+  <!-- NOVO MODAL: Estatísticas -->
+  <div class="modal stats-modal" id="statsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-chart-pie"></i> Estatísticas Detalhadas</h3>
+        <button class="close-modal" id="closeStatsModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="stats-tabs" id="statsTabs">
+          <button class="stats-tab active" data-tab="hours">Horas Estudadas</button>
+          <button class="stats-tab" data-tab="questions">Questões</button>
+          <button class="stats-tab" data-tab="theory">Estudo Teórico</button>
+          <button class="stats-tab" data-tab="anki">Anki</button>
+        </div>
+        <div class="stats-header">
+          <div class="period-selector" id="periodSelector">
+            <button class="period-btn active" data-days="7">7 dias</button>
+            <button class="period-btn" data-days="30">30 dias</button>
+            <button class="period-btn" data-days="90">90 dias</button>
+            <button class="period-btn" data-days="365">1 ano</button>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="chart-box">
+            <h4 id="barChartTitle">Horas por dia</h4>
+            <div class="chart-canvas-container">
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-box donut-container">
+            <h4 id="donutChartTitle">Distribuição</h4>
+            <div class="chart-canvas-container">
+              <canvas id="donutChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Pomodoro floating modal (persistente) com novos botões: minimizar e concluir -->
   <div class="pomodoro-floating" id="pomodoroFloating" style="display: none;">
     <div class="pomodoro-card">
@@ -2162,8 +2290,8 @@
           }
           return count;
         },
+        // CORREÇÃO DO STREAK: baseado em datas (ignora horas)
         getStreak() {
-          // calcula streak de dias com qualquer atividade
           let streak = 0;
           let current = new Date();
           while (true) {
@@ -2176,7 +2304,23 @@
             streak++;
             current.setDate(current.getDate() - 1);
           }
+          // Persiste o streak calculado
+          localStorage.setItem('studyFlow_streak', streak);
+          if (streak > 0) {
+            const hoje = new Date().toISOString().split('T')[0];
+            localStorage.setItem('studyFlow_lastActivityDate', hoje);
+          } else {
+            localStorage.removeItem('studyFlow_lastActivityDate');
+          }
           return streak;
+        },
+        // Atualiza o streak após um registro (chamado nos saves)
+        updateStreakAfterActivity() {
+          // Apenas força o recálculo no próximo getStreak
+          // Mas também podemos atualizar a última data
+          const hoje = new Date().toISOString().split('T')[0];
+          localStorage.setItem('studyFlow_lastActivityDate', hoje);
+          // Não precisamos incrementar manualmente, o getStreak recalcula
         },
         getMetaStatus() {
           const hojeStr = chatBot ? chatBot.getDynamicDateString() : new Date().toISOString().split('T')[0];
@@ -3140,6 +3284,9 @@
         document.getElementById('importDataBtn').addEventListener('click', () => this.importData());
         document.getElementById('achievementsBtn').addEventListener('click', () => this.showAchievementsModal());
 
+        // NOVO: Estatísticas
+        document.getElementById('statsBtn').addEventListener('click', () => this.openStatsModal());
+
         // Goals modal
         document.getElementById('editGoalsBtn').addEventListener('click', () => this.openGoalModal());
         document.getElementById('closeGoalModal').addEventListener('click', () => this.closeGoalModal());
@@ -3160,6 +3307,7 @@
           const postSaveModal = document.getElementById('postSaveModal');
           const goalModal = document.getElementById('goalModal');
           const achievementsModal = document.getElementById('achievementsModal');
+          const statsModal = document.getElementById('statsModal');
           
           if (e.target === registerModal) this.closeRegisterModal();
           if (e.target === yesterdayModal) this.closeYesterdayModal();
@@ -3169,6 +3317,7 @@
           if (e.target === postSaveModal) document.getElementById('postSaveModal').style.display = 'none';
           if (e.target === goalModal) this.closeGoalModal();
           if (e.target === achievementsModal) this.closeAchievementsModal();
+          if (e.target === statsModal) this.closeStatsModal();
         });
       }
 
@@ -4019,6 +4168,9 @@
           this.registerHomeSession(`Questões - ${assuntoId}`, parseInt(tempo), specificDate);
           localStorage.setItem('ultimoEstudo', new Date().toISOString());
           
+          // Atualizar streak após atividade
+          ChatSystem.StateAdapter.updateStreakAfterActivity();
+          
           if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
             window.UI_ENHANCER.updateSidePanel();
           }
@@ -4044,6 +4196,9 @@
           
           localStorage.setItem('ultimoEstudo', new Date().toISOString());
           
+          // Atualizar streak após atividade
+          ChatSystem.StateAdapter.updateStreakAfterActivity();
+          
           if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
             window.UI_ENHANCER.updateSidePanel();
           }
@@ -4060,6 +4215,9 @@
         this.registerHomeSession(`Anki - ${deckNome}`, parseInt(tempo), specificDate);
         
         localStorage.setItem('ultimoEstudo', new Date().toISOString());
+        
+        // Atualizar streak após atividade
+        ChatSystem.StateAdapter.updateStreakAfterActivity();
         
         if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
           window.UI_ENHANCER.updateSidePanel();
@@ -7682,6 +7840,256 @@
         dateDiv.innerHTML = `<span>${dataFormatada}</span>`;
         chatMessages.appendChild(dateDiv);
       }
+
+      // NOVO: abrir modal de estatísticas
+      openStatsModal() {
+        const modal = document.getElementById('statsModal');
+        modal.style.display = 'flex';
+        this.currentStatsTab = 'hours';
+        this.currentStatsPeriod = 7;
+        this.renderStatsCharts();
+        this.setupStatsListeners();
+      }
+
+      closeStatsModal() {
+        document.getElementById('statsModal').style.display = 'none';
+      }
+
+      setupStatsListeners() {
+        const tabs = document.querySelectorAll('#statsTabs .stats-tab');
+        tabs.forEach(tab => {
+          tab.removeEventListener('click', this.statsTabHandler);
+          this.statsTabHandler = (e) => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            this.currentStatsTab = tab.dataset.tab;
+            this.renderStatsCharts();
+          };
+          tab.addEventListener('click', this.statsTabHandler);
+        });
+
+        const periodBtns = document.querySelectorAll('#periodSelector .period-btn');
+        periodBtns.forEach(btn => {
+          btn.removeEventListener('click', this.periodHandler);
+          this.periodHandler = (e) => {
+            periodBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.currentStatsPeriod = parseInt(btn.dataset.days);
+            this.renderStatsCharts();
+          };
+          btn.addEventListener('click', this.periodHandler);
+        });
+      }
+
+      renderStatsCharts() {
+        const days = this.currentStatsPeriod;
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(endDate.getDate() - (days - 1)); // days inclusive
+
+        // Coletar dados por dia no período
+        const dateMap = new Map();
+        for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+          const dateStr = d.toISOString().split('T')[0];
+          dateMap.set(dateStr, { questoes: [], anki: [], teoria: [] });
+        }
+
+        // Preencher com dados do localStorage
+        for (let [dateStr] of dateMap) {
+          const daily = JSON.parse(localStorage.getItem(`dailyActivities_${dateStr}`)) || { activities: {} };
+          const acts = daily.activities || {};
+          dateMap.set(dateStr, {
+            questoes: acts.questoes || [],
+            anki: acts.anki || [],
+            teoria: acts.teoria || []
+          });
+        }
+
+        // Preparar arrays para gráficos
+        const labels = [];
+        let feitasData = [];
+        let acertosData = [];
+        const barData = []; // para outras abas
+        const donutData = {};
+
+        for (let [dateStr, data] of dateMap) {
+          const d = new Date(dateStr + 'T00:00:00');
+          labels.push(d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }));
+
+          // Calcular valores conforme a aba
+          if (this.currentStatsTab === 'hours') {
+            let totalMin = 0;
+            data.questoes.forEach(q => totalMin += q.tempo || 0);
+            data.anki.forEach(a => totalMin += a.tempo || 0);
+            data.teoria.forEach(t => totalMin += t.tempo || 0);
+            barData.push(totalMin);
+
+            // Donut: distribuição por tipo
+            let questoesMin = data.questoes.reduce((acc, q) => acc + (q.tempo || 0), 0);
+            let ankiMin = data.anki.reduce((acc, a) => acc + (a.tempo || 0), 0);
+            let teoriaMin = data.teoria.reduce((acc, t) => acc + (t.tempo || 0), 0);
+            donutData['Questões'] = (donutData['Questões'] || 0) + questoesMin;
+            donutData['Anki'] = (donutData['Anki'] || 0) + ankiMin;
+            donutData['Teoria'] = (donutData['Teoria'] || 0) + teoriaMin;
+          } else if (this.currentStatsTab === 'questions') {
+            let totalQuestoes = 0;
+            let totalAcertos = 0;
+            data.questoes.forEach(q => {
+              totalQuestoes += q.feitas || 0;
+              totalAcertos += (q.feitas - q.erradas) || 0;
+            });
+            feitasData.push(totalQuestoes);
+            acertosData.push(totalAcertos);
+            // Donut: acertos vs erros
+            let totalErros = totalQuestoes - totalAcertos;
+            donutData['Acertos'] = (donutData['Acertos'] || 0) + totalAcertos;
+            donutData['Erros'] = (donutData['Erros'] || 0) + totalErros;
+          } else if (this.currentStatsTab === 'theory') {
+            let totalAulas = data.teoria.length;
+            barData.push(totalAulas);
+            // Donut: por disciplina
+            data.teoria.forEach(t => {
+              const materia = t.materia || 'Outros';
+              donutData[materia] = (donutData[materia] || 0) + 1;
+            });
+          } else if (this.currentStatsTab === 'anki') {
+            let totalCards = data.anki.reduce((acc, a) => acc + (a.cards || 0), 0);
+            barData.push(totalCards);
+            // Donut: por baralho
+            data.anki.forEach(a => {
+              const deck = a.deck || 'Outros';
+              donutData[deck] = (donutData[deck] || 0) + (a.cards || 0);
+            });
+          }
+        }
+
+        // Renderizar gráfico de barras
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        if (window.barChartInstance) window.barChartInstance.destroy();
+        
+        if (this.currentStatsTab === 'questions') {
+          window.barChartInstance = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: 'Feitas',
+                  data: feitasData,
+                  backgroundColor: '#3B82F6',
+                  borderRadius: 6
+                },
+                {
+                  label: 'Acertadas',
+                  data: acertosData,
+                  backgroundColor: '#22C55E',
+                  borderRadius: 6
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: true, position: 'top', labels: { color: 'var(--text-primary)' } }
+              },
+              scales: {
+                y: { beginAtZero: true, grid: { color: 'var(--border-light)' }, ticks: { color: 'var(--text-tertiary)' } },
+                x: { grid: { display: false }, ticks: { color: 'var(--text-tertiary)' } }
+              }
+            }
+          });
+        } else {
+          window.barChartInstance = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: this.getBarLabel(),
+                data: barData,
+                backgroundColor: this.currentStatsTab === 'theory' ? '#22C55E' : 
+                                 this.currentStatsTab === 'anki' ? '#EF4444' : '#4F5BFF',
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                y: { beginAtZero: true, grid: { color: 'var(--border-light)' }, ticks: { color: 'var(--text-tertiary)' } },
+                x: { grid: { display: false }, ticks: { color: 'var(--text-tertiary)' } }
+              }
+            }
+          });
+        }
+
+        // Renderizar gráfico de rosca
+        const donutCtx = document.getElementById('donutChart').getContext('2d');
+        if (window.donutChartInstance) window.donutChartInstance.destroy();
+        const donutLabels = Object.keys(donutData);
+        const donutValues = Object.values(donutData);
+        const backgroundColors = this.getDonutColors(donutLabels.length);
+        window.donutChartInstance = new Chart(donutCtx, {
+          type: 'doughnut',
+          data: {
+            labels: donutLabels,
+            datasets: [{
+              data: donutValues,
+              backgroundColor: backgroundColors,
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: 'var(--text-primary)' } }
+            },
+            cutout: '65%'
+          }
+        });
+
+        document.getElementById('barChartTitle').textContent = this.getBarTitle();
+        document.getElementById('donutChartTitle').textContent = this.getDonutTitle();
+      }
+
+      getBarLabel() {
+        switch(this.currentStatsTab) {
+          case 'hours': return 'Minutos';
+          case 'questions': return 'Questões';
+          case 'theory': return 'Aulas';
+          case 'anki': return 'Cards';
+          default: return 'Valor';
+        }
+      }
+
+      getBarTitle() {
+        switch(this.currentStatsTab) {
+          case 'hours': return 'Horas por dia';
+          case 'questions': return 'Questões por dia';
+          case 'theory': return 'Aulas teóricas por dia';
+          case 'anki': return 'Revisões Anki por dia';
+          default: return '';
+        }
+      }
+
+      getDonutTitle() {
+        switch(this.currentStatsTab) {
+          case 'hours': return 'Distribuição por tipo';
+          case 'questions': return 'Acertos vs Erros';
+          case 'theory': return 'Distribuição por disciplina';
+          case 'anki': return 'Distribuição por baralho';
+          default: return '';
+        }
+      }
+
+      getDonutColors(count) {
+        const palette = ['#3B82F6', '#22C55E', '#EF4444', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'];
+        return palette.slice(0, count);
+      }
     }
     
     let chatBot;
@@ -8231,11 +8639,22 @@
           window.weeklyChartInstance.destroy();
         }
 
-        const labels = [];
+        // Obter os dias da semana atual começando na segunda-feira
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 = domingo, 1 = segunda, ..., 6 = sábado
+        // Ajustar: queremos segunda como primeiro dia
+        // Se hoje é domingo (0), segunda é 6 dias atrás
+        // Se hoje é segunda (1), segunda é hoje
+        const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        const monday = new Date(today);
+        monday.setDate(today.getDate() - diffToMonday);
+
+        const labels = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
         const data = [];
-        for (let i = 6; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
+
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(monday);
+          d.setDate(monday.getDate() + i);
           const ds = d.toISOString().split('T')[0];
           const daily = JSON.parse(localStorage.getItem(`dailyActivities_${ds}`)) || { activities: {} };
           const acts = daily.activities || {};
@@ -8243,7 +8662,6 @@
           if (acts.questoes) acts.questoes.forEach(q => dayTime += q.tempo || 0);
           if (acts.anki) acts.anki.forEach(a => dayTime += a.tempo || 0);
           if (acts.teoria) acts.teoria.forEach(t => dayTime += t.tempo || 0);
-          labels.push(d.toLocaleDateString('pt-BR', { weekday: 'short' }));
           data.push(dayTime);
         }
 
@@ -8254,7 +8672,7 @@
             datasets: [{
               label: 'Minutos',
               data: data,
-              backgroundColor: 'var(--accent-solid)',
+              backgroundColor: '#3B82F6', // azul fixo
               borderRadius: 6
             }]
           },
@@ -8353,6 +8771,9 @@
       if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
         window.UI_ENHANCER.updateSidePanel();
       }
+
+      // Adicionar listener para fechar modal de estatísticas
+      document.getElementById('closeStatsModal').addEventListener('click', () => chatBot.closeStatsModal());
     });
     
     window.UI_ENHANCER.init();
