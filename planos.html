@@ -3,44 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyFlow - Gerenciador de Ciclos de Estudo</title>
+    <title>StudyFlow — Gerenciador de Ciclos de Estudo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fonte Inter (já incluída) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <style>
-        /* Variáveis de cores */
+        /* ============================================= */
+        /* DESIGN SYSTEM PREMIUM – ESTUDYFLOW           */
+        /* refinamento visual sem quebrar funcionalidades*/
+        /* ============================================= */
+
+        /* Variáveis refinadas – paleta mais sofisticada */
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #7209b7;
-            --success: #06d6a0;
-            --danger: #ef476f;
-            --warning: #ffd166;
-            --info: #118ab2;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
+            --primary: #6366f1;        /* indigo moderno */
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;      /* violeta */
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --light: #f9fafb;
+            --dark: #030712;
+            --gray: #6b7280;
+            --light-gray: #f3f4f6;
             --card-bg: #ffffff;
-            --body-bg: #f5f7fb;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --border-color: #dee2e6;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
+            --body-bg: #f9fafb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --border-color: #e9eef2;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+            --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-sm: 6px;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         .dark-theme {
-            --primary: #5a7dff;
-            --primary-dark: #4a6cef;
-            --card-bg: #1e293b;
-            --body-bg: #0f172a;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --border-color: #334155;
-            --light-gray: #334155;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --primary: #818cf8;
+            --primary-light: #a5b4fc;
+            --primary-dark: #6366f1;
+            --card-bg: #1f2937;
+            --body-bg: #111827;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border-color: #374151;
+            --light-gray: #1f2937;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+            --shadow-xl: 0 25px 50px -12px rgb(0 0 0 / 0.5);
         }
 
-        /* Reset e estilos base */
+        /* Reset e base premium */
         * {
             margin: 0;
             padding: 0;
@@ -48,66 +72,112 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-sans);
             background-color: var(--body-bg);
             color: var(--text-primary);
             line-height: 1.6;
-            transition: var(--transition);
+            transition: background-color 0.3s, color 0.2s;
+            font-size: 15px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.02) 0%, transparent 50%),
+                              radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.02) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 32px;
         }
 
-        /* Header */
+        /* Scroll refinado */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 20px;
+            transition: background 0.2s;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray);
+        }
+
+        /* Header com efeito vidro premium */
         header {
-            background-color: var(--card-bg);
-            box-shadow: var(--shadow);
+            background-color: rgba(var(--card-bg-rgb), 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+        /* fallback */
+        header {
+            background-color: var(--card-bg);
+        }
+        @supports (backdrop-filter: blur(12px)) {
+            header {
+                background-color: rgba(255, 255, 255, 0.6);
+            }
+            .dark-theme header {
+                background-color: rgba(31, 41, 55, 0.6);
+            }
         }
 
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
+            padding: 16px 0;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
+            gap: 12px;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--primary);
+            letter-spacing: -0.03em;
         }
 
         .logo i {
             font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .nav-buttons {
             display: flex;
-            gap: 5px;
+            gap: 4px;
         }
 
         .nav-btn {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 15px;
+            padding: 10px 18px;
             background-color: transparent;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-lg);
             color: var(--text-secondary);
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+            font-size: 0.95rem;
         }
 
         .nav-btn:hover {
@@ -116,8 +186,9 @@
         }
 
         .nav-btn.active {
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: var(--shadow-md);
         }
 
         .nav-btn i {
@@ -125,9 +196,9 @@
         }
 
         .theme-toggle, .mobile-menu-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            border-radius: 9999px;
             background-color: var(--light-gray);
             border: none;
             color: var(--text-primary);
@@ -136,94 +207,162 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            box-shadow: var(--shadow-sm);
         }
 
         .theme-toggle:hover, .mobile-menu-btn:hover {
             background-color: var(--primary);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .mobile-menu-btn {
             display: none;
         }
 
-        /* Main Content */
+        /* Main content com animação sutil */
         main {
-            padding: 30px 0;
+            padding: 40px 0;
             min-height: calc(100vh - 140px);
+            animation: fadeInUp 0.5s ease-out;
         }
 
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Títulos com hierarquia refinada */
         .section-title {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 28px;
             color: var(--text-primary);
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
         }
 
         .section-title i {
             color: var(--primary);
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
+        /* Cards com elevação e bordas refinadas */
         .card {
             background-color: var(--card-bg);
-            border-radius: 12px;
+            border-radius: var(--radius-2xl);
             box-shadow: var(--shadow);
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 28px;
+            margin-bottom: 28px;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Dashboard */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        #dashboardCard.card {
+            border-top: none; /* removido para usar pseudo-elemento */
+        }
+
         .cycle-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 20px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
         }
 
         .cycle-title {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
+            font-size: 2rem;
+            margin-bottom: 4px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .cycle-badges {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border: 1px solid transparent;
+            box-shadow: var(--shadow-sm);
         }
 
         .badge-review {
-            background-color: rgba(6, 214, 160, 0.15);
-            color: #06d6a0;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.2);
         }
 
         .badge-simulated {
-            background-color: rgba(113, 9, 183, 0.15);
-            color: #7209b7;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.2));
+            color: var(--secondary);
+            border-color: rgba(139, 92, 246, 0.2);
         }
 
         .badge-completed {
-            background-color: rgba(239, 71, 111, 0.15);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.2));
             color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.2);
         }
 
         .progress-container {
             display: flex;
-            gap: 30px;
-            margin-bottom: 30px;
+            gap: 40px;
+            margin-bottom: 36px;
             flex-wrap: wrap;
         }
 
         .progress-ring-container {
             position: relative;
-            width: 150px;
-            height: 150px;
+            width: 160px;
+            height: 160px;
+            filter: drop-shadow(var(--shadow-md));
         }
 
         .progress-ring {
@@ -239,12 +378,12 @@
 
         .progress-ring-fill {
             fill: none;
-            stroke: var(--primary);
+            stroke: url(#gradient) var(--primary);
             stroke-width: 8;
             stroke-linecap: round;
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
-            transition: stroke-dashoffset 0.5s ease;
+            transition: stroke-dashoffset 0.8s ease;
         }
 
         .progress-text {
@@ -256,20 +395,31 @@
         }
 
         .progress-percentage {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             display: block;
+            line-height: 1.2;
         }
 
         .progress-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .progress-info {
             flex: 1;
             min-width: 200px;
+        }
+
+        .progress-info h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 6px;
         }
 
         .current-day-subjects {
@@ -281,103 +431,132 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: var(--light-gray);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
+            background: linear-gradient(135deg, var(--light-gray), var(--card-bg));
+            padding: 18px 24px;
+            border-radius: var(--radius-xl);
+            margin-top: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
         }
 
         .subject-name {
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 1.2rem;
         }
 
         .subject-name.completed {
             text-decoration: line-through;
             color: var(--text-secondary);
+            opacity: 0.7;
         }
 
         .complete-btn {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 15px;
-            background-color: var(--success);
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--success), #0e9f6e);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            box-shadow: var(--shadow-md);
         }
 
         .complete-btn:hover {
-            background-color: #05b58b;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.05);
         }
 
         .complete-btn.completed {
-            background-color: var(--light-gray);
+            background: var(--light-gray);
             color: var(--text-secondary);
+            box-shadow: none;
         }
 
         .complete-btn.completed:hover {
-            background-color: #d1d5db;
+            background: #e5e7eb;
+            transform: none;
+            box-shadow: none;
         }
 
         .cycle-days h3 {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .cycle-list {
             list-style: none;
-            max-height: 300px;
+            max-height: 380px;
             overflow-y: auto;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: var(--radius-xl);
+            padding: 12px;
+            background-color: var(--card-bg);
+            box-shadow: inset var(--shadow-sm);
         }
 
         .day-item {
             display: flex;
             align-items: center;
-            padding: 10px;
+            padding: 14px 20px;
             border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+            border-radius: var(--radius);
         }
-
         .day-item:last-child {
             border-bottom: none;
         }
+        .day-item:hover {
+            background-color: var(--light-gray);
+        }
 
         .day-number {
-            font-weight: 500;
-            min-width: 70px;
+            font-weight: 600;
+            min-width: 90px;
+            color: var(--primary);
         }
 
         .day-subject {
             flex: 1;
+            font-weight: 500;
         }
 
         .day-item.completed .day-number,
         .day-item.completed .day-subject {
             color: var(--text-secondary);
+            text-decoration: line-through;
         }
 
         .cycle-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 16px;
+            margin-top: 28px;
             flex-wrap: wrap;
         }
 
+        /* Botões premium */
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
+            gap: 10px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: var(--shadow-sm);
+            letter-spacing: 0.01em;
         }
 
         .btn i {
@@ -385,126 +564,170 @@
         }
 
         .btn-primary {
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
         }
-
         .btn-primary:hover {
-            background-color: var(--primary-dark);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-secondary {
-            background-color: var(--light-gray);
+            background: var(--light-gray);
             color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
-
         .btn-secondary:hover {
-            background-color: #d1d5db;
+            background: #e5e7eb;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
         .btn-danger {
-            background-color: var(--danger);
+            background: linear-gradient(135deg, var(--danger), #dc2626);
             color: white;
         }
-
         .btn-danger:hover {
-            background-color: #e5315d;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #0e9f6e);
+            color: white;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg);
         }
 
         .no-cycle, .no-cycles {
             text-align: center;
-            padding: 30px 0;
+            padding: 60px 20px;
         }
 
         .no-cycle-icon, .no-cycles-icon {
-            font-size: 3rem;
+            font-size: 4rem;
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            opacity: 0.6;
         }
 
         .no-cycle h3, .no-cycles h3 {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-size: 1.8rem;
+            font-weight: 600;
         }
 
         .no-cycle p, .no-cycles p {
             color: var(--text-secondary);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
+        /* Grid de ciclos */
         .cycles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
         }
 
         .cycle-card {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: var(--radius-2xl);
+            padding: 24px;
             position: relative;
             box-shadow: var(--shadow);
-            transition: transform 0.3s ease;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .cycle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.2s;
         }
 
         .cycle-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .cycle-card:hover::before {
+            opacity: 1;
         }
 
         .cycle-card-status {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--success);
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, var(--success), #0e9f6e);
             color: white;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            box-shadow: var(--shadow-sm);
         }
 
         .cycle-card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
 
         .cycle-card-title {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
         }
 
         .cycle-card-date {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
 
         .cycle-card-badges {
             display: flex;
             gap: 8px;
-            margin: 10px 0;
+            margin: 16px 0;
+            flex-wrap: wrap;
         }
 
         .cycle-card-actions {
             display: flex;
             gap: 8px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .cycle-card-actions .btn {
             flex: 1;
             justify-content: center;
-            padding: 8px 10px;
+            padding: 10px 12px;
             font-size: 0.85rem;
         }
 
-        /* Overlay */
+        /* Overlay com blur */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -521,23 +744,24 @@
 
         .overlay-content {
             background-color: var(--card-bg);
-            border-radius: 12px;
+            border-radius: var(--radius-2xl);
             width: 90%;
-            max-width: 800px;
+            max-width: 850px;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 25px;
+            padding: 36px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
         }
 
         .close-overlay {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            top: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 9999px;
             background-color: var(--light-gray);
             border: none;
             color: var(--text-primary);
@@ -551,73 +775,81 @@
         .close-overlay:hover {
             background-color: var(--danger);
             color: white;
+            transform: rotate(90deg) scale(1.1);
         }
 
+        /* Formulários refinados */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 28px;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
+            margin-bottom: 10px;
+            font-weight: 600;
             color: var(--text-primary);
+            font-size: 0.95rem;
         }
 
         .form-input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 14px 20px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: var(--radius-xl);
             background-color: var(--card-bg);
             color: var(--text-primary);
             font-size: 1rem;
             transition: var(--transition);
+            font-family: var(--font-sans);
+            box-shadow: inset var(--shadow-sm);
         }
 
         .form-input:focus {
             border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
         }
 
         .form-checkbox-label {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 16px;
             cursor: pointer;
+            font-weight: 500;
         }
 
         .form-checkbox {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             accent-color: var(--primary);
+            border-radius: 6px;
         }
 
         .form-optional {
-            padding-left: 28px;
-            margin-top: 10px;
+            padding-left: 30px;
+            margin-top: 16px;
         }
 
-        /* Novo estilo para o card de adicionar matéria */
+        /* Card para adicionar matérias */
         .materia-card-form {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--light-gray), var(--card-bg));
+            border-radius: var(--radius-2xl);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 28px;
+            border: 1px solid var(--border-color);
         }
 
         .slider-container {
-            margin-bottom: 20px;
+            margin-bottom: 28px;
         }
 
         .slider-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .slider-label {
@@ -628,15 +860,20 @@
         .slider-value {
             font-weight: 600;
             color: var(--primary);
-            min-width: 40px;
+            min-width: 45px;
             text-align: right;
+            background: var(--card-bg);
+            padding: 4px 12px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
         }
 
         .slider {
             width: 100%;
             height: 8px;
             border-radius: 4px;
-            background: var(--light-gray);
+            background: var(--border-color);
             outline: none;
             -webkit-appearance: none;
             transition: var(--transition);
@@ -644,12 +881,14 @@
 
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             cursor: pointer;
             transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            border: 2px solid white;
         }
 
         .slider::-webkit-slider-thumb:hover {
@@ -657,12 +896,12 @@
         }
 
         .slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             cursor: pointer;
-            border: none;
+            border: 2px solid white;
             transition: var(--transition);
         }
 
@@ -676,56 +915,72 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
-            padding: 12px;
-            background-color: var(--primary);
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            font-size: 1rem;
+            box-shadow: var(--shadow-md);
         }
 
         .add-materia-btn:hover {
-            background-color: var(--primary-dark);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.05);
         }
 
-        /* Novo estilo para os cards de matérias */
+        /* Cards de matérias */
         .materia-cards-container {
             background-color: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            min-height: 200px;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            min-height: 150px;
+            border: 1px solid var(--border-color);
         }
 
         .materia-cards-title {
-            font-weight: 500;
-            margin-bottom: 15px;
+            font-weight: 600;
+            margin-bottom: 18px;
             color: var(--text-primary);
+            font-size: 1rem;
         }
 
         .materia-cards {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 14px;
             margin-top: 10px;
         }
 
         .materia-card {
             display: inline-flex;
             align-items: center;
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            border-radius: 20px;
-            padding: 8px 15px;
-            font-size: 0.9rem;
-            gap: 10px;
-            box-shadow: var(--shadow);
+            border-radius: 9999px;
+            padding: 8px 18px 8px 22px;
+            font-size: 0.95rem;
+            gap: 14px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .materia-card:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg);
         }
 
         .materia-percentage {
-            font-weight: 600;
+            font-weight: 700;
+            background: rgba(255,255,255,0.25);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
         }
 
         .delete-card-btn {
@@ -734,51 +989,57 @@
             color: white;
             cursor: pointer;
             padding: 0;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 20px;
-            height: 20px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
+            background: rgba(0,0,0,0.2);
         }
 
         .delete-card-btn:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(0,0,0,0.4);
+            transform: scale(1.15);
         }
 
         .no-subjects {
             color: var(--text-secondary);
             text-align: center;
-            padding: 30px 0;
+            padding: 40px 0;
             font-style: italic;
         }
 
         .no-subjects i {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 12px;
             display: block;
             color: var(--primary);
+            opacity: 0.6;
         }
 
-        /* Toast */
+        /* Toast premium */
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 32px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background-color: var(--success);
+            background: linear-gradient(135deg, var(--success), #0e9f6e);
             color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
+            padding: 16px 32px;
+            border-radius: var(--radius-xl);
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            gap: 16px;
+            box-shadow: var(--shadow-xl);
             z-index: 1100;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
         }
 
         .toast.show {
@@ -787,13 +1048,13 @@
         }
 
         .toast.error {
-            background-color: var(--danger);
+            background: linear-gradient(135deg, var(--danger), #dc2626);
         }
 
         /* Footer */
         footer {
             background-color: var(--card-bg);
-            padding: 20px 0;
+            padding: 28px 0;
             text-align: center;
             color: var(--text-secondary);
             font-size: 0.9rem;
@@ -802,6 +1063,9 @@
 
         /* Responsividade */
         @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
             .nav-buttons {
                 display: none;
                 position: absolute;
@@ -810,8 +1074,10 @@
                 right: 0;
                 background-color: var(--card-bg);
                 flex-direction: column;
-                padding: 10px 20px;
-                box-shadow: var(--shadow);
+                padding: 20px;
+                box-shadow: var(--shadow-lg);
+                border-top: 1px solid var(--border-color);
+                backdrop-filter: blur(12px);
             }
             
             .nav-buttons.show {
@@ -838,35 +1104,36 @@
             .cycle-actions .btn {
                 width: 100%;
             }
+
+            .cycles-grid, .predefined-cycles-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        /* ============================================= */
-        /* ESTILOS PARA EXPORTAÇÃO/IMPORTAÇÃO */
-        /* ============================================= */
-        
+        /* Mantidos os estilos de exportação/importação, apenas refinados */
         .importExport__floating-btn {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: var(--primary);
+            bottom: 28px;
+            right: 28px;
+            width: 64px;
+            height: 64px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-xl);
             cursor: pointer;
             z-index: 999;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
             transition: var(--transition);
         }
 
         .importExport__floating-btn:hover {
-            background-color: var(--primary-dark);
-            transform: scale(1.05);
+            transform: scale(1.1) translateY(-4px);
+            box-shadow: var(--shadow-xl);
         }
 
         .importExport__modal {
@@ -875,7 +1142,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -892,31 +1160,33 @@
 
         .importExport__modal-content {
             background-color: var(--card-bg);
-            border-radius: 12px;
+            border-radius: var(--radius-2xl);
             width: 90%;
-            max-width: 600px;
+            max-width: 650px;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 25px;
+            padding: 36px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
         }
 
         .importExport__modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            margin-bottom: 28px;
+            padding-bottom: 18px;
             border-bottom: 1px solid var(--border-color);
         }
 
         .importExport__modal-title {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-weight: 700;
         }
 
         .importExport__close-btn {
@@ -926,8 +1196,8 @@
             font-size: 1.5rem;
             cursor: pointer;
             transition: var(--transition);
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -937,142 +1207,149 @@
         .importExport__close-btn:hover {
             background-color: var(--light-gray);
             color: var(--danger);
+            transform: rotate(90deg);
         }
 
         .importExport__section {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
+            margin-bottom: 32px;
+            padding-bottom: 28px;
             border-bottom: 1px solid var(--border-color);
         }
 
         .importExport__section-title {
             font-size: 1.2rem;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 600;
         }
 
         .importExport__btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
+            gap: 10px;
+            padding: 14px 28px;
             border: none;
-            border-radius: 8px;
-            font-weight: 500;
+            border-radius: var(--radius-xl);
+            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             width: 100%;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            box-shadow: var(--shadow-sm);
         }
 
         .importExport__btn-primary {
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
         }
-
         .importExport__btn-primary:hover {
-            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .importExport__btn-secondary {
-            background-color: var(--light-gray);
+            background: var(--light-gray);
             color: var(--text-primary);
+            border: 1px solid var(--border-color);
         }
-
         .importExport__btn-secondary:hover {
-            background-color: #d1d5db;
+            background: #e5e7eb;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
         }
 
         .importExport__btn-success {
-            background-color: var(--success);
+            background: linear-gradient(135deg, var(--success), #0e9f6e);
             color: white;
         }
-
         .importExport__btn-success:hover {
-            background-color: #05b58b;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .importExport__btn-warning {
-            background-color: var(--warning);
+            background: linear-gradient(135deg, var(--warning), #e07b0c);
             color: var(--dark);
         }
-
         .importExport__btn-warning:hover {
-            background-color: #ffc745;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .importExport__btn-danger {
-            background-color: var(--danger);
+            background: linear-gradient(135deg, var(--danger), #dc2626);
             color: white;
         }
-
         .importExport__btn-danger:hover {
-            background-color: #e5315d;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .importExport__file-input {
             width: 100%;
-            padding: 15px;
+            padding: 32px;
             border: 2px dashed var(--border-color);
-            border-radius: 8px;
+            border-radius: var(--radius-xl);
             background-color: var(--light-gray);
             text-align: center;
             cursor: pointer;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             transition: var(--transition);
         }
 
         .importExport__file-input:hover {
             border-color: var(--primary);
-            background-color: rgba(67, 97, 238, 0.05);
+            background-color: rgba(99, 102, 241, 0.05);
         }
 
         .importExport__file-input.drag-over {
             border-color: var(--success);
-            background-color: rgba(6, 214, 160, 0.1);
+            background-color: rgba(16, 185, 129, 0.1);
         }
 
         .importExport__textarea {
             width: 100%;
-            min-height: 150px;
-            padding: 12px;
+            min-height: 160px;
+            padding: 18px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: var(--radius-xl);
             background-color: var(--card-bg);
             color: var(--text-primary);
-            font-family: monospace;
+            font-family: 'Monaco', 'Menlo', monospace;
             font-size: 0.9rem;
             resize: vertical;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .importExport__status {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            padding: 18px;
+            border-radius: var(--radius-xl);
+            margin-bottom: 18px;
             display: none;
+            font-weight: 500;
         }
 
         .importExport__status.success {
-            background-color: rgba(6, 214, 160, 0.15);
+            background-color: rgba(16, 185, 129, 0.1);
             border: 1px solid var(--success);
-            color: #06d6a0;
+            color: var(--success);
             display: block;
         }
 
         .importExport__status.error {
-            background-color: rgba(239, 71, 111, 0.15);
+            background-color: rgba(239, 68, 68, 0.1);
             border: 1px solid var(--danger);
             color: var(--danger);
             display: block;
         }
 
         .importExport__status.warning {
-            background-color: rgba(255, 209, 102, 0.15);
+            background-color: rgba(245, 158, 11, 0.1);
             border: 1px solid var(--warning);
             color: var(--warning);
             display: block;
@@ -1080,33 +1357,33 @@
 
         .importExport__progress {
             width: 100%;
-            height: 8px;
+            height: 10px;
             background-color: var(--light-gray);
-            border-radius: 4px;
+            border-radius: 20px;
             overflow: hidden;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             display: none;
         }
 
         .importExport__progress-bar {
             height: 100%;
-            background-color: var(--primary);
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             width: 0%;
             transition: width 0.3s ease;
         }
 
         .importExport__details {
             background-color: var(--light-gray);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            max-height: 200px;
+            border-radius: var(--radius-xl);
+            padding: 18px;
+            margin-top: 18px;
+            max-height: 220px;
             overflow-y: auto;
         }
 
         .importExport__details-title {
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             color: var(--text-primary);
         }
 
@@ -1116,10 +1393,9 @@
         }
 
         .importExport__details-list li {
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-color);
         }
-
         .importExport__details-list li:last-child {
             border-bottom: none;
         }
@@ -1127,33 +1403,34 @@
         .importExport__summary {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 14px;
+            margin-bottom: 18px;
         }
 
         .importExport__summary-item {
             background-color: var(--light-gray);
-            padding: 10px;
-            border-radius: 6px;
+            padding: 16px;
+            border-radius: var(--radius-xl);
             text-align: center;
+            border: 1px solid var(--border-color);
         }
 
         .importExport__summary-label {
             font-size: 0.85rem;
             color: var(--text-secondary);
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
         .importExport__summary-value {
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-primary);
-            font-size: 1.1rem;
+            font-size: 1.3rem;
         }
 
         .importExport__actions {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 16px;
+            margin-top: 28px;
         }
 
         .importExport__actions .importExport__btn {
@@ -1165,14 +1442,170 @@
             .importExport__actions {
                 flex-direction: column;
             }
-            
             .importExport__summary {
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Ciclos pré-definidos refinados */
+        .cycles-section-block {
+            margin-bottom: 60px;
+        }
+
+        .cycles-section-title {
+            font-size: 1.6rem;
+            margin-bottom: 28px;
+            color: var(--primary);
+            border-bottom: 2px solid transparent;
+            padding-bottom: 12px;
+            display: inline-block;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-image: linear-gradient(90deg, var(--primary), var(--secondary)) 1;
+            border-bottom-style: solid;
+        }
+
+        .predefined-cycles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 28px;
+            margin-top: 24px;
+        }
+
+        .predefined-cycle-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-2xl);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .predefined-cycle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .predefined-cycle-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .predefined-cycle-card:hover::before {
+            opacity: 1;
+        }
+
+        .predefined-cycle-header {
+            margin-bottom: 16px;
+        }
+
+        .predefined-cycle-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.02em;
+        }
+
+        .predefined-cycle-area {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            display: inline-block;
+            background: linear-gradient(135deg, var(--light-gray), var(--card-bg));
+            padding: 6px 16px;
+            border-radius: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .predefined-cycle-subjects {
+            margin: 20px 0;
+            flex: 1;
+        }
+
+        .predefined-cycle-subjects ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .predefined-cycle-subjects li {
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .predefined-cycle-exams {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-style: italic;
+            background: var(--light-gray);
+            padding: 12px 16px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-use-predefined {
+            background: linear-gradient(135deg, var(--success), #0e9f6e);
+            color: white;
+            border: none;
+            border-radius: var(--radius-xl);
+            padding: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-use-predefined:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            filter: brightness(1.05);
+        }
+
+        /* Gradiente para o anel de progresso */
+        .progress-ring-fill {
+            stroke: url(#gradient);
+        }
+        svg defs linearGradient#gradient {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+        }
     </style>
 </head>
 <body>
+    <!-- Adiciona definição de gradiente para o anel -->
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="var(--primary)" />
+                <stop offset="100%" stop-color="var(--secondary)" />
+            </linearGradient>
+        </defs>
+    </svg>
+
     <!-- Header -->
     <header>
         <div class="container header-container">
@@ -1233,13 +1666,7 @@
                 </h2>
                 <div class="card">
                     <div id="cyclesList">
-                        <div class="no-cycles">
-                            <div class="no-cycles-icon">
-                                <i class="fas fa-book"></i>
-                            </div>
-                            <h3>Nenhum ciclo encontrado</h3>
-                            <p>Você ainda não criou nenhum ciclo de estudos</p>
-                        </div>
+                        <!-- Conteúdo gerado dinamicamente -->
                     </div>
                 </div>
             </section>
@@ -1262,6 +1689,15 @@
                 <div class="form-group">
                     <label class="form-label" for="cycleName">Nome do Ciclo</label>
                     <input type="text" class="form-input" id="cycleName" placeholder="Ex: Concurso A, Mestrado..." required>
+                </div>
+
+                <!-- NOVO CAMPO: Sugestão de Concurso -->
+                <div class="form-group">
+                    <label class="form-label" for="suggestedExam">Sugestão de Concurso (opcional)</label>
+                    <select class="form-input" id="suggestedExam">
+                        <option value="">Selecione um concurso</option>
+                        <!-- Opções serão preenchidas via JavaScript -->
+                    </select>
                 </div>
                 
                 <!-- Campo para número de dias -->
@@ -1496,6 +1932,96 @@
         let currentSubjects = [];
 
         // ======================
+        // Ciclos Pré-definidos (NOVO)
+        // ======================
+        const PREDEFINED_CYCLES = [
+            {
+                id: "pre_admin",
+                name: "Ciclo Área Administrativa",
+                area: "Administrativa",
+                subjects: [
+                    "Língua Portuguesa",
+                    "Raciocínio Lógico",
+                    "Informática",
+                    "Administração Geral",
+                    "Administração Pública",
+                    "Arquivologia",
+                    "Direito Administrativo",
+                    "Ética no Serviço Público",
+                    "Redação Oficial"
+                ],
+                suggestedExams: ["IFs", "Universidades Federais", "Prefeituras", "Ministérios", "Autarquias"]
+            },
+            {
+                id: "pre_judiciaria",
+                name: "Ciclo Área Judiciária",
+                area: "Judiciária",
+                subjects: [
+                    "Língua Portuguesa",
+                    "Raciocínio Lógico",
+                    "Informática",
+                    "Direito Constitucional",
+                    "Direito Administrativo",
+                    "Direito Civil",
+                    "Direito Processual Civil",
+                    "Direito Penal",
+                    "Direito Processual Penal",
+                    "Regimento Interno"
+                ],
+                suggestedExams: ["TRT", "TRE", "TRF", "TJ", "MPU"]
+            },
+            {
+                id: "pre_policial",
+                name: "Ciclo Área Policial",
+                area: "Policial",
+                subjects: [
+                    "Língua Portuguesa",
+                    "Raciocínio Lógico",
+                    "Informática",
+                    "Direito Penal",
+                    "Direito Processual Penal",
+                    "Direito Constitucional",
+                    "Direito Administrativo",
+                    "Legislação Penal Especial",
+                    "Criminologia"
+                ],
+                suggestedExams: ["Polícia Federal", "Polícia Civil", "Polícia Penal", "Polícia Rodoviária Federal"]
+            },
+            {
+                id: "pre_bancaria",
+                name: "Ciclo Área Bancária",
+                area: "Bancária",
+                subjects: [
+                    "Língua Portuguesa",
+                    "Matemática",
+                    "Matemática Financeira",
+                    "Raciocínio Lógico",
+                    "Informática",
+                    "Conhecimentos Bancários",
+                    "Atualidades do Mercado Financeiro",
+                    "Vendas e Negociação"
+                ],
+                suggestedExams: ["Banco do Brasil", "Caixa Econômica Federal", "Banrisul", "BASA", "BNB"]
+            },
+            {
+                id: "pre_fiscal",
+                name: "Ciclo Área Fiscal / Controle",
+                area: "Fiscal",
+                subjects: [
+                    "Língua Portuguesa",
+                    "Raciocínio Lógico",
+                    "Direito Tributário",
+                    "Direito Administrativo",
+                    "Direito Constitucional",
+                    "Contabilidade Geral",
+                    "Auditoria",
+                    "Administração Financeira e Orçamentária (AFO)"
+                ],
+                suggestedExams: ["Receita Federal", "Sefaz", "TCU", "TCE"]
+            }
+        ];
+
+        // ======================
         // Elementos DOM
         // ======================
         const dashboardSection = document.getElementById('dashboardSection');
@@ -1522,6 +2048,8 @@
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
         const themeToggle = document.getElementById('themeToggle');
+        // Novo elemento
+        const suggestedExamSelect = document.getElementById('suggestedExam');
 
         // ======================
         // Inicialização
@@ -1537,6 +2065,8 @@
             
             revisionDaysGroup.style.display = 'none';
             simulatedDaysGroup.style.display = 'none';
+            
+            populateExamSelect(); // Preenche o dropdown de concursos
             
             updateSystemInfo();
         });
@@ -1611,7 +2141,7 @@
         // ======================
         function updateUI() {
             renderDashboard();
-            renderCyclesList();
+            renderCyclesList(); // Agora inclui os dois blocos
         }
 
         function renderDashboard() {
@@ -1743,49 +2273,125 @@
             progressRingFill.style.transition = 'stroke-dashoffset 1s ease-out';
         }
 
+        // Função modificada para incluir ciclos pré-definidos
         function renderCyclesList() {
+            let html = '';
+
+            // Bloco 1: Meus Ciclos (ciclos do usuário)
             if (allCycles.length > 0) {
-                cyclesList.innerHTML = `
-                    <div class="cycles-grid">
-                        ${allCycles.map(cycle => `
-                            <div class="cycle-card" data-id="${cycle.id}">
-                                ${cycle.id === activeCycle?.id ? `<span class="cycle-card-status">Ativo</span>` : ''}
-                                <div class="cycle-card-header">
-                                    <h3 class="cycle-card-title">${cycle.name}</h3>
-                                    <span class="cycle-card-date">${new Date(cycle.createdAt).toLocaleDateString()}</span>
+                html += `
+                    <div class="cycles-section-block">
+                        <h3 class="cycles-section-title">MEUS CICLOS</h3>
+                        <div class="cycles-grid">
+                            ${allCycles.map(cycle => `
+                                <div class="cycle-card" data-id="${cycle.id}">
+                                    ${cycle.id === activeCycle?.id ? `<span class="cycle-card-status">Ativo</span>` : ''}
+                                    <div class="cycle-card-header">
+                                        <h3 class="cycle-card-title">${cycle.name}</h3>
+                                        <span class="cycle-card-date">${new Date(cycle.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                    <p>${cycle.subjects.length} matérias • ${cycle.generatedCycle.length} dias</p>
+                                    <div class="cycle-card-badges">
+                                        ${cycle.revisionDays > 0 ? `<span class="badge badge-review">${cycle.revisionDays} revisões</span>` : ''}
+                                        ${cycle.simulatedDays > 0 ? `<span class="badge badge-simulated">${cycle.simulatedDays} simulados</span>` : ''}
+                                        ${cycle.completedCycles > 0 ? `<span class="badge badge-completed">${cycle.completedCycles} ciclos</span>` : ''}
+                                    </div>
+                                    <div class="cycle-card-actions">
+                                        <button class="btn ${cycle.id === activeCycle?.id ? 'btn-success' : 'btn-secondary'} btn-set-active">
+                                            <i class="fas fa-check-circle"></i> ${cycle.id === activeCycle?.id ? 'Ativo' : 'Tornar Ativo'}
+                                        </button>
+                                        <button class="btn btn-primary btn-edit">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </button>
+                                        <button class="btn btn-danger btn-delete">
+                                            <i class="fas fa-trash-alt"></i> Excluir
+                                        </button>
+                                    </div>
                                 </div>
-                                <p>${cycle.subjects.length} matérias • ${cycle.generatedCycle.length} dias</p>
-                                <div class="cycle-card-badges">
-                                    ${cycle.revisionDays > 0 ? `<span class="badge badge-review">${cycle.revisionDays} revisões</span>` : ''}
-                                    ${cycle.simulatedDays > 0 ? `<span class="badge badge-simulated">${cycle.simulatedDays} simulados</span>` : ''}
-                                    ${cycle.completedCycles > 0 ? `<span class="badge badge-completed">${cycle.completedCycles} ciclos</span>` : ''}
-                                </div>
-                                <div class="cycle-card-actions">
-                                    <button class="btn ${cycle.id === activeCycle?.id ? 'btn-success' : 'btn-secondary'} btn-set-active">
-                                        <i class="fas fa-check-circle"></i> ${cycle.id === activeCycle?.id ? 'Ativo' : 'Tornar Ativo'}
-                                    </button>
-                                    <button class="btn btn-primary btn-edit">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </button>
-                                    <button class="btn btn-danger btn-delete">
-                                        <i class="fas fa-trash-alt"></i> Excluir
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
+                            `).join('')}
+                        </div>
                     </div>
                 `;
             } else {
-                cyclesList.innerHTML = `
-                    <div class="no-cycles">
-                        <div class="no-cycles-icon">
-                            <i class="fas fa-book"></i>
+                html += `
+                    <div class="cycles-section-block">
+                        <h3 class="cycles-section-title">MEUS CICLOS</h3>
+                        <div class="no-cycles">
+                            <div class="no-cycles-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <h3>Nenhum ciclo encontrado</h3>
+                            <p>Você ainda não criou nenhum ciclo de estudos</p>
                         </div>
-                        <h3>Nenhum ciclo encontrado</h3>
-                        <p>Você ainda não criou nenhum ciclo de estudos</p>
                     </div>
                 `;
             }
+
+            // Bloco 2: Ciclos Pré-definidos
+            html += `
+                <div class="cycles-section-block">
+                    <h3 class="cycles-section-title">CICLOS PRONTOS</h3>
+                    <div class="predefined-cycles-grid">
+                        ${PREDEFINED_CYCLES.map(preCycle => `
+                            <div class="predefined-cycle-card" data-predefined-id="${preCycle.id}">
+                                <div class="predefined-cycle-header">
+                                    <h4 class="predefined-cycle-title">${preCycle.name}</h4>
+                                    <span class="predefined-cycle-area">${preCycle.area}</span>
+                                </div>
+                                <div class="predefined-cycle-subjects">
+                                    <ul>
+                                        ${preCycle.subjects.slice(0, 5).map(subj => `<li>${subj}</li>`).join('')}
+                                        ${preCycle.subjects.length > 5 ? '<li>...</li>' : ''}
+                                    </ul>
+                                </div>
+                                <div class="predefined-cycle-exams">
+                                    <i class="fas fa-gavel"></i> Concursos: ${preCycle.suggestedExams.join(', ')}
+                                </div>
+                                <button class="btn-use-predefined">
+                                    <i class="fas fa-copy"></i> Usar ciclo
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            cyclesList.innerHTML = html;
+        }
+
+        // Nova função: usar um ciclo pré-definido como template
+        function usePredefinedCycle(predefinedId) {
+            const template = PREDEFINED_CYCLES.find(p => p.id === predefinedId);
+            if (!template) return;
+
+            // Criar objetos de matéria com peso e importância padrão (1.5)
+            const subjects = template.subjects.map(name => ({
+                name: name,
+                weight: 1.5,
+                importance: 1.5
+            }));
+
+            // Gerar ciclo com valores padrão (30 dias, sem revisões/simulados)
+            const generatedCycle = generateStudyCycle(subjects, 0, 0, 30);
+
+            const newCycle = {
+                id: Date.now().toString(),
+                name: template.name + ' (cópia)',
+                subjects: subjects,
+                revisionDays: 0,
+                simulatedDays: 0,
+                generatedCycle: generatedCycle,
+                totalDays: 30,
+                createdAt: new Date().toISOString(),
+                currentDay: 0,
+                completedSubjects: {},
+                completedCycles: 0
+            };
+
+            allCycles.push(newCycle);
+            saveData();
+            renderCyclesList(); // Atualiza a lista
+            showToast('Ciclo criado a partir do template!');
         }
 
         // ======================
@@ -1990,6 +2596,9 @@
             simulatedDaysGroup.style.display = 'none';
             currentSubjects = [];
             
+            // Resetar select de concurso
+            if (suggestedExamSelect) suggestedExamSelect.value = '';
+            
             if (cycle) {
                 document.getElementById('formTitle').innerHTML = `
                     <i class="fas fa-edit"></i>
@@ -2123,6 +2732,46 @@
         }
 
         // ======================
+        // Funções para o novo campo de concurso
+        // ======================
+        function populateExamSelect() {
+            if (!suggestedExamSelect) return;
+            // Coletar todos os exames sugeridos de todos os ciclos pré-definidos, sem duplicatas
+            const allExams = new Set();
+            PREDEFINED_CYCLES.forEach(cycle => {
+                cycle.suggestedExams.forEach(exam => allExams.add(exam));
+            });
+            // Ordenar alfabeticamente
+            const sortedExams = Array.from(allExams).sort();
+            // Adicionar ao select
+            sortedExams.forEach(exam => {
+                const option = document.createElement('option');
+                option.value = exam;
+                option.textContent = exam;
+                suggestedExamSelect.appendChild(option);
+            });
+        }
+
+        function fillSubjectsFromExam(selectedExam) {
+            if (!selectedExam) return;
+            // Procurar um ciclo pré-definido que contenha este exame
+            const cycle = PREDEFINED_CYCLES.find(c => c.suggestedExams.includes(selectedExam));
+            if (cycle) {
+                // Converter as matérias do ciclo em objetos com peso/importância padrão
+                currentSubjects = cycle.subjects.map(name => ({
+                    name: name,
+                    weight: 1.5,
+                    importance: 1.5
+                }));
+                updateMateriaCards();
+                showToast(`Matérias do ciclo ${cycle.name} carregadas!`, 'success');
+            } else {
+                // Se não encontrar (improvável), não faz nada
+                console.warn('Nenhum ciclo encontrado para o exame:', selectedExam);
+            }
+        }
+
+        // ======================
         // Funções Auxiliares
         // ======================
         function showToast(message, type = 'success') {
@@ -2194,7 +2843,16 @@
                 document.querySelector('.nav-buttons').classList.toggle('show');
             });
             
+            // Event listener para o select de concurso
+            if (suggestedExamSelect) {
+                suggestedExamSelect.addEventListener('change', (e) => {
+                    fillSubjectsFromExam(e.target.value);
+                });
+            }
+            
+            // Delegação de eventos para os cards de ciclos (incluindo os pré-definidos)
             document.addEventListener('click', (e) => {
+                // Botão "Tornar Ativo" (ciclos do usuário)
                 if (e.target.closest('.btn-set-active')) {
                     const card = e.target.closest('.cycle-card');
                     const cycleId = card.dataset.id;
@@ -2205,6 +2863,7 @@
                     document.getElementById('dashboardBtn').classList.add('active');
                 }
                 
+                // Botão "Editar" (ciclos do usuário)
                 if (e.target.closest('.btn-edit')) {
                     const card = e.target.closest('.cycle-card');
                     const cycleId = card.dataset.id;
@@ -2212,10 +2871,18 @@
                     if (cycle) openCycleForm(cycle);
                 }
                 
+                // Botão "Excluir" (ciclos do usuário)
                 if (e.target.closest('.btn-delete')) {
                     const card = e.target.closest('.cycle-card');
                     const cycleId = card.dataset.id;
                     deleteCycle(cycleId);
+                }
+                
+                // Botão "Usar ciclo" (ciclos pré-definidos)
+                if (e.target.closest('.btn-use-predefined')) {
+                    const card = e.target.closest('.predefined-cycle-card');
+                    const predefinedId = card.dataset.predefinedId;
+                    usePredefinedCycle(predefinedId);
                 }
             });
         }
