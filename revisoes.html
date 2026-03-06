@@ -1169,6 +1169,17 @@
             color: var(--text-secondary);
             cursor: not-allowed;
         }
+
+        /* Ícone de perfil */
+        .profile-icon {
+            width: 48px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--primary-red);
+        }
         /* ================================================= */
         
         /* Responsividade */
@@ -1857,6 +1868,36 @@
                 strength *= (1 - (avgDifficulty * 0.15));
             }
             return Math.min(Math.max(strength, 0.1), 0.95);
+        }
+
+        // === NOVA FUNÇÃO: mapeamento de ícones para perfis ===
+        function getIconForProfile(profileName) {
+            const name = profileName.toLowerCase();
+            const iconMap = [
+                { pattern: /prf/, icon: 'fa-road' },
+                { pattern: /pf\b/, icon: 'fa-shield-alt' },
+                { pattern: /ifce/, icon: 'fa-university' },
+                { pattern: /inss/, icon: 'fa-id-card' },
+                { pattern: /trt/, icon: 'fa-gavel' },
+                { pattern: /tse|tre/, icon: 'fa-vote-yea' },
+                { pattern: /pol[ií]cia civil/, icon: 'fa-shield-alt' },
+                { pattern: /pol[ií]cia militar/, icon: 'fa-shield-alt' },
+                { pattern: /área administrativa/, icon: 'fa-briefcase' },
+                { pattern: /área fiscal/, icon: 'fa-calculator' },
+                { pattern: /área policial/, icon: 'fa-shield-alt' },
+                { pattern: /banco do brasil/, icon: 'fa-university' },
+                { pattern: /caixa econ[ôo]mica/, icon: 'fa-piggy-bank' },
+                { pattern: /banco do nordeste/, icon: 'fa-university' },
+                { pattern: /receita federal/, icon: 'fa-file-invoice-dollar' },
+                { pattern: /tcu/, icon: 'fa-chart-line' },
+                { pattern: /mpu/, icon: 'fa-gavel' },
+                { pattern: /tribunais/, icon: 'fa-gavel' },
+                { pattern: /institutos federais/, icon: 'fa-school' },
+            ];
+            for (let {pattern, icon} of iconMap) {
+                if (pattern.test(name)) return icon;
+            }
+            return 'fa-folder-open'; // fallback
         }
         
         // === DADOS DOS PERFIS PRÉ-CADASTRAODS (JSON fornecido, com complementos para maior completude) ===
@@ -2719,11 +2760,15 @@
             profileNames.forEach(name => {
                 const profileData = profiles.data[name];
                 const disciplineCount = profileData.length;
+                const iconClass = getIconForProfile(name);
                 
                 const card = document.createElement('div');
                 card.className = `profile-card ${activeProfile === name ? 'active' : ''}`;
                 card.innerHTML = `
-                    <h3>${sanitizeHTML(name)}</h3>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <i class="fas ${iconClass} profile-icon" style="font-size: 48px; width: 48px; text-align: center; color: var(--primary-red);"></i>
+                        <h3 style="margin-bottom: 0;">${sanitizeHTML(name)}</h3>
+                    </div>
                     <p><i class="fas fa-book"></i> ${disciplineCount} disciplinas</p>
                     <button class="btn-activate" ${activeProfile === name ? 'disabled' : ''} data-profile="${sanitizeHTML(name)}">Ativar</button>
                 `;
