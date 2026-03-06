@@ -1745,6 +1745,40 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* ---------- PIP MODE (janela flutuante) ---------- */
+    body.pip-mode .chatbot-header,
+    body.pip-mode .main-container,
+    body.pip-mode .modal,
+    body.pip-mode .toast-container,
+    body.pip-mode #sidePanel,
+    body.pip-mode .panel-resizer {
+      display: none !important;
+    }
+    body.pip-mode .pomodoro-floating {
+      display: block !important;
+      position: static !important;
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      background: var(--bg-surface) !important;
+      margin: 0 !important;
+      padding: 1rem !important;
+      transform: none !important;
+      animation: none !important;
+    }
+    body.pip-mode .pomodoro-floating .pomodoro-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    body.pip-mode .pomodoro-floating .pomodoro-header {
+      cursor: default;
+    }
   </style>
 </head>
 <body>
@@ -2103,12 +2137,13 @@
     </div>
   </div>
 
-  <!-- Pomodoro floating modal (persistente) com novos botões: minimizar e concluir -->
+  <!-- Pomodoro floating modal (persistente) com novos botões: minimizar, concluir e PIP -->
   <div class="pomodoro-floating" id="pomodoroFloating" style="display: none;">
     <div class="pomodoro-card">
       <div class="pomodoro-header">
         <span><i class="fas fa-hourglass-half"></i> Pomodoro</span>
         <div style="display: flex; gap: 4px;">
+          <button id="pomodoroPipBtn" class="pomodoro-btn" style="background: none; border: none; color: var(--text-tertiary);" title="Abrir em modo flutuante (PiP)"><i class="fas fa-external-link-alt"></i></button>
           <button id="pomodoroMinimizeBtn" class="pomodoro-btn" style="background: none; border: none; color: var(--text-tertiary);"><i class="fas fa-minus"></i></button>
           <button class="pomodoro-close" id="pomodoroCloseBtn">&times;</button>
         </div>
@@ -2701,7 +2736,7 @@
         }
       };
 
-      // ---------- POMODORO MANAGER (REFATORADO PARA USAR TIMESTAMP, PERSISTÊNCIA, ARRASTÁVEL, MINIMIZAR, TÍTULO) ----------
+      // ---------- POMODORO MANAGER (REFATORADO PARA USAR TIMESTAMP, PERSISTÊNCIA, ARRASTÁVEL, MINIMIZAR, TÍTULO, PIP) ----------
       ChatSystem.PomodoroManager = class {
         constructor(chatBotInstance) {
           this.chatBot = chatBotInstance;
@@ -2712,6 +2747,8 @@
           this.remaining = 25 * 60;
           this.intervalId = null;
           this.originalTitle = document.title;
+          this.windowId = Math.random().toString(36).substring(2); // identificador único para broadcast
+          this.isPipWindow = new URLSearchParams(window.location.search).get('pip') === 'true';
 
           this.floatingModal = document.getElementById('pomodoroFloating');
           this.timeDisplay = document.getElementById('pomodoroTimeDisplay');
@@ -2722,17 +2759,87 @@
           this.closeBtn = document.getElementById('pomodoroCloseBtn');
           this.minimizeBtn = document.getElementById('pomodoroMinimizeBtn');
           this.expandBtn = document.getElementById('pomodoroExpandBtn');
+          this.pipBtn = document.getElementById('pomodoroPipBtn');
           this.dragHandle = this.floatingModal.querySelector('.pomodoro-header');
+
+          // BroadcastChannel para comunicação PiP
+          this.channel = new BroadcastChannel('pomodoro-pip');
+          this.channel.onmessage = (e) => this.handleBroadcastMessage(e.data);
 
           this.initListeners();
           this.makeDraggable();
           this.restoreFromStorage();
-          // Sincronizar entre abas
+          // Sincronizar entre abas (fallback)
           window.addEventListener('storage', (e) => {
             if (e.key === 'pomodoroState') {
               this.restoreFromStorage();
             }
           });
+
+          // Se for janela PiP, esconder elementos
+          if (this.isPipWindow) {
+            document.body.classList.add('pip-mode');
+            // Esconder botão PiP na própria janela PiP
+            if (this.pipBtn) this.pipBtn.style.display = 'none';
+            // Solicitar estado atual à janela principal
+            setTimeout(() => {
+              this.channel.postMessage({ action: 'sync-request', sender: this.windowId });
+            }, 500);
+          }
+        }
+
+        handleBroadcastMessage(data) {
+          if (data.sender === this.windowId) return; // ignorar mensagens da própria janela
+
+          switch (data.action) {
+            case 'start':
+              this.start(data.duration, true);
+              break;
+            case 'pause':
+              if (this.active && !this.paused) this.pause(true);
+              break;
+            case 'resume':
+              if (this.active && this.paused) this.resume(true);
+              break;
+            case 'cancel':
+              if (this.active) this.cancel(true);
+              break;
+            case 'complete':
+              if (this.active) this.complete(true);
+              break;
+            case 'sync-request':
+              // responder com estado atual
+              if (this.active) {
+                this.channel.postMessage({
+                  action: 'sync-state',
+                  sender: this.windowId,
+                  active: this.active,
+                  paused: this.paused,
+                  startTime: this.startTime,
+                  duration: this.duration,
+                  remaining: this.remaining
+                });
+              }
+              break;
+            case 'sync-state':
+              // sincronizar com estado recebido
+              if (!this.active && data.active) {
+                this.active = true;
+                this.paused = data.paused;
+                this.startTime = data.startTime;
+                this.duration = data.duration;
+                this.remaining = data.remaining;
+                this.showFloating();
+                this.startTicking();
+              } else if (this.active && data.active) {
+                // atualizar estado se necessário
+                this.paused = data.paused;
+                this.startTime = data.startTime;
+                this.duration = data.duration;
+                this.remaining = data.remaining;
+              }
+              break;
+          }
         }
 
         initListeners() {
@@ -2743,6 +2850,21 @@
           this.closeBtn.addEventListener('click', () => this.hideFloating());
           this.minimizeBtn.addEventListener('click', () => this.toggleMinimize());
           this.expandBtn.addEventListener('click', () => this.toggleMinimize());
+          if (this.pipBtn) {
+            this.pipBtn.addEventListener('click', () => this.openPipWindow());
+          }
+        }
+
+        openPipWindow() {
+          if (this.isPipWindow) return; // já está em PiP
+          const pipUrl = window.location.href + (window.location.href.includes('?') ? '&pip=true' : '?pip=true');
+          const pipWindow = window.open(pipUrl, 'pomodoroPip', 'width=300,height=200,resizable=yes,alwaysOnTop=yes');
+          if (pipWindow) {
+            // Foco na nova janela
+            pipWindow.focus();
+          } else {
+            alert('Permita pop-ups para abrir o modo flutuante.');
+          }
         }
 
         makeDraggable() {
@@ -2817,9 +2939,9 @@
           localStorage.removeItem('pomodoroState');
         }
 
-        start(durationMinutes = 25) {
+        start(durationMinutes = 25, fromBroadcast = false) {
           if (this.active) {
-            this.chatBot.typeMessage("Já existe um pomodoro em andamento. Finalize ou cancele antes de iniciar outro.");
+            if (!fromBroadcast) this.chatBot.typeMessage("Já existe um pomodoro em andamento. Finalize ou cancele antes de iniciar outro.");
             return;
           }
           this.duration = durationMinutes * 60;
@@ -2830,24 +2952,31 @@
           this.saveState();
           this.showFloating();
           this.startTicking();
-          this.chatBot.typeMessage(`⏳ Pomodoro de ${durationMinutes} minutos iniciado! Foque nos estudos.`);
-          if (Notification.permission === "granted") {
-            new Notification("StudyFlow - Pomodoro iniciado", {
-              body: `Foque por ${durationMinutes} minutos. Você será notificado ao final.`
-            });
+          if (!fromBroadcast) {
+            this.chatBot.typeMessage(`⏳ Pomodoro de ${durationMinutes} minutos iniciado! Foque nos estudos.`);
+            if (Notification.permission === "granted") {
+              new Notification("StudyFlow - Pomodoro iniciado", {
+                body: `Foque por ${durationMinutes} minutos. Você será notificado ao final.`
+              });
+            }
+            // Broadcast para outras janelas
+            this.channel.postMessage({ action: 'start', duration: durationMinutes, sender: this.windowId });
           }
         }
 
-        pause() {
+        pause(fromBroadcast = false) {
           if (!this.active || this.paused) return;
           this.paused = true;
           this.pauseBtn.style.display = 'none';
           this.resumeBtn.style.display = 'flex';
           document.title = '⏸️ Pomodoro pausado - StudyFlow';
           this.saveState();
+          if (!fromBroadcast) {
+            this.channel.postMessage({ action: 'pause', sender: this.windowId });
+          }
         }
 
-        resume() {
+        resume(fromBroadcast = false) {
           if (!this.active || !this.paused) return;
           // Recalcula startTime para que a diferença seja correta
           const elapsed = this.duration - this.remaining;
@@ -2857,9 +2986,12 @@
           this.resumeBtn.style.display = 'none';
           // título será atualizado no próximo tick
           this.saveState();
+          if (!fromBroadcast) {
+            this.channel.postMessage({ action: 'resume', sender: this.windowId });
+          }
         }
 
-        cancel() {
+        cancel(fromBroadcast = false) {
           this.active = false;
           this.paused = false;
           this.startTime = null;
@@ -2872,14 +3004,17 @@
           window.lastPomodoroDuration = null;
           localStorage.removeItem("pomodoroCompleted");
           localStorage.removeItem("lastPomodoroDuration");
-          this.chatBot.typeMessage("Pomodoro cancelado.");
+          if (!fromBroadcast) {
+            this.chatBot.typeMessage("Pomodoro cancelado.");
+            this.channel.postMessage({ action: 'cancel', sender: this.windowId });
+          }
         }
 
-        complete() {
+        complete(fromBroadcast = false) {
           if (!this.active) return;
           const realSeconds = Math.floor((Date.now() - this.startTime) / 1000);
           const realMinutes = Math.floor(realSeconds / 60);
-          this.finish(false, realMinutes);
+          this.finish(false, realMinutes, fromBroadcast);
         }
 
         startTicking() {
@@ -2973,7 +3108,7 @@
           }
         }
 
-        finish(silent = false, realMinutes = null) {
+        finish(silent = false, realMinutes = null, fromBroadcast = false) {
           if (!silent) this.playSound();
           this.active = false;
           this.paused = false;
@@ -2989,9 +3124,16 @@
           localStorage.setItem("pomodoroCompleted", "true");
           localStorage.setItem("lastPomodoroDuration", durationMinutes.toString());
 
-          // Abrir modal de registro padrão
-          if (this.chatBot) {
+          if (!fromBroadcast) {
+            this.channel.postMessage({ action: 'complete', sender: this.windowId });
+          }
+
+          // Abrir modal de registro padrão (apenas na janela principal, não na PiP)
+          if (this.chatBot && !this.isPipWindow) {
             this.chatBot.openRegisterModal();
+          } else if (this.isPipWindow) {
+            // Se for PiP, não abrir modal, apenas confiar que a principal abrirá
+            // (já enviamos broadcast, a principal receberá e abrirá)
           }
         }
       };
