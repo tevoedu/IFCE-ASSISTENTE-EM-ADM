@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyFlow — Gerenciador de Ciclos de Estudo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Fonte Inter (já incluída) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -1525,11 +1524,20 @@
             font-size: 0.9rem;
             color: var(--text-secondary);
             margin-bottom: 16px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             background: linear-gradient(135deg, var(--light-gray), var(--card-bg));
             padding: 6px 16px;
             border-radius: 40px;
             border: 1px solid var(--border-color);
+        }
+
+        .predefined-cycle-area i {
+            margin-right: 6px;
+            width: 1.2em;
+            text-align: center;
+            font-size: 1.1em;
+            vertical-align: middle;
         }
 
         .predefined-cycle-subjects {
@@ -1560,6 +1568,25 @@
             padding: 12px 16px;
             border-radius: var(--radius-xl);
             border: 1px solid var(--border-color);
+        }
+
+        .predefined-cycle-exams i {
+            margin-right: 4px;
+        }
+
+        .predefined-cycle-exams span {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+            margin-right: 4px;
+        }
+
+        .predefined-cycle-exams span i {
+            margin-right: 4px;
+            width: 1.2em;
+            text-align: center;
+            font-size: 1em;
+            vertical-align: middle;
         }
 
         .btn-use-predefined {
@@ -2022,6 +2049,49 @@
         ];
 
         // ======================
+        // MAPA DE ÍCONES OFICIAIS (ATUALIZAÇÃO)
+        // ======================
+        const ICON_MAP = {
+            // Áreas
+            "Administrativa": "fa-briefcase",
+            "Judiciária": "fa-gavel",
+            "Policial": "fa-shield-halved",
+            "Bancária": "fa-university",
+            "Fiscal": "fa-calculator",
+
+            // Concursos / Instituições
+            "IFs": "fa-school",
+            "Universidades Federais": "fa-university",
+            "Prefeituras": "fa-city",
+            "Ministérios": "fa-building",
+            "Autarquias": "fa-building",
+            "TRT": "fa-gavel",
+            "TRE": "fa-vote-yea",
+            "TRF": "fa-gavel",
+            "TJ": "fa-gavel",
+            "MPU": "fa-gavel",
+            "Polícia Federal": "fa-shield",
+            "Polícia Civil": "fa-shield",
+            "Polícia Penal": "fa-shield",
+            "Polícia Rodoviária Federal": "fa-car",
+            "Banco do Brasil": "fa-university",
+            "Caixa Econômica Federal": "fa-university",
+            "Banrisul": "fa-university",
+            "BASA": "fa-university",
+            "BNB": "fa-university",
+            "Receita Federal": "fa-calculator",
+            "Sefaz": "fa-calculator",
+            "TCU": "fa-balance-scale",
+            "TCE": "fa-balance-scale",
+            // Padrão genérico (fallback)
+            "default": "fa-building"
+        };
+
+        function getIconClass(name) {
+            return ICON_MAP[name] || ICON_MAP["default"];
+        }
+
+        // ======================
         // Elementos DOM
         // ======================
         const dashboardSection = document.getElementById('dashboardSection');
@@ -2273,7 +2343,7 @@
             progressRingFill.style.transition = 'stroke-dashoffset 1s ease-out';
         }
 
-        // Função modificada para incluir ciclos pré-definidos
+        // Função modificada para incluir ciclos pré-definidos com ícones
         function renderCyclesList() {
             let html = '';
 
@@ -2327,31 +2397,40 @@
                 `;
             }
 
-            // Bloco 2: Ciclos Pré-definidos
+            // Bloco 2: Ciclos Pré-definidos (COM ÍCONES)
             html += `
                 <div class="cycles-section-block">
                     <h3 class="cycles-section-title">CICLOS PRONTOS</h3>
                     <div class="predefined-cycles-grid">
-                        ${PREDEFINED_CYCLES.map(preCycle => `
-                            <div class="predefined-cycle-card" data-predefined-id="${preCycle.id}">
-                                <div class="predefined-cycle-header">
-                                    <h4 class="predefined-cycle-title">${preCycle.name}</h4>
-                                    <span class="predefined-cycle-area">${preCycle.area}</span>
+                        ${PREDEFINED_CYCLES.map(preCycle => {
+                            // Gera spans para cada concurso sugerido com ícone
+                            const examSpans = preCycle.suggestedExams.map(exam => 
+                                `<span><i class="fas ${getIconClass(exam)}"></i> ${exam}</span>`
+                            ).join(', ');
+
+                            return `
+                                <div class="predefined-cycle-card" data-predefined-id="${preCycle.id}">
+                                    <div class="predefined-cycle-header">
+                                        <h4 class="predefined-cycle-title">${preCycle.name}</h4>
+                                        <span class="predefined-cycle-area">
+                                            <i class="fas ${getIconClass(preCycle.area)}"></i> ${preCycle.area}
+                                        </span>
+                                    </div>
+                                    <div class="predefined-cycle-subjects">
+                                        <ul>
+                                            ${preCycle.subjects.slice(0, 5).map(subj => `<li>${subj}</li>`).join('')}
+                                            ${preCycle.subjects.length > 5 ? '<li>...</li>' : ''}
+                                        </ul>
+                                    </div>
+                                    <div class="predefined-cycle-exams">
+                                        <i class="fas fa-gavel"></i> Concursos: ${examSpans}
+                                    </div>
+                                    <button class="btn-use-predefined">
+                                        <i class="fas fa-copy"></i> Usar ciclo
+                                    </button>
                                 </div>
-                                <div class="predefined-cycle-subjects">
-                                    <ul>
-                                        ${preCycle.subjects.slice(0, 5).map(subj => `<li>${subj}</li>`).join('')}
-                                        ${preCycle.subjects.length > 5 ? '<li>...</li>' : ''}
-                                    </ul>
-                                </div>
-                                <div class="predefined-cycle-exams">
-                                    <i class="fas fa-gavel"></i> Concursos: ${preCycle.suggestedExams.join(', ')}
-                                </div>
-                                <button class="btn-use-predefined">
-                                    <i class="fas fa-copy"></i> Usar ciclo
-                                </button>
-                            </div>
-                        `).join('')}
+                            `;
+                        }).join('')}
                     </div>
                 </div>
             `;
