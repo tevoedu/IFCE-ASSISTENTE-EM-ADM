@@ -6261,9 +6261,29 @@
       setModuleData(key, data) {
         try {
           localStorage.setItem(key, JSON.stringify(data));
+          // Mantém consistência com profiles quando atualiza 'disciplines'
+          if (key === 'disciplines') {
+            this.syncProfilesWithDisciplines(data);
+          }
           return true;
         } catch (e) {
           return false;
+        }
+      }
+
+      // NOVO: sincroniza profiles com disciplines
+      syncProfilesWithDisciplines(disciplinesData) {
+        try {
+          const profiles = JSON.parse(localStorage.getItem('profiles')) || { active: 'Personalizado', data: {} };
+          const activeProfile = profiles.active;
+          if (profiles.data[activeProfile]) {
+            profiles.data[activeProfile] = disciplinesData;
+            localStorage.setItem('profiles', JSON.stringify(profiles));
+          } else {
+            console.warn('Active profile not found in profiles data');
+          }
+        } catch (e) {
+          console.error('Error syncing profiles with disciplines', e);
         }
       }
       
