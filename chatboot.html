@@ -2776,7 +2776,7 @@
             }
           });
 
-          // Se for janela PiP, esconder elementos
+          // Se for janela PiP, esconder elementos e enviar cancelamento ao fechar
           if (this.isPipWindow) {
             document.body.classList.add('pip-mode');
             // Esconder botão PiP na própria janela PiP
@@ -2785,6 +2785,10 @@
             setTimeout(() => {
               this.channel.postMessage({ action: 'sync-request', sender: this.windowId });
             }, 500);
+            // Ao fechar a janela PiP, cancelar o Pomodoro na principal
+            window.addEventListener('beforeunload', () => {
+              this.channel.postMessage({ action: 'cancel', sender: this.windowId });
+            });
           }
         }
 
@@ -2831,12 +2835,14 @@
                 this.remaining = data.remaining;
                 this.showFloating();
                 this.startTicking();
+                this.updateButtons();
               } else if (this.active && data.active) {
                 // atualizar estado se necessário
                 this.paused = data.paused;
                 this.startTime = data.startTime;
                 this.duration = data.duration;
                 this.remaining = data.remaining;
+                this.updateButtons();
               }
               break;
           }
@@ -2908,25 +2914,38 @@
         restoreFromStorage() {
           const state = JSON.parse(localStorage.getItem('pomodoroState') || '{}');
           if (state.active && state.startTime && state.duration) {
-            const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
-            if (elapsed >= state.duration) {
-              // Já terminou enquanto estávamos fora
-              this.finish(true, Math.floor(state.duration / 60)); // silent, tempo real = duração
-            } else {
+            // Se estava pausado, usar o remaining salvo; caso contrário, calcular elapsed
+            if (state.paused) {
               this.active = true;
-              this.paused = state.paused || false;
+              this.paused = true;
               this.startTime = state.startTime;
               this.duration = state.duration;
-              this.remaining = state.duration - elapsed;
+              this.remaining = state.remaining;
               this.showFloating();
-              this.startTicking();
+              this.updateButtons();
+              // Não iniciar ticking pois está pausado
+            } else {
+              const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+              if (elapsed >= state.duration) {
+                // Já terminou enquanto estávamos fora
+                this.finish(true, Math.floor(state.duration / 60)); // silent, tempo real = duração
+              } else {
+                this.active = true;
+                this.paused = false;
+                this.startTime = state.startTime;
+                this.duration = state.duration;
+                this.remaining = state.duration - elapsed;
+                this.showFloating();
+                this.startTicking();
+                this.updateButtons();
+              }
             }
           }
         }
 
         saveState() {
           const state = {
-            active: this.active && !this.paused,
+            active: this.active,
             paused: this.paused,
             startTime: this.startTime,
             duration: this.duration,
@@ -2937,6 +2956,16 @@
 
         clearState() {
           localStorage.removeItem('pomodoroState');
+        }
+
+        updateButtons() {
+          if (this.paused) {
+            this.pauseBtn.style.display = 'none';
+            this.resumeBtn.style.display = 'flex';
+          } else {
+            this.pauseBtn.style.display = 'flex';
+            this.resumeBtn.style.display = 'none';
+          }
         }
 
         start(durationMinutes = 25, fromBroadcast = false) {
@@ -2952,6 +2981,7 @@
           this.saveState();
           this.showFloating();
           this.startTicking();
+          this.updateButtons();
           if (!fromBroadcast) {
             this.chatBot.typeMessage(`⏳ Pomodoro de ${durationMinutes} minutos iniciado! Foque nos estudos.`);
             if (Notification.permission === "granted") {
@@ -2967,8 +2997,7 @@
         pause(fromBroadcast = false) {
           if (!this.active || this.paused) return;
           this.paused = true;
-          this.pauseBtn.style.display = 'none';
-          this.resumeBtn.style.display = 'flex';
+          this.updateButtons();
           document.title = '⏸️ Pomodoro pausado - StudyFlow';
           this.saveState();
           if (!fromBroadcast) {
@@ -2982,8 +3011,7 @@
           const elapsed = this.duration - this.remaining;
           this.startTime = Date.now() - elapsed * 1000;
           this.paused = false;
-          this.pauseBtn.style.display = 'flex';
-          this.resumeBtn.style.display = 'none';
+          this.updateButtons();
           // título será atualizado no próximo tick
           this.saveState();
           if (!fromBroadcast) {
@@ -3083,6 +3111,8 @@
               this.minimizeBtn.style.display = 'inline-block';
               this.expandBtn.style.display = 'none';
             }
+
+            this.updateButtons();
           }
         }
 
