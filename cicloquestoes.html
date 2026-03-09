@@ -857,10 +857,6 @@
     const btnProxima = document.getElementById('btnDisciplinaProxima');
 
     function avancarDisciplina() {
-        if (dadosEstudo.ciclo.concluidoHoje) {
-            alert('Conclua o bloco de hoje antes de mudar de disciplina.');
-            return;
-        }
         const total = DISCIPLINAS.length;
         dadosEstudo.ciclo.indice = (dadosEstudo.ciclo.indice + 1) % total;
         localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
@@ -868,10 +864,6 @@
     }
 
     function voltarDisciplina() {
-        if (dadosEstudo.ciclo.concluidoHoje) {
-            alert('Conclua o bloco de hoje antes de mudar de disciplina.');
-            return;
-        }
         const total = DISCIPLINAS.length;
         dadosEstudo.ciclo.indice = (dadosEstudo.ciclo.indice - 1 + total) % total;
         localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
@@ -890,20 +882,12 @@
         inputAcertos.value = 0;
         inputTempo.value = 0;
 
-        const concluido = dadosEstudo.ciclo.concluidoHoje;
-        if (concluido) {
-            elConcluidoBadge.classList.remove('hidden');
-            [inputFeitas, inputAcertos, inputUltima, inputTempo].forEach(i => i.disabled = true);
-            btnSalvar.disabled = true;
-            if (btnAnterior) btnAnterior.disabled = true;
-            if (btnProxima) btnProxima.disabled = true;
-        } else {
-            elConcluidoBadge.classList.add('hidden');
-            [inputFeitas, inputAcertos, inputUltima, inputTempo].forEach(i => i.disabled = false);
-            btnSalvar.disabled = false;
-            if (btnAnterior) btnAnterior.disabled = false;
-            if (btnProxima) btnProxima.disabled = false;
-        }
+        // Sempre habilita os campos e botões (remoção da restrição de bloco único por dia)
+        elConcluidoBadge.classList.add('hidden');
+        [inputFeitas, inputAcertos, inputUltima, inputTempo].forEach(i => i.disabled = false);
+        btnSalvar.disabled = false;
+        if (btnAnterior) btnAnterior.disabled = false;
+        if (btnProxima) btnProxima.disabled = false;
 
         const filtros = FILTROS_POR_DISCIPLINA[disciplina] || [];
         filtrosLista.innerHTML = '';
@@ -1011,11 +995,6 @@
     }
 
     function salvarHandler() {
-        if (dadosEstudo.ciclo.concluidoHoje) {
-            alert('Você já concluiu o bloco de hoje.');
-            return;
-        }
-
         const feitas = parseInt(inputFeitas.value, 10);
         const acertos = parseInt(inputAcertos.value, 10);
         const ultima = inputUltima.value.trim();
@@ -1040,8 +1019,7 @@
             dadosDisc.tempo += tempo;
         }
 
-        dadosEstudo.ciclo.concluidoHoje = true;
-        dadosEstudo.ciclo.dataUltimoRegistro = obterDataStringHoje();
+        // Removida a definição de concluidoHoje = true para permitir múltiplos blocos no mesmo dia
         localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
 
         if (tempo > 0) {
