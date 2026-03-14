@@ -121,6 +121,7 @@
             border-radius: 36px;
             padding: 2.4rem 2.4rem 2rem;
             box-shadow: 0 30px 40px -20px #000000e0, 0 0 0 1px #2a3240 inset;
+            position: relative;
         }
 
         .daily-header {
@@ -130,6 +131,7 @@
             margin-bottom: 2rem;
             flex-wrap: wrap;
             gap: 1rem;
+            position: relative;
         }
 
         .daily-header h2 {
@@ -139,6 +141,23 @@
             letter-spacing: -0.02em;
             border-left: 6px solid #6f9fbf;
             padding-left: 1rem;
+        }
+
+        .bloco-badge {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            background: #2a3440;
+            color: #c0d4f0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            border: 1px solid #4d6079;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            z-index: 5;
         }
 
         .status-badge {
@@ -519,6 +538,7 @@
                     <button class="btn" id="btnDisciplinaProxima" style="padding: 0.3rem 0.8rem;" title="próxima disciplina">→</button>
                 </div>
                 <div id="concluidoBadge" class="status-badge hidden"><span class="icon-check"></span> concluído hoje</div>
+                <span id="blocoBadge" class="bloco-badge"></span>
             </div>
 
             <div class="fields-container">
@@ -684,6 +704,42 @@
         return `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
     }
 
+    // ---------- FUNÇÃO PARA GERAR O ARRAY DO CICLO (4 BLOCOS, 5 DISCIPLINAS) ----------
+    function gerarArrayCiclo(alternanciaBlocoD) {
+        // alternanciaBlocoD = false -> "Administração Financeira e Orçamentária"
+        // alternanciaBlocoD = true  -> "Administração de Recursos Materiais e Arquivologia"
+        const opcaoD5 = alternanciaBlocoD
+            ? "Administração de Recursos Materiais e Arquivologia"
+            : "Administração Financeira e Orçamentária";
+
+        return [
+            // Bloco A (0-4)
+            { nome: "Língua Portuguesa", bloco: "A" },
+            { nome: "Direito Administrativo", bloco: "A" },
+            { nome: "Administração Geral e Administração Pública", bloco: "A" },
+            { nome: "Informática", bloco: "A" },
+            { nome: "Raciocínio Lógico e Matemática Básica", bloco: "A" },
+            // Bloco B (5-9)
+            { nome: "Língua Portuguesa", bloco: "B" },
+            { nome: "Legislação do Serviço Público Federal", bloco: "B" },
+            { nome: "Administração Geral e Administração Pública", bloco: "B" },
+            { nome: "Gestão de Pessoas / Comportamento Organizacional", bloco: "B" },
+            { nome: "Informática", bloco: "B" },
+            // Bloco C (10-14)
+            { nome: "Língua Portuguesa", bloco: "C" },
+            { nome: "Direito Administrativo", bloco: "C" },
+            { nome: "Administração de Recursos Materiais e Arquivologia", bloco: "C" },
+            { nome: "Raciocínio Lógico e Matemática Básica", bloco: "C" },
+            { nome: "Redação Oficial e Comunicação Administrativa", bloco: "C" },
+            // Bloco D (15-19)
+            { nome: "Língua Portuguesa", bloco: "D" },
+            { nome: "Legislação do Serviço Público Federal", bloco: "D" },
+            { nome: "Administração Geral e Administração Pública", bloco: "D" },
+            { nome: "Atendimento ao Público e Ética Profissional", bloco: "D" },
+            { nome: opcaoD5, bloco: "D" }
+        ];
+    }
+
     // ---------- GERENCIAMENTO DOS DADOS DO CICLO ----------
     function carregarDados() {
         let dados = localStorage.getItem(CICLO_STORAGE_KEY);
@@ -707,12 +763,37 @@
                 ciclo: {
                     indice: 0,
                     dataUltimoRegistro: obterDataStringHoje(),
-                    concluidoHoje: false
+                    concluidoHoje: false,
+                    streakAtual: 0,
+                    maiorStreak: 0
                 }
             };
         }
+        // garantir campos do ciclo
         if (!dados.ciclo.streakAtual) dados.ciclo.streakAtual = 0;
         if (!dados.ciclo.maiorStreak) dados.ciclo.maiorStreak = 0;
+        if (!dados.ciclo.alternanciaBlocoD) dados.ciclo.alternanciaBlocoD = false; // novo campo
+
+        // Ajustar índice para o novo array do ciclo (preservando a disciplina atual se possível)
+        const arrayCiclo = gerarArrayCiclo(dados.ciclo.alternanciaBlocoD);
+        const tamanhoArray = arrayCiclo.length;
+
+        // Se o índice atual estiver fora do novo array, ou se quisermos migrar suavemente,
+        // tenta encontrar a disciplina antiga (baseada no índice antigo) dentro do novo array.
+        // O índice antigo se referia à lista DISCIPLINAS (11 itens). Vamos obter o nome da disciplina
+        // na posição antiga e procurar a primeira ocorrência no novo array.
+        if (dados.ciclo.indice !== undefined) {
+            const nomeAntigo = DISCIPLINAS[dados.ciclo.indice] || DISCIPLINAS[0];
+            const novoIndice = arrayCiclo.findIndex(item => item.nome === nomeAntigo);
+            if (novoIndice !== -1) {
+                dados.ciclo.indice = novoIndice;
+            } else {
+                dados.ciclo.indice = 0; // fallback seguro
+            }
+        } else {
+            dados.ciclo.indice = 0;
+        }
+
         return dados;
     }
 
@@ -835,6 +916,7 @@
     dadosEstudo = atualizarCiclo(dadosEstudo);
     localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
 
+    // ---------- REFERÊNCIAS DOM ----------
     const viewDaily = document.getElementById('viewDaily');
     const viewStats = document.getElementById('viewStats');
     const statsBtn = document.getElementById('statsBtnView');
@@ -855,25 +937,42 @@
     const statsContainer = document.getElementById('statsContainer');
     const btnAnterior = document.getElementById('btnDisciplinaAnterior');
     const btnProxima = document.getElementById('btnDisciplinaProxima');
+    const blocoBadge = document.getElementById('blocoBadge');
+
+    // ---------- FUNÇÃO AUXILIAR PARA OBTER O ARRAY ATUAL DO CICLO ----------
+    function getArrayCiclo() {
+        return gerarArrayCiclo(dadosEstudo.ciclo.alternanciaBlocoD);
+    }
 
     function avancarDisciplina() {
-        const total = DISCIPLINAS.length;
-        dadosEstudo.ciclo.indice = (dadosEstudo.ciclo.indice + 1) % total;
+        const array = getArrayCiclo();
+        const tamanho = array.length;
+        let novoIndice = (dadosEstudo.ciclo.indice + 1) % tamanho;
+        // Se completou o ciclo (passou do último para o primeiro), alterna a opção do Bloco D
+        if (novoIndice === 0) {
+            dadosEstudo.ciclo.alternanciaBlocoD = !dadosEstudo.ciclo.alternanciaBlocoD;
+        }
+        dadosEstudo.ciclo.indice = novoIndice;
         localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
         carregarInterfaceDaily();
     }
 
     function voltarDisciplina() {
-        const total = DISCIPLINAS.length;
-        dadosEstudo.ciclo.indice = (dadosEstudo.ciclo.indice - 1 + total) % total;
+        const array = getArrayCiclo();
+        const tamanho = array.length;
+        dadosEstudo.ciclo.indice = (dadosEstudo.ciclo.indice - 1 + tamanho) % tamanho;
         localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
         carregarInterfaceDaily();
     }
 
     function carregarInterfaceDaily() {
-        const indice = dadosEstudo.ciclo.indice;
-        const disciplina = DISCIPLINAS[indice];
+        const array = getArrayCiclo();
+        const item = array[dadosEstudo.ciclo.indice];
+        const disciplina = item.nome;
+        const bloco = item.bloco;
+
         elNomeDisciplina.textContent = disciplina;
+        blocoBadge.textContent = `Bloco ${bloco}`;
 
         const dadosDisc = dadosEstudo.disciplinas.find(d => d.nome === disciplina);
         inputUltima.value = (dadosDisc && dadosDisc.ultimaQuestao) || '';
@@ -882,7 +981,6 @@
         inputAcertos.value = 0;
         inputTempo.value = 0;
 
-        // Sempre habilita os campos e botões (remoção da restrição de bloco único por dia)
         elConcluidoBadge.classList.add('hidden');
         [inputFeitas, inputAcertos, inputUltima, inputTempo].forEach(i => i.disabled = false);
         btnSalvar.disabled = false;
@@ -1009,8 +1107,9 @@
             return;
         }
 
-        const indice = dadosEstudo.ciclo.indice;
-        const disciplina = DISCIPLINAS[indice];
+        const array = getArrayCiclo();
+        const item = array[dadosEstudo.ciclo.indice];
+        const disciplina = item.nome;
         const dadosDisc = dadosEstudo.disciplinas.find(d => d.nome === disciplina);
         if (dadosDisc) {
             dadosDisc.feitas += feitas;
@@ -1019,7 +1118,6 @@
             dadosDisc.tempo += tempo;
         }
 
-        // Removida a definição de concluidoHoje = true para permitir múltiplos blocos no mesmo dia
         localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
 
         if (tempo > 0) {
