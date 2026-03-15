@@ -34,116 +34,6 @@
             width: 100%;
         }
 
-        /* ---------- DASHBOARD NO TOPO ---------- */
-        .dashboard-section {
-            background: #10141c;
-            border-radius: 32px;
-            padding: 1.8rem 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid #2a3440;
-            box-shadow: 0 20px 30px -15px #00000080;
-        }
-
-        .dashboard-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .dashboard-header h2 {
-            font-size: 1.8rem;
-            font-weight: 450;
-            color: #e0edff;
-            letter-spacing: -0.02em;
-            border-left: 5px solid #6f9fbf;
-            padding-left: 1rem;
-        }
-
-        .period-filter {
-            background: #1f2632;
-            border: 1px solid #2f3a48;
-            color: #eef3fc;
-            padding: 0.6rem 1.4rem;
-            border-radius: 40px;
-            font-size: 0.95rem;
-            font-weight: 450;
-            cursor: pointer;
-            outline: none;
-        }
-        .period-filter option {
-            background: #1f2632;
-        }
-
-        .cards-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .stat-card {
-            background: #1a212c;
-            border-radius: 24px;
-            padding: 1.4rem 1.8rem;
-            flex: 1 1 180px;
-            border: 1px solid #314153;
-            box-shadow: 0 8px 16px #00000040;
-        }
-
-        .stat-card .label {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            color: #96abc7;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card .value {
-            font-size: 2.6rem;
-            font-weight: 500;
-            color: #d9ecff;
-            line-height: 1.2;
-        }
-        .stat-card .value small {
-            font-size: 1.2rem;
-            color: #96abc7;
-            margin-left: 0.3rem;
-        }
-
-        .charts-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.8rem;
-            margin-top: 1rem;
-        }
-
-        .chart-box {
-            background: #1a212c;
-            border-radius: 28px;
-            padding: 1.5rem;
-            flex: 1 1 400px;
-            border: 1px solid #314153;
-        }
-
-        .chart-box h3 {
-            font-size: 1.2rem;
-            font-weight: 450;
-            color: #bcd2ea;
-            margin-bottom: 1rem;
-            padding-left: 0.5rem;
-            border-left: 3px solid #6f9fbf;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 220px;
-            width: 100%;
-        }
-
-        /* restante do estilo original (mantido intacto) */
         .app-bar {
             display: flex;
             flex-wrap: wrap;
@@ -435,6 +325,81 @@
             color: #dae6f8;
         }
 
+        /* ---- novo dashboard ---- */
+        .dashboard-resumo {
+            background: #1b232f;
+            border-radius: 32px;
+            padding: 1.8rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #2d3a4b;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+        .periodo-selector {
+            background: #0f151f;
+            border: 1px solid #2f3e51;
+            color: #eef3fc;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+        }
+        .stats-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem 3rem;
+        }
+        .stat-bloco {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-bloco .valor {
+            font-size: 2.2rem;
+            font-weight: 500;
+            color: #d9ecff;
+            line-height: 1.2;
+        }
+        .stat-bloco .rotulo {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #96abc7;
+            letter-spacing: 0.3px;
+        }
+        .graficos-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        .grafico-barras {
+            flex: 2;
+            min-width: 300px;
+            background: #1b232f;
+            border-radius: 28px;
+            padding: 1.5rem;
+            border: 1px solid #2d3a4b;
+        }
+        .grafico-donut {
+            flex: 1;
+            min-width: 250px;
+            background: #1b232f;
+            border-radius: 28px;
+            padding: 1.5rem;
+            border: 1px solid #2d3a4b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .grafico-donut canvas {
+            max-height: 200px;
+            width: 100%;
+        }
+        /* ---- fim novo dashboard ---- */
+
         .cards-grid {
             display: flex;
             flex-direction: column;
@@ -629,45 +594,6 @@
 </head>
 <body>
 <div class="container">
-
-    <!-- ========== NOVO DASHBOARD ========== -->
-    <div class="dashboard-section" id="dashboardSection">
-        <div class="dashboard-header">
-            <h2>📊 Desempenho Geral</h2>
-            <select id="periodoSelect" class="period-filter">
-                <option value="7" selected>Últimos 7 dias</option>
-                <option value="30">Últimos 30 dias</option>
-                <option value="90">Últimos 90 dias</option>
-                <option value="365">Último ano</option>
-            </select>
-        </div>
-
-        <!-- cards de estatísticas -->
-        <div class="cards-row" id="cardsContainer">
-            <div class="stat-card"><div class="label">RESOLUÇÕES</div><div class="value" id="totalResolucoes">0</div></div>
-            <div class="stat-card"><div class="label">ACERTOS</div><div class="value" id="totalAcertos">0</div></div>
-            <div class="stat-card"><div class="label">ERROS</div><div class="value" id="totalErros">0</div></div>
-            <div class="stat-card"><div class="label">ACURÁCIA</div><div class="value" id="acuracia">0<small>%</small></div></div>
-        </div>
-
-        <!-- gráficos -->
-        <div class="charts-row">
-            <div class="chart-box">
-                <h3>📅 Desempenho por dia</h3>
-                <div class="chart-container">
-                    <canvas id="barChart"></canvas>
-                </div>
-            </div>
-            <div class="chart-box">
-                <h3>🥧 Acertos vs Erros</h3>
-                <div class="chart-container">
-                    <canvas id="donutChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== CABEÇALHO ORIGINAL ========== -->
     <div class="app-bar">
         <div class="logo-area">
             <h1>estudo.ciclo</h1>
@@ -733,7 +659,34 @@
             <button class="btn" id="voltarDailyBtn"><span class="icon-back"></span>voltar</button>
             <h2>estatísticas por disciplina</h2>
         </div>
-        <div id="statsContainer"></div>
+        <!-- NOVO DASHBOARD -->
+        <div class="dashboard-resumo">
+            <div>
+                <label for="periodoSelect" style="color:#96abc7; margin-right:0.5rem;">Período:</label>
+                <select id="periodoSelect" class="periodo-selector">
+                    <option value="7" selected>Últimos 7 dias</option>
+                    <option value="30">Últimos 30 dias</option>
+                    <option value="90">Últimos 90 dias</option>
+                    <option value="365">Último ano</option>
+                </select>
+            </div>
+            <div class="stats-cards" id="cardsResumo">
+                <div class="stat-bloco"><span class="valor" id="totalQuestoes">0</span><span class="rotulo">questões</span></div>
+                <div class="stat-bloco"><span class="valor" id="totalAcertos">0</span><span class="rotulo">acertos</span></div>
+                <div class="stat-bloco"><span class="valor" id="totalErros">0</span><span class="rotulo">erros</span></div>
+                <div class="stat-bloco"><span class="valor" id="taxaAcerto">0%</span><span class="rotulo">taxa</span></div>
+            </div>
+        </div>
+        <div class="graficos-container">
+            <div class="grafico-barras">
+                <canvas id="graficoBarras"></canvas>
+            </div>
+            <div class="grafico-donut">
+                <canvas id="graficoDonut"></canvas>
+            </div>
+        </div>
+        <!-- fim novo dashboard -->
+        <div id="statsContainer"></div> <!-- cards de disciplina existentes -->
     </div>
 
     <input type="file" id="importFile" accept=".json" style="display: none;">
@@ -841,9 +794,10 @@
         ]
     };
 
-    // ---------- CHAVES LOCALSTORAGE ----------
+    // ---------- CHAVE EXCLUSIVA DO CICLO ----------
     const CICLO_STORAGE_KEY = 'estudoCicloData';
-    const QUESTOES_KEY = 'questoes_resolvidas';   // NOVA CHAVE
+    // NOVA CHAVE PARA AS QUESTÕES RESOLVIDAS
+    const QUESTOES_STORAGE_KEY = 'questoes_resolvidas';
 
     // ---------- FUNÇÕES DE DATA ----------
     function obterDataStringHoje() {
@@ -856,28 +810,40 @@
         return `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
     }
 
+    // Data no formato ISO para a nova estrutura (YYYY-MM-DD)
+    function getDataISO() {
+        const d = new Date();
+        return d.toISOString().split('T')[0];
+    }
+
     // ---------- FUNÇÃO PARA GERAR O ARRAY DO CICLO (4 BLOCOS, 5 DISCIPLINAS) ----------
     function gerarArrayCiclo(alternanciaBlocoD) {
+        // alternanciaBlocoD = false -> "Administração Financeira e Orçamentária"
+        // alternanciaBlocoD = true  -> "Administração de Recursos Materiais e Arquivologia"
         const opcaoD5 = alternanciaBlocoD
             ? "Administração de Recursos Materiais e Arquivologia"
             : "Administração Financeira e Orçamentária";
 
         return [
+            // Bloco A (0-4)
             { nome: "Língua Portuguesa", bloco: "A" },
             { nome: "Direito Administrativo", bloco: "A" },
             { nome: "Administração Geral e Administração Pública", bloco: "A" },
             { nome: "Informática", bloco: "A" },
             { nome: "Raciocínio Lógico e Matemática Básica", bloco: "A" },
+            // Bloco B (5-9)
             { nome: "Língua Portuguesa", bloco: "B" },
             { nome: "Legislação do Serviço Público Federal", bloco: "B" },
             { nome: "Administração Geral e Administração Pública", bloco: "B" },
             { nome: "Gestão de Pessoas / Comportamento Organizacional", bloco: "B" },
             { nome: "Informática", bloco: "B" },
+            // Bloco C (10-14)
             { nome: "Língua Portuguesa", bloco: "C" },
             { nome: "Direito Administrativo", bloco: "C" },
             { nome: "Administração de Recursos Materiais e Arquivologia", bloco: "C" },
             { nome: "Raciocínio Lógico e Matemática Básica", bloco: "C" },
             { nome: "Redação Oficial e Comunicação Administrativa", bloco: "C" },
+            // Bloco D (15-19)
             { nome: "Língua Portuguesa", bloco: "D" },
             { nome: "Legislação do Serviço Público Federal", bloco: "D" },
             { nome: "Administração Geral e Administração Pública", bloco: "D" },
@@ -915,20 +881,26 @@
                 }
             };
         }
+        // garantir campos do ciclo
         if (!dados.ciclo.streakAtual) dados.ciclo.streakAtual = 0;
         if (!dados.ciclo.maiorStreak) dados.ciclo.maiorStreak = 0;
-        if (!dados.ciclo.alternanciaBlocoD) dados.ciclo.alternanciaBlocoD = false;
+        if (!dados.ciclo.alternanciaBlocoD) dados.ciclo.alternanciaBlocoD = false; // novo campo
 
+        // Ajustar índice para o novo array do ciclo (preservando a disciplina atual se possível)
         const arrayCiclo = gerarArrayCiclo(dados.ciclo.alternanciaBlocoD);
         const tamanhoArray = arrayCiclo.length;
 
+        // Se o índice atual estiver fora do novo array, ou se quisermos migrar suavemente,
+        // tenta encontrar a disciplina antiga (baseada no índice antigo) dentro do novo array.
+        // O índice antigo se referia à lista DISCIPLINAS (11 itens). Vamos obter o nome da disciplina
+        // na posição antiga e procurar a primeira ocorrência no novo array.
         if (dados.ciclo.indice !== undefined) {
             const nomeAntigo = DISCIPLINAS[dados.ciclo.indice] || DISCIPLINAS[0];
             const novoIndice = arrayCiclo.findIndex(item => item.nome === nomeAntigo);
             if (novoIndice !== -1) {
                 dados.ciclo.indice = novoIndice;
             } else {
-                dados.ciclo.indice = 0;
+                dados.ciclo.indice = 0; // fallback seguro
             }
         } else {
             dados.ciclo.indice = 0;
@@ -1051,6 +1023,176 @@
         return true;
     }
 
+    // ---------- FUNÇÕES PARA O NOVO DASHBOARD ----------
+    let graficoBarras, graficoDonut;
+
+    // Carregar questões da nova chave
+    function carregarQuestoes() {
+        let questoes = localStorage.getItem(QUESTOES_STORAGE_KEY);
+        if (questoes) {
+            try {
+                return JSON.parse(questoes) || [];
+            } catch {
+                return [];
+            }
+        }
+        return [];
+    }
+
+    // Salvar questões
+    function salvarQuestoes(questoes) {
+        localStorage.setItem(QUESTOES_STORAGE_KEY, JSON.stringify(questoes));
+    }
+
+    // Registrar nova resposta (chamada no salvamento)
+    function registrarResposta(disciplina, feitas, acertos) {
+        if (feitas <= 0) return;
+        const dataISO = getDataISO();
+        const questoes = carregarQuestoes();
+        const erros = feitas - acertos;
+        for (let i = 0; i < acertos; i++) {
+            questoes.push({
+                data: dataISO,
+                disciplina: disciplina,
+                resultado: 'acerto'
+            });
+        }
+        for (let i = 0; i < erros; i++) {
+            questoes.push({
+                data: dataISO,
+                disciplina: disciplina,
+                resultado: 'erro'
+            });
+        }
+        salvarQuestoes(questoes);
+    }
+
+    // Filtrar por período (dias atrás)
+    function obterDadosPeriodo(dias) {
+        const questoes = carregarQuestoes();
+        const hoje = new Date();
+        hoje.setHours(0,0,0,0);
+        const dataLimite = new Date(hoje);
+        dataLimite.setDate(hoje.getDate() - dias);
+        return questoes.filter(q => {
+            const [ano, mes, dia] = q.data.split('-').map(Number);
+            const dataQ = new Date(ano, mes-1, dia);
+            return dataQ >= dataLimite && dataQ <= hoje;
+        });
+    }
+
+    function calcularEstatisticas(dadosFiltrados) {
+        const total = dadosFiltrados.length;
+        const acertos = dadosFiltrados.filter(q => q.resultado === 'acerto').length;
+        const erros = total - acertos;
+        const taxa = total > 0 ? (acertos / total * 100).toFixed(1) : 0;
+        return { total, acertos, erros, taxa };
+    }
+
+    function atualizarCards(stats) {
+        document.getElementById('totalQuestoes').textContent = stats.total;
+        document.getElementById('totalAcertos').textContent = stats.acertos;
+        document.getElementById('totalErros').textContent = stats.erros;
+        document.getElementById('taxaAcerto').textContent = stats.taxa + '%';
+    }
+
+    function atualizarGraficos(dadosFiltrados, dias) {
+        // Gráfico de barras: agrupar por dia
+        const hoje = new Date();
+        hoje.setHours(0,0,0,0);
+        const datas = [];
+        for (let i = dias-1; i >= 0; i--) {
+            const d = new Date(hoje);
+            d.setDate(hoje.getDate() - i);
+            const dataStr = d.toISOString().split('T')[0];
+            datas.push(dataStr);
+        }
+        const questoesPorDia = {};
+        const acertosPorDia = {};
+        datas.forEach(data => {
+            questoesPorDia[data] = 0;
+            acertosPorDia[data] = 0;
+        });
+        dadosFiltrados.forEach(q => {
+            if (questoesPorDia.hasOwnProperty(q.data)) {
+                questoesPorDia[q.data]++;
+                if (q.resultado === 'acerto') acertosPorDia[q.data]++;
+            }
+        });
+        const labels = datas.map(d => {
+            const [ano, mes, dia] = d.split('-');
+            return `${dia}/${mes}`;
+        });
+        const questoesData = datas.map(d => questoesPorDia[d]);
+        const acertosData = datas.map(d => acertosPorDia[d]);
+
+        if (graficoBarras) graficoBarras.destroy();
+        const ctxBarras = document.getElementById('graficoBarras').getContext('2d');
+        graficoBarras = new Chart(ctxBarras, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Questões',
+                        data: questoesData,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Acertos',
+                        data: acertosData,
+                        backgroundColor: '#22c55e',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#ccd9f0' } }
+                },
+                scales: {
+                    x: { ticks: { color: '#96abc7' }, grid: { color: '#2d3748' } },
+                    y: { ticks: { color: '#96abc7' }, grid: { color: '#2d3748' } }
+                }
+            }
+        });
+
+        // Gráfico donut
+        const stats = calcularEstatisticas(dadosFiltrados);
+        if (graficoDonut) graficoDonut.destroy();
+        const ctxDonut = document.getElementById('graficoDonut').getContext('2d');
+        graficoDonut = new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Acertos', 'Erros'],
+                datasets: [{
+                    data: [stats.acertos, stats.erros],
+                    backgroundColor: ['#22c55e', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#ccd9f0' } }
+                }
+            }
+        });
+    }
+
+    function renderizarDashboard() {
+        const select = document.getElementById('periodoSelect');
+        const dias = parseInt(select.value, 10);
+        const dados = obterDadosPeriodo(dias);
+        const stats = calcularEstatisticas(dados);
+        atualizarCards(stats);
+        atualizarGraficos(dados, dias);
+    }
+
     // ---------- ESTADO GLOBAL ----------
     let dadosEstudo = carregarDados();
     dadosEstudo = atualizarCiclo(dadosEstudo);
@@ -1078,166 +1220,7 @@
     const btnAnterior = document.getElementById('btnDisciplinaAnterior');
     const btnProxima = document.getElementById('btnDisciplinaProxima');
     const blocoBadge = document.getElementById('blocoBadge');
-
-    // ---------- ELEMENTOS DO DASHBOARD ----------
     const periodoSelect = document.getElementById('periodoSelect');
-    const totalResolucoesEl = document.getElementById('totalResolucoes');
-    const totalAcertosEl = document.getElementById('totalAcertos');
-    const totalErrosEl = document.getElementById('totalErros');
-    const acuraciaEl = document.getElementById('acuracia');
-    const barChartCanvas = document.getElementById('barChart');
-    const donutChartCanvas = document.getElementById('donutChart');
-
-    // ---------- VARIÁVEIS DOS GRÁFICOS ----------
-    let barChartInstance = null;
-    let donutChartInstance = null;
-
-    // ---------- FUNÇÕES DO DASHBOARD ----------
-
-    // Registrar uma resposta individual (acerto ou erro)
-    function registrarResposta(disciplina, resultado) {
-        const registros = JSON.parse(localStorage.getItem(QUESTOES_KEY)) || [];
-        const novo = {
-            data: getCalendarDateString(),
-            disciplina: disciplina,
-            resultado: resultado // "acerto" ou "erro"
-        };
-        registros.push(novo);
-        localStorage.setItem(QUESTOES_KEY, JSON.stringify(registros));
-    }
-
-    // Obter dados filtrados por período (dias atrás)
-    function obterDadosPeriodo(dias) {
-        const registros = JSON.parse(localStorage.getItem(QUESTOES_KEY)) || [];
-        if (dias === 0) return registros; // todos
-
-        const hoje = new Date();
-        hoje.setHours(0,0,0,0);
-        const limite = new Date(hoje);
-        limite.setDate(hoje.getDate() - dias);
-
-        return registros.filter(item => {
-            const [d, m, y] = item.data.split('-').map(Number);
-            const dataItem = new Date(y, m-1, d);
-            return dataItem >= limite;
-        });
-    }
-
-    // Calcular estatísticas a partir de um array de registros
-    function calcularEstatisticas(dados) {
-        let resolucoes = dados.length;
-        let acertos = dados.filter(r => r.resultado === 'acerto').length;
-        let erros = dados.filter(r => r.resultado === 'erro').length;
-        let acuracia = resolucoes > 0 ? (acertos / resolucoes * 100).toFixed(1) : 0;
-        return { resolucoes, acertos, erros, acuracia };
-    }
-
-    // Atualizar os cards com os dados do período atual
-    function atualizarCards() {
-        const dias = parseInt(periodoSelect.value);
-        const dados = obterDadosPeriodo(dias);
-        const { resolucoes, acertos, erros, acuracia } = calcularEstatisticas(dados);
-        totalResolucoesEl.textContent = resolucoes;
-        totalAcertosEl.textContent = acertos;
-        totalErrosEl.textContent = erros;
-        acuraciaEl.textContent = acuracia;
-    }
-
-    // Preparar dados para gráfico de barras (agrupado por data)
-    function prepararDadosBarra(dados, dias) {
-        const agrupado = new Map(); // data -> { total, acertos }
-        dados.forEach(item => {
-            if (!agrupado.has(item.data)) {
-                agrupado.set(item.data, { total:0, acertos:0 });
-            }
-            const entry = agrupado.get(item.data);
-            entry.total++;
-            if (item.resultado === 'acerto') entry.acertos++;
-        });
-
-        // ordenar por data crescente
-        const datasOrdenadas = Array.from(agrupado.keys()).sort((a,b) => {
-            const [da, ma, ya] = a.split('-').map(Number);
-            const [db, mb, yb] = b.split('-').map(Number);
-            return new Date(ya, ma-1, da) - new Date(yb, mb-1, db);
-        });
-
-        const totais = datasOrdenadas.map(d => agrupado.get(d).total);
-        const acertos = datasOrdenadas.map(d => agrupado.get(d).acertos);
-
-        return { labels: datasOrdenadas, totais, acertos };
-    }
-
-    // Atualizar gráficos
-    function atualizarGraficos() {
-        const dias = parseInt(periodoSelect.value);
-        const dados = obterDadosPeriodo(dias);
-
-        // Gráfico de barras
-        const barData = prepararDadosBarra(dados, dias);
-        if (barChartInstance) barChartInstance.destroy();
-        barChartInstance = new Chart(barChartCanvas, {
-            type: 'bar',
-            data: {
-                labels: barData.labels,
-                datasets: [
-                    {
-                        label: 'Questões',
-                        data: barData.totais,
-                        backgroundColor: '#4a7ea8',
-                        borderRadius: 6
-                    },
-                    {
-                        label: 'Acertos',
-                        data: barData.acertos,
-                        backgroundColor: '#5fb38b',
-                        borderRadius: 6
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: '#cbd8ec' } }
-                },
-                scales: {
-                    x: { ticks: { color: '#96abc7' }, grid: { color: '#2a3440' } },
-                    y: { ticks: { color: '#96abc7' }, grid: { color: '#2a3440' } }
-                }
-            }
-        });
-
-        // Gráfico donut (acertos x erros)
-        const acertos = dados.filter(r => r.resultado === 'acerto').length;
-        const erros = dados.filter(r => r.resultado === 'erro').length;
-        if (donutChartInstance) donutChartInstance.destroy();
-        donutChartInstance = new Chart(donutChartCanvas, {
-            type: 'doughnut',
-            data: {
-                labels: ['Acertos', 'Erros'],
-                datasets: [{
-                    data: [acertos, erros],
-                    backgroundColor: ['#5fb38b', '#d46b6b'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: '#cbd8ec' } }
-                },
-                cutout: '65%'
-            }
-        });
-    }
-
-    // Função principal que atualiza todo o dashboard
-    function renderizarDashboard() {
-        atualizarCards();
-        atualizarGraficos();
-    }
 
     // ---------- FUNÇÃO AUXILIAR PARA OBTER O ARRAY ATUAL DO CICLO ----------
     function getArrayCiclo() {
@@ -1248,6 +1231,7 @@
         const array = getArrayCiclo();
         const tamanho = array.length;
         let novoIndice = (dadosEstudo.ciclo.indice + 1) % tamanho;
+        // Se completou o ciclo (passou do último para o primeiro), alterna a opção do Bloco D
         if (novoIndice === 0) {
             dadosEstudo.ciclo.alternanciaBlocoD = !dadosEstudo.ciclo.alternanciaBlocoD;
         }
@@ -1380,7 +1364,8 @@
     }
 
     function abrirStats() {
-        atualizarStats();
+        renderizarDashboard(); // atualiza o novo dashboard
+        atualizarStats();      // mantém os cards antigos
         viewDaily.classList.remove('active');
         viewStats.classList.add('active');
     }
@@ -1391,7 +1376,6 @@
         carregarInterfaceDaily();
     }
 
-    // ---------- SALVAR (modificado para incluir registro das questões) ----------
     function salvarHandler() {
         const feitas = parseInt(inputFeitas.value, 10);
         const acertos = parseInt(inputAcertos.value, 10);
@@ -1420,21 +1404,23 @@
 
         localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
 
-        // --- REGISTRAR CADA QUESTÃO INDIVIDUALMENTE ---
-        for (let i = 0; i < feitas; i++) {
-            const resultado = i < acertos ? 'acerto' : 'erro';
-            registrarResposta(disciplina, resultado);
-        }
-
         if (tempo > 0) {
             registrarNoCalendario(disciplina, tempo);
+        }
+
+        // Registrar na nova estrutura
+        if (feitas > 0) {
+            registrarResposta(disciplina, feitas, acertos);
         }
 
         calcularEAtualizarStreak();
         carregarInterfaceDaily();
 
-        // --- ATUALIZAR DASHBOARD APÓS REGISTRO ---
-        renderizarDashboard();
+        // Se a view de estatísticas estiver ativa, atualiza o dashboard
+        if (viewStats.classList.contains('active')) {
+            renderizarDashboard();
+            atualizarStats(); // também atualiza os cards antigos
+        }
     }
 
     function exportarDados() {
@@ -1485,25 +1471,25 @@
     if (btnAnterior) btnAnterior.addEventListener('click', voltarDisciplina);
     if (btnProxima) btnProxima.addEventListener('click', avancarDisciplina);
 
-    // Inicializar dashboard
-    renderizarDashboard();
-
-    // Atualizar dashboard quando mudar o filtro
     periodoSelect.addEventListener('change', renderizarDashboard);
 
-    // Atualizar também se houver mudança externa (outra aba)
+    carregarInterfaceDaily();
+
     window.addEventListener('storage', (e) => {
         if (e.key === CICLO_STORAGE_KEY) {
             dadosEstudo = JSON.parse(e.newValue);
             carregarInterfaceDaily();
         }
-        // Se a chave de questões mudar, atualiza dashboard
-        if (e.key === QUESTOES_KEY) {
+        // Se for a nova chave e a view de estatísticas estiver ativa, atualiza
+        if (e.key === QUESTOES_STORAGE_KEY && viewStats.classList.contains('active')) {
             renderizarDashboard();
         }
     });
 
-    carregarInterfaceDaily();
+    // Inicializa a nova chave se não existir
+    if (!localStorage.getItem(QUESTOES_STORAGE_KEY)) {
+        localStorage.setItem(QUESTOES_STORAGE_KEY, JSON.stringify([]));
+    }
 })();
 </script>
 </body>
