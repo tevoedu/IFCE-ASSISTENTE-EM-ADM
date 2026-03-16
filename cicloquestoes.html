@@ -145,8 +145,12 @@
             padding-left: 1rem;
         }
 
-        /* Ajuste para a tag do bloco – agora posicionada abaixo da disciplina */
+        /* Bloco com barra de progresso e campo de total */
         .bloco-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
             margin: 0 0 1.5rem 0;
         }
         .bloco-badge {
@@ -161,6 +165,50 @@
             border: 1px solid #4d6079;
             text-transform: uppercase;
             box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+        .progress-container {
+            flex: 2;
+            min-width: 200px;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size:0.8rem;
+            color:#96abc7;
+            margin-bottom:0.2rem;
+        }
+        .progress-bar-bg {
+            background: #263040;
+            height: 10px;
+            border-radius: 20px;
+            width: 100%;
+        }
+        .total-edit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #1f2632;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            border: 1px solid #384153;
+        }
+        .total-label {
+            font-size: 0.8rem;
+            color: #96abc7;
+        }
+        .total-input {
+            width: 60px;
+            background: #0f151f;
+            border: 1px solid #2f3e51;
+            color: #eef3fc;
+            padding: 0.3rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            text-align: center;
+            outline: none;
+        }
+        .total-input:focus {
+            border-color: #679bb7;
         }
 
         .status-badge {
@@ -326,7 +374,7 @@
             color: #dae6f8;
         }
 
-        /* ---- novo dashboard com altura fixa para evitar tremulação ---- */
+        /* dashboard */
         .dashboard-resumo {
             background: #1b232f;
             border-radius: 32px;
@@ -383,7 +431,7 @@
             border-radius: 28px;
             padding: 1.5rem;
             border: 1px solid #2d3a4b;
-            height: 280px; /* altura fixa para evitar reflow */
+            height: 280px;
         }
         .grafico-donut {
             flex: 1;
@@ -395,13 +443,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 280px; /* altura fixa */
+            height: 280px;
         }
         .grafico-donut canvas, .grafico-barras canvas {
             width: 100% !important;
             height: 100% !important;
         }
-        /* ---- fim novo dashboard ---- */
 
         .cards-grid {
             display: flex;
@@ -619,9 +666,22 @@
                 </div>
                 <div id="concluidoBadge" class="status-badge hidden"><span class="icon-check"></span> concluído hoje</div>
             </div>
-            <!-- Tag do bloco movida para abaixo da disciplina -->
+            <!-- Bloco + barra de progresso + campo total -->
             <div class="bloco-wrapper">
                 <span id="blocoBadge" class="bloco-badge"></span>
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span id="progressoTexto">0/100</span>
+                        <span id="progressoPercent">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="progressoBarra" class="progress-fill" style="width:0%;"></div>
+                    </div>
+                </div>
+                <div class="total-edit">
+                    <span class="total-label">Total:</span>
+                    <input type="number" id="inputTotalQuestoes" class="total-input" min="1" value="100">
+                </div>
             </div>
 
             <div class="fields-container">
@@ -634,8 +694,12 @@
                     <input type="number" id="inputAcertos" class="field-input" min="0" value="0">
                 </div>
                 <div class="field-line">
-                    <span class="field-label">última questão</span>
-                    <input type="text" id="inputUltima" class="field-input" placeholder="ex: nº 73, orgãos públicos">
+                    <span class="field-label">nº da última questão</span>
+                    <input type="text" id="inputUltima" class="field-input" placeholder="ex: 73">
+                </div>
+                <div class="field-line">
+                    <span class="field-label">código da questão</span>
+                    <input type="text" id="inputUltimaCodigo" class="field-input" placeholder="ex: Q123, código único">
                 </div>
                 <div class="field-line">
                     <span class="field-label">tempo (minutos)</span>
@@ -665,11 +729,12 @@
             <button class="btn" id="voltarDailyBtn"><span class="icon-back"></span>voltar</button>
             <h2>estatísticas por disciplina</h2>
         </div>
-        <!-- NOVO DASHBOARD -->
+        <!-- DASHBOARD -->
         <div class="dashboard-resumo">
             <div>
                 <label for="periodoSelect" style="color:#96abc7; margin-right:0.5rem;">Período:</label>
                 <select id="periodoSelect" class="periodo-selector">
+                    <option value="1">Hoje</option>
                     <option value="7" selected>Últimos 7 dias</option>
                     <option value="30">Últimos 30 dias</option>
                     <option value="90">Últimos 90 dias</option>
@@ -691,7 +756,6 @@
                 <canvas id="graficoDonut"></canvas>
             </div>
         </div>
-        <!-- fim novo dashboard -->
         <div id="statsContainer"></div> <!-- cards de disciplina existentes -->
     </div>
 
@@ -901,27 +965,20 @@
         // garantir campos do ciclo
         if (!dados.ciclo.streakAtual) dados.ciclo.streakAtual = 0;
         if (!dados.ciclo.maiorStreak) dados.ciclo.maiorStreak = 0;
-        if (!dados.ciclo.alternanciaBlocoD) dados.ciclo.alternanciaBlocoD = false; // novo campo
+        if (dados.ciclo.alternanciaBlocoD === undefined) dados.ciclo.alternanciaBlocoD = false;
 
-        // Ajustar índice para o novo array do ciclo (preservando a disciplina atual se possível)
+        // Adicionar novos campos às disciplinas (código e total de questões)
+        dados.disciplinas.forEach(d => {
+            if (d.ultimaQuestaoCodigo === undefined) d.ultimaQuestaoCodigo = '';
+            if (d.totalQuestoes === undefined) d.totalQuestoes = 100; // valor padrão
+        });
+
+        // Ajustar índice: apenas garantir que esteja dentro dos limites do array atual
         const arrayCiclo = gerarArrayCiclo(dados.ciclo.alternanciaBlocoD);
-        const tamanhoArray = arrayCiclo.length;
-
-        // Se o índice atual estiver fora do novo array, ou se quisermos migrar suavemente,
-        // tenta encontrar a disciplina antiga (baseada no índice antigo) dentro do novo array.
-        // O índice antigo se referia à lista DISCIPLINAS (11 itens). Vamos obter o nome da disciplina
-        // na posição antiga e procurar a primeira ocorrência no novo array.
-        if (dados.ciclo.indice !== undefined) {
-            const nomeAntigo = DISCIPLINAS[dados.ciclo.indice] || DISCIPLINAS[0];
-            const novoIndice = arrayCiclo.findIndex(item => item.nome === nomeAntigo);
-            if (novoIndice !== -1) {
-                dados.ciclo.indice = novoIndice;
-            } else {
-                dados.ciclo.indice = 0; // fallback seguro
-            }
-        } else {
+        if (dados.ciclo.indice === undefined || dados.ciclo.indice < 0 || dados.ciclo.indice >= arrayCiclo.length) {
             dados.ciclo.indice = 0;
         }
+        // NÃO FAZER MAIS A MIGRAÇÃO BASEADA EM DISCIPLINAS, pois isso causava variação no índice
 
         return dados;
     }
@@ -1232,12 +1289,17 @@
     const inputFeitas = document.getElementById('inputFeitas');
     const inputAcertos = document.getElementById('inputAcertos');
     const inputUltima = document.getElementById('inputUltima');
+    const inputUltimaCodigo = document.getElementById('inputUltimaCodigo');
     const inputTempo = document.getElementById('inputTempo');
     const statsContainer = document.getElementById('statsContainer');
     const btnAnterior = document.getElementById('btnDisciplinaAnterior');
     const btnProxima = document.getElementById('btnDisciplinaProxima');
     const blocoBadge = document.getElementById('blocoBadge');
     const periodoSelect = document.getElementById('periodoSelect');
+    const progressoTexto = document.getElementById('progressoTexto');
+    const progressoPercent = document.getElementById('progressoPercent');
+    const progressoBarra = document.getElementById('progressoBarra');
+    const inputTotalQuestoes = document.getElementById('inputTotalQuestoes');
 
     // ---------- FUNÇÃO AUXILIAR PARA OBTER O ARRAY ATUAL DO CICLO ----------
     function getArrayCiclo() {
@@ -1265,6 +1327,30 @@
         carregarInterfaceDaily();
     }
 
+    function atualizarProgressoBloco(disciplina) {
+        const dadosDisc = dadosEstudo.disciplinas.find(d => d.nome === disciplina);
+        if (!dadosDisc) return;
+        const feitas = dadosDisc.feitas || 0;
+        const total = dadosDisc.totalQuestoes || 100;
+        const percent = total > 0 ? Math.min(100, Math.round((feitas / total) * 100)) : 0;
+        progressoTexto.textContent = `${feitas}/${total}`;
+        progressoPercent.textContent = percent + '%';
+        progressoBarra.style.width = percent + '%';
+    }
+
+    function salvarTotalQuestoes() {
+        const array = getArrayCiclo();
+        const item = array[dadosEstudo.ciclo.indice];
+        const disciplina = item.nome;
+        const dadosDisc = dadosEstudo.disciplinas.find(d => d.nome === disciplina);
+        if (!dadosDisc) return;
+        let novoTotal = parseInt(inputTotalQuestoes.value, 10);
+        if (isNaN(novoTotal) || novoTotal < 1) novoTotal = 1;
+        dadosDisc.totalQuestoes = novoTotal;
+        localStorage.setItem(CICLO_STORAGE_KEY, JSON.stringify(dadosEstudo));
+        atualizarProgressoBloco(disciplina);
+    }
+
     function carregarInterfaceDaily() {
         const array = getArrayCiclo();
         const item = array[dadosEstudo.ciclo.indice];
@@ -1276,13 +1362,16 @@
 
         const dadosDisc = dadosEstudo.disciplinas.find(d => d.nome === disciplina);
         inputUltima.value = (dadosDisc && dadosDisc.ultimaQuestao) || '';
+        inputUltimaCodigo.value = (dadosDisc && dadosDisc.ultimaQuestaoCodigo) || '';
 
         inputFeitas.value = 0;
         inputAcertos.value = 0;
         inputTempo.value = 0;
 
+        inputTotalQuestoes.value = (dadosDisc && dadosDisc.totalQuestoes) || 100;
+
         elConcluidoBadge.classList.add('hidden');
-        [inputFeitas, inputAcertos, inputUltima, inputTempo].forEach(i => i.disabled = false);
+        [inputFeitas, inputAcertos, inputUltima, inputUltimaCodigo, inputTempo, inputTotalQuestoes].forEach(i => i.disabled = false);
         btnSalvar.disabled = false;
         if (btnAnterior) btnAnterior.disabled = false;
         if (btnProxima) btnProxima.disabled = false;
@@ -1299,6 +1388,9 @@
             });
         }
         filtrosPanel.classList.remove('show');
+
+        // Atualizar barra de progresso
+        atualizarProgressoBloco(disciplina);
     }
 
     function atualizarStats() {
@@ -1397,6 +1489,7 @@
         const feitas = parseInt(inputFeitas.value, 10);
         const acertos = parseInt(inputAcertos.value, 10);
         const ultima = inputUltima.value.trim();
+        const ultimaCodigo = inputUltimaCodigo.value.trim();
         const tempo = parseInt(inputTempo.value, 10);
 
         if (isNaN(feitas) || feitas < 0 || isNaN(acertos) || acertos < 0 || isNaN(tempo) || tempo < 0) {
@@ -1416,6 +1509,7 @@
             dadosDisc.feitas += feitas;
             dadosDisc.acertos += acertos;
             if (ultima) dadosDisc.ultimaQuestao = ultima;
+            if (ultimaCodigo) dadosDisc.ultimaQuestaoCodigo = ultimaCodigo;
             dadosDisc.tempo += tempo;
         }
 
@@ -1489,6 +1583,8 @@
     if (btnProxima) btnProxima.addEventListener('click', avancarDisciplina);
 
     periodoSelect.addEventListener('change', renderizarDashboard);
+
+    inputTotalQuestoes.addEventListener('change', salvarTotalQuestoes);
 
     carregarInterfaceDaily();
 
