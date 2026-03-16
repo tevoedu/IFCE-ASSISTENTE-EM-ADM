@@ -816,10 +816,21 @@
         return `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
     }
 
-    // Data no formato ISO para a nova estrutura (YYYY-MM-DD)
-    function getDataISO() {
+    // Retorna a data local no formato ISO (YYYY-MM-DD) baseada no fuso horário do sistema
+    function getDataLocalISO() {
         const d = new Date();
-        return d.toISOString().split('T')[0];
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Converte um objeto Date para string ISO local (YYYY-MM-DD)
+    function toLocalISOString(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     // ---------- FUNÇÃO PARA GERAR O ARRAY DO CICLO (4 BLOCOS, 5 DISCIPLINAS) ----------
@@ -1053,19 +1064,19 @@
     // Registrar nova resposta (chamada no salvamento)
     function registrarResposta(disciplina, feitas, acertos) {
         if (feitas <= 0) return;
-        const dataISO = getDataISO();
+        const dataLocal = getDataLocalISO(); // usa data local
         const questoes = carregarQuestoes();
         const erros = feitas - acertos;
         for (let i = 0; i < acertos; i++) {
             questoes.push({
-                data: dataISO,
+                data: dataLocal,
                 disciplina: disciplina,
                 resultado: 'acerto'
             });
         }
         for (let i = 0; i < erros; i++) {
             questoes.push({
-                data: dataISO,
+                data: dataLocal,
                 disciplina: disciplina,
                 resultado: 'erro'
             });
@@ -1082,7 +1093,7 @@
         dataLimite.setDate(hoje.getDate() - dias);
         return questoes.filter(q => {
             const [ano, mes, dia] = q.data.split('-').map(Number);
-            const dataQ = new Date(ano, mes-1, dia);
+            const dataQ = new Date(ano, mes-1, dia); // meia-noite local
             return dataQ >= dataLimite && dataQ <= hoje;
         });
     }
@@ -1103,14 +1114,14 @@
     }
 
     function atualizarGraficos(dadosFiltrados, dias) {
-        // Gráfico de barras: agrupar por dia
+        // Gráfico de barras: agrupar por dia (usando data local)
         const hoje = new Date();
         hoje.setHours(0,0,0,0);
         const datas = [];
         for (let i = dias-1; i >= 0; i--) {
             const d = new Date(hoje);
             d.setDate(hoje.getDate() - i);
-            const dataStr = d.toISOString().split('T')[0];
+            const dataStr = toLocalISOString(d); // data local
             datas.push(dataStr);
         }
         const questoesPorDia = {};
