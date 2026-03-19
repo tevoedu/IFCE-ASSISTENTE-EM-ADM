@@ -2276,6 +2276,125 @@
         }
       };
 
+      // ---------- GLOBAL DATA (estado central persistente) ----------
+      ChatSystem.GlobalData = {
+        storageKey: 'studyFlow_globalData',
+        data: null,
+        load() {
+          try {
+            this.data = JSON.parse(localStorage.getItem(this.storageKey)) || { sessions: [], stats: { totalTime: 0, totalQuestions: 0 }, streak: { current: 0, record: 0, lastStudyDate: null } };
+            console.log('[GlobalData] loaded', this.data);
+          } catch {
+            this.data = { sessions: [], stats: { totalTime: 0, totalQuestions: 0 }, streak: { current: 0, record: 0, lastStudyDate: null } };
+          }
+        },
+        save() {
+          localStorage.setItem(this.storageKey, JSON.stringify(this.data));
+          console.log('[GlobalData] saved');
+        },
+        addSession(session) {
+          this.load(); // sempre carregar antes de modificar para evitar conflitos
+          this.data.sessions.push(session);
+          // atualizar stats
+          this.data.stats.totalTime += session.duration;
+          if (session.type === 'questoes') {
+            this.data.stats.totalQuestions += session.questions || 0;
+          }
+          // atualizar streak
+          const today = session.date;
+          const last = this.data.streak.lastStudyDate;
+          if (!last) {
+            this.data.streak.current = 1;
+          } else {
+            const lastDate = new Date(last);
+            const todayDate = new Date(today);
+            const diffDays = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) {
+              this.data.streak.current += 1;
+            } else if (diffDays > 1) {
+              this.data.streak.current = 1;
+            } // se diffDays === 0, mesmo dia, não incrementa
+          }
+          if (this.data.streak.current > this.data.streak.record) {
+            this.data.streak.record = this.data.streak.current;
+          }
+          this.data.streak.lastStudyDate = today;
+          this.save();
+          console.log('[GlobalData] Session added:', session);
+        },
+        syncFromModules() {
+          console.log('[GlobalData] Syncing from modules...');
+          this.data = { sessions: [], stats: { totalTime: 0, totalQuestions: 0 }, streak: { current: 0, record: 0, lastStudyDate: null } };
+          // percorrer todas as chaves dailyActivities_
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('dailyActivities_')) {
+              const date = key.replace('dailyActivities_', '');
+              try {
+                const daily = JSON.parse(localStorage.getItem(key));
+                const acts = daily.activities || {};
+                // questoes
+                (acts.questoes || []).forEach(q => {
+                  this.data.sessions.push({
+                    date: date,
+                    type: 'questoes',
+                    duration: q.tempo || 0,
+                    questions: q.feitas || 0
+                  });
+                  this.data.stats.totalTime += q.tempo || 0;
+                  this.data.stats.totalQuestions += q.feitas || 0;
+                });
+                // anki
+                (acts.anki || []).forEach(a => {
+                  this.data.sessions.push({
+                    date: date,
+                    type: 'anki',
+                    duration: a.tempo || 0,
+                    questions: 0
+                  });
+                  this.data.stats.totalTime += a.tempo || 0;
+                });
+                // teoria
+                (acts.teoria || []).forEach(t => {
+                  this.data.sessions.push({
+                    date: date,
+                    type: 'teorico',
+                    duration: t.tempo || 0,
+                    questions: 0
+                  });
+                  this.data.stats.totalTime += t.tempo || 0;
+                });
+              } catch (e) {
+                console.error('Error parsing dailyActivities', key, e);
+              }
+            }
+          }
+          // recalcular streak baseado nas sessões ordenadas
+          const sorted = this.data.sessions.sort((a,b) => new Date(a.date) - new Date(b.date));
+          let streak = 0, record = 0, lastDate = null;
+          sorted.forEach(s => {
+            const currentDate = s.date;
+            if (!lastDate) {
+              streak = 1;
+            } else {
+              const diff = Math.round((new Date(currentDate) - new Date(lastDate)) / (1000*60*60*24));
+              if (diff === 1) {
+                streak += 1;
+              } else if (diff > 1) {
+                streak = 1;
+              } // diff===0: mesmo dia, ignorar
+            }
+            if (streak > record) record = streak;
+            lastDate = currentDate;
+          });
+          this.data.streak.current = streak;
+          this.data.streak.record = record;
+          this.data.streak.lastStudyDate = lastDate;
+          this.save();
+          console.log('[GlobalData] Sync complete. Stats:', this.data.stats, 'Streak:', this.data.streak);
+        }
+      };
+
       // ---------- STATE ADAPTER (leitura dos dados existentes) ----------
       ChatSystem.StateAdapter = {
         getTodayTime() {
@@ -2295,6 +2414,7 @@
             if (p.anki) p.anki.forEach(a => total += a.tempo || 0);
             if (p.teoria) p.teoria.forEach(t => total += t.tempo || 0);
           }
+          console.log('[StateAdapter] getTodayTime:', total);
           return total;
         },
         getTotalTime() {
@@ -2311,6 +2431,7 @@
               } catch (e) {}
             }
           }
+          console.log('[StateAdapter] getTotalTime:', total);
           return total;
         },
         getTodayQuestions() {
@@ -2323,6 +2444,7 @@
           if (partial.date === hojeStr && partial.activities && partial.activities.questoes) {
             partial.activities.questoes.forEach(q => count += q.feitas || 0);
           }
+          console.log('[StateAdapter] getTodayQuestions:', count);
           return count;
         },
         // CORREÇÃO DO STREAK: baseado em datas (ignora horas)
@@ -2347,6 +2469,7 @@
           } else {
             localStorage.removeItem('studyFlow_lastActivityDate');
           }
+          console.log('[StateAdapter] getStreak:', streak);
           return streak;
         },
         // Atualiza o streak após um registro (chamado nos saves)
@@ -2355,6 +2478,7 @@
           // Mas também podemos atualizar a última data
           const hoje = new Date().toISOString().split('T')[0];
           localStorage.setItem('studyFlow_lastActivityDate', hoje);
+          console.log('[StateAdapter] updateStreakAfterActivity');
           // Não precisamos incrementar manualmente, o getStreak recalcula
         },
         getMetaStatus() {
@@ -3185,6 +3309,10 @@
         this.NotificationSystem.init();
         this.ReminderSystem.init();
 
+        // inicializar GlobalData e sincronizar
+        this.GlobalData.load();
+        this.GlobalData.syncFromModules();
+
         // verificar conquistas inicialmente (após carregar)
         setTimeout(() => {
           this.AchievementSystem.checkAll();
@@ -3222,9 +3350,54 @@
         // Instanciar PomodoroManager
         this.pomodoro = new ChatSystem.PomodoroManager(this);
         
+        // Sincronizar atividades não consolidadas ao iniciar
+        this.consolidatePendingActivities();
+        
         this.init();
         
         setInterval(() => this.checkDateChange(), 60000);
+      }
+      
+      // NOVO: Consolidar atividades pendentes (partialRegistration) para dailyActivities
+      consolidatePendingActivities() {
+        const hojeStr = this.getDynamicDateString();
+        if (this.partialRegistration.date === hojeStr && this.partialRegistration.activities) {
+          // Carregar daily atual
+          let daily = JSON.parse(localStorage.getItem(`dailyActivities_${hojeStr}`)) || { activities: { questoes: [], anki: [], teoria: [] } };
+          const partialActs = this.partialRegistration.activities;
+          
+          // Mesclar questões
+          if (partialActs.questoes) {
+            partialActs.questoes.forEach(q => {
+              if (!daily.activities.questoes.find(dq => dq.assunto === q.assunto)) {
+                daily.activities.questoes.push(q);
+              }
+            });
+          }
+          // Mesclar anki
+          if (partialActs.anki) {
+            partialActs.anki.forEach(a => {
+              if (!daily.activities.anki.find(da => da.deck === a.deck)) {
+                daily.activities.anki.push(a);
+              }
+            });
+          }
+          // Mesclar teoria
+          if (partialActs.teoria) {
+            partialActs.teoria.forEach(t => {
+              if (!daily.activities.teoria.find(dt => dt.materia === t.materia)) {
+                daily.activities.teoria.push(t);
+              }
+            });
+          }
+          
+          // Salvar daily
+          localStorage.setItem(`dailyActivities_${hojeStr}`, JSON.stringify(daily));
+          
+          // Atualizar streak e global (já foi feito nas funções de save, mas garantimos)
+          ChatSystem.StateAdapter.updateStreakAfterActivity();
+          ChatSystem.GlobalData.syncFromModules();
+        }
       }
       
       checkDateChange() {
@@ -4343,9 +4516,19 @@
           // Atualizar streak após atividade
           ChatSystem.StateAdapter.updateStreakAfterActivity();
           
+          // Adicionar ao estado global
+          const hojeStr = specificDate || this.getDynamicDateString();
+          ChatSystem.GlobalData.addSession({
+            date: hojeStr,
+            type: 'questoes',
+            duration: parseInt(tempo),
+            questions: parseInt(feitas)
+          });
+          
           if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
             window.UI_ENHANCER.updateSidePanel();
           }
+          console.log('[saveQuestoes] Atividade registrada:', assuntoId, feitas, tempo);
         }
       }
       
@@ -4371,9 +4554,18 @@
           // Atualizar streak após atividade
           ChatSystem.StateAdapter.updateStreakAfterActivity();
           
+          // Adicionar ao estado global
+          ChatSystem.GlobalData.addSession({
+            date: hojeStr,
+            type: 'teorico',
+            duration: parseInt(tempo),
+            questions: 0
+          });
+          
           if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
             window.UI_ENHANCER.updateSidePanel();
           }
+          console.log('[saveTeoria] Atividade registrada:', materiaId, tempo);
         }
         
         return cicloAtualizado;
@@ -4391,9 +4583,19 @@
         // Atualizar streak após atividade
         ChatSystem.StateAdapter.updateStreakAfterActivity();
         
+        // Adicionar ao estado global
+        const hojeStr = specificDate || this.getDynamicDateString();
+        ChatSystem.GlobalData.addSession({
+          date: hojeStr,
+          type: 'anki',
+          duration: parseInt(tempo),
+          questions: 0
+        });
+        
         if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
           window.UI_ENHANCER.updateSidePanel();
         }
+        console.log('[saveAnki] Atividade registrada:', deckId, tempo, cards);
       }
       
       registerHomeSession(subject, minutes, specificDate = null) {
@@ -5853,6 +6055,38 @@
         }
       }
       
+      // NOVA FUNÇÃO: Salvar atividade diretamente no dailyActivities
+      saveToDailyActivities(activity) {
+        const hojeStr = this.getDynamicDateString();
+        let daily = JSON.parse(localStorage.getItem(`dailyActivities_${hojeStr}`)) || { activities: { questoes: [], anki: [], teoria: [] } };
+        
+        if (activity.type === 'questoes') {
+          const idx = daily.activities.questoes.findIndex(q => q.assunto === activity.data.assunto);
+          if (idx >= 0) {
+            daily.activities.questoes[idx] = activity.data;
+          } else {
+            daily.activities.questoes.push(activity.data);
+          }
+        } else if (activity.type === 'anki') {
+          const idx = daily.activities.anki.findIndex(a => a.deck === activity.data.deck);
+          if (idx >= 0) {
+            daily.activities.anki[idx] = activity.data;
+          } else {
+            daily.activities.anki.push(activity.data);
+          }
+        } else if (activity.type === 'teoria') {
+          const idx = daily.activities.teoria.findIndex(t => t.materia === activity.data.materia);
+          if (idx >= 0) {
+            daily.activities.teoria[idx] = activity.data;
+          } else {
+            daily.activities.teoria.push(activity.data);
+          }
+        }
+        
+        localStorage.setItem(`dailyActivities_${hojeStr}`, JSON.stringify(daily));
+        console.log('[saveToDailyActivities] Atividade salva em dailyActivities', activity);
+      }
+      
       saveSelectedTask() {
         const activeCards = document.querySelectorAll('#registerModal .task-card.active:not(.registered)');
         
@@ -5893,6 +6127,8 @@
                   tempo: parseInt(tempo)
                 }
               };
+              // Persistir imediatamente
+              this.saveToDailyActivities(activity);
               this.saveToPartialRegistration(activity);
               savedCount++;
               totalTime += parseInt(tempo);
@@ -5915,6 +6151,7 @@
                   cards: parseInt(cards)
                 }
               };
+              this.saveToDailyActivities(activity);
               this.saveToPartialRegistration(activity);
               savedCount++;
               totalTime += parseInt(tempo);
@@ -5939,6 +6176,7 @@
                   tempo: parseInt(tempo)
                 }
               };
+              this.saveToDailyActivities(activity);
               this.saveToPartialRegistration(activity);
               savedCount++;
               totalTime += parseInt(tempo);
@@ -6057,42 +6295,32 @@
       finalizeDay() {
         const hojeStr = this.getDynamicDateString();
         
-        if (this.hasPartialRegistration()) {
-          const dailyActivities = {
-            date: hojeStr,
-            activities: this.partialRegistration.activities,
-            completed: true
-          };
-          
-          localStorage.setItem(`dailyActivities_${hojeStr}`, JSON.stringify(dailyActivities));
-          
-          this.partialRegistration = {
-            date: null,
-            activities: {},
-            completed: true
-          };
-          localStorage.setItem('studyFlow_partialRegistration', JSON.stringify(this.partialRegistration));
-        } else {
-          const dailyActivities = JSON.parse(localStorage.getItem(`dailyActivities_${hojeStr}`)) || {
-            date: hojeStr,
-            activities: {},
-            completed: true
-          };
-          dailyActivities.completed = true;
-          localStorage.setItem(`dailyActivities_${hojeStr}`, JSON.stringify(dailyActivities));
-        }
+        // Apenas marca como concluído no dailyActivities e limpa partialRegistration
+        let daily = JSON.parse(localStorage.getItem(`dailyActivities_${hojeStr}`)) || { activities: { questoes: [], anki: [], teoria: [] } };
+        daily.completed = true;
+        localStorage.setItem(`dailyActivities_${hojeStr}`, JSON.stringify(daily));
+        
+        this.partialRegistration = {
+          date: null,
+          activities: {},
+          completed: true
+        };
+        localStorage.setItem('studyFlow_partialRegistration', JSON.stringify(this.partialRegistration));
         
         localStorage.setItem('lastRegisterDate', hojeStr);
+        
+        // Atualizar streak e global
+        ChatSystem.StateAdapter.updateStreakAfterActivity();
+        ChatSystem.GlobalData.syncFromModules(); // re-sincronizar para garantir
+        ChatSystem.AchievementSystem.checkAll();
         
         if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
           window.UI_ENHANCER.updateSidePanel();
         }
         
-        // Verificar conquistas ao finalizar dia
-        ChatSystem.AchievementSystem.checkAll();
-        
         // Emitir evento para notificação
         ChatSystem.EventBus.emit('day:finished');
+        console.log('[finalizeDay] Dia finalizado:', hojeStr);
         
         setTimeout(() => {
           // não mostra resumo automático, apenas atualiza painel
