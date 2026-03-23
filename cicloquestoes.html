@@ -776,7 +776,8 @@
         "Administração Financeira e Orçamentária",
         "Redação Oficial e Comunicação Administrativa",
         "Atendimento ao Público e Ética Profissional",
-        "Direito Administrativo"
+        "Direito Administrativo",
+        "Geral"
     ];
 
     const FILTROS_POR_DISCIPLINA = {
@@ -861,7 +862,8 @@
             "Administração pública e servidores",
             "Normas constitucionais da Administração Pública",
             "Licitações e contratos (Lei 14.133)"
-        ]
+        ],
+        "Geral": []
     };
 
     // ---------- CHAVE EXCLUSIVA DO CICLO ----------
@@ -897,39 +899,45 @@
         return `${year}-${month}-${day}`;
     }
 
-    // ---------- FUNÇÃO PARA GERAR O ARRAY DO CICLO (4 BLOCOS, 5 DISCIPLINAS) ----------
-    function gerarArrayCiclo(alternanciaBlocoD) {
-        // alternanciaBlocoD = false -> "Administração Financeira e Orçamentária"
-        // alternanciaBlocoD = true  -> "Administração de Recursos Materiais e Arquivologia"
-        const opcaoD5 = alternanciaBlocoD
+    // ---------- FUNÇÃO PARA GERAR O ARRAY DO CICLO (5 BLOCOS, 5 DISCIPLINAS) ----------
+    function gerarArrayCiclo(alternanciaBlocoE) {
+        // alternanciaBlocoE = false -> última disciplina do bloco E = "Administração Financeira e Orçamentária"
+        // alternanciaBlocoE = true  -> última disciplina do bloco E = "Administração de Recursos Materiais e Arquivologia"
+        const opcaoE5 = alternanciaBlocoE
             ? "Administração de Recursos Materiais e Arquivologia"
             : "Administração Financeira e Orçamentária";
 
         return [
-            // Bloco A (0-4)
+            // Bloco A (índices 0-4)
             { nome: "Língua Portuguesa", bloco: "A" },
             { nome: "Direito Administrativo", bloco: "A" },
             { nome: "Administração Geral e Administração Pública", bloco: "A" },
             { nome: "Informática", bloco: "A" },
-            { nome: "Raciocínio Lógico e Matemática Básica", bloco: "A" },
+            { nome: "Geral", bloco: "A" },
             // Bloco B (5-9)
             { nome: "Língua Portuguesa", bloco: "B" },
             { nome: "Legislação do Serviço Público Federal", bloco: "B" },
             { nome: "Administração Geral e Administração Pública", bloco: "B" },
             { nome: "Gestão de Pessoas / Comportamento Organizacional", bloco: "B" },
-            { nome: "Informática", bloco: "B" },
+            { nome: "Geral", bloco: "B" },
             // Bloco C (10-14)
             { nome: "Língua Portuguesa", bloco: "C" },
             { nome: "Direito Administrativo", bloco: "C" },
             { nome: "Administração de Recursos Materiais e Arquivologia", bloco: "C" },
             { nome: "Raciocínio Lógico e Matemática Básica", bloco: "C" },
-            { nome: "Redação Oficial e Comunicação Administrativa", bloco: "C" },
+            { nome: "Geral", bloco: "C" },
             // Bloco D (15-19)
             { nome: "Língua Portuguesa", bloco: "D" },
             { nome: "Legislação do Serviço Público Federal", bloco: "D" },
             { nome: "Administração Geral e Administração Pública", bloco: "D" },
             { nome: "Atendimento ao Público e Ética Profissional", bloco: "D" },
-            { nome: opcaoD5, bloco: "D" }
+            { nome: "Geral", bloco: "D" },
+            // Bloco E (20-24)
+            { nome: "Raciocínio Lógico e Matemática Básica", bloco: "E" },
+            { nome: "Informática", bloco: "E" },
+            { nome: "Redação Oficial e Comunicação Administrativa", bloco: "E" },
+            { nome: "Administração de Recursos Materiais e Arquivologia", bloco: "E" },
+            { nome: opcaoE5, bloco: "E" }
         ];
     }
 
@@ -973,12 +981,25 @@
             if (d.totalQuestoes === undefined) d.totalQuestoes = 100; // valor padrão
         });
 
+        // Garantir que a disciplina "Geral" exista
+        const temGeral = dados.disciplinas.some(d => d.nome === "Geral");
+        if (!temGeral) {
+            dados.disciplinas.push({
+                nome: "Geral",
+                feitas: 0,
+                acertos: 0,
+                ultimaQuestao: '',
+                ultimaQuestaoCodigo: '',
+                tempo: 0,
+                totalQuestoes: 100
+            });
+        }
+
         // Ajustar índice: apenas garantir que esteja dentro dos limites do array atual
         const arrayCiclo = gerarArrayCiclo(dados.ciclo.alternanciaBlocoD);
         if (dados.ciclo.indice === undefined || dados.ciclo.indice < 0 || dados.ciclo.indice >= arrayCiclo.length) {
             dados.ciclo.indice = 0;
         }
-        // NÃO FAZER MAIS A MIGRAÇÃO BASEADA EM DISCIPLINAS, pois isso causava variação no índice
 
         return dados;
     }
@@ -1310,7 +1331,7 @@
         const array = getArrayCiclo();
         const tamanho = array.length;
         let novoIndice = (dadosEstudo.ciclo.indice + 1) % tamanho;
-        // Se completou o ciclo (passou do último para o primeiro), alterna a opção do Bloco D
+        // Se completou o ciclo (passou do último para o primeiro), alterna a opção do Bloco E
         if (novoIndice === 0) {
             dadosEstudo.ciclo.alternanciaBlocoD = !dadosEstudo.ciclo.alternanciaBlocoD;
         }
