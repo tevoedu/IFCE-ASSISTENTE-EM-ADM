@@ -1348,13 +1348,17 @@
         carregarInterfaceDaily();
     }
 
+    // [MODIFICADA] Progresso baseado exclusivamente no número da última questão, não nas questões feitas
     function atualizarProgressoBloco(disciplina) {
         const dadosDisc = dadosEstudo.disciplinas.find(d => d.nome === disciplina);
         if (!dadosDisc) return;
-        const feitas = dadosDisc.feitas || 0;
+        const ultimaRaw = dadosDisc.ultimaQuestao || '';
+        let ultimaNum = parseInt(ultimaRaw, 10);
+        if (isNaN(ultimaNum) || ultimaNum < 0) ultimaNum = 0;
         const total = dadosDisc.totalQuestoes || 100;
-        const percent = total > 0 ? Math.min(100, Math.round((feitas / total) * 100)) : 0;
-        progressoTexto.textContent = `${feitas}/${total}`;
+        const progressoValor = Math.min(ultimaNum, total);
+        const percent = total > 0 ? Math.min(100, Math.round((progressoValor / total) * 100)) : 0;
+        progressoTexto.textContent = `${progressoValor}/${total}`;
         progressoPercent.textContent = percent + '%';
         progressoBarra.style.width = percent + '%';
     }
@@ -1410,7 +1414,7 @@
         }
         filtrosPanel.classList.remove('show');
 
-        // Atualizar barra de progresso
+        // Atualizar barra de progresso (agora baseada na última questão)
         atualizarProgressoBloco(disciplina);
     }
 
