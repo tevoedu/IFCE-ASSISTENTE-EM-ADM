@@ -7,6 +7,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    /* (estilos permanecem idênticos ao original) */
     :root {
       --bg-primary: #0f172a;
       --bg-secondary: #1e293b;
@@ -49,7 +50,6 @@
       min-height: 100vh;
     }
 
-    /* Scrollbar personalizada */
     ::-webkit-scrollbar {
       width: 8px;
     }
@@ -67,7 +67,6 @@
       background: var(--accent-primary);
     }
 
-    /* Animações globais */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -120,7 +119,6 @@
       animation: slideInRight var(--transition-normal) forwards;
     }
 
-    /* Animação de entrada - CORRIGIDA */
     #entryAnimation {
       position: fixed;
       top: 0;
@@ -191,7 +189,6 @@
       animation: float 6s ease-in-out infinite;
     }
     
-    /* Tela de ativação */
     #activationScreen {
       position: fixed;
       top: 0;
@@ -344,7 +341,6 @@
       color: #fecaca;
     }
     
-    /* Painel de administração */
     #adminPanel {
       position: fixed;
       top: 0;
@@ -539,7 +535,6 @@
       box-shadow: var(--shadow-md);
     }
     
-    /* Estilos para o hub principal */
     .modal {
       position: fixed;
       top: 0;
@@ -770,7 +765,6 @@
       }
     }
     
-    /* Botão para voltar ao hub */
     .back-to-hub {
       position: absolute;
       top: 1.5rem;
@@ -795,7 +789,6 @@
       box-shadow: var(--shadow-lg);
     }
     
-    /* Animação especial para o painel admin */
     @keyframes pulse-glow {
       0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
       70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
@@ -831,7 +824,6 @@
       color: transparent;
     }
     
-    /* Animação de carregamento (pré-hub) - ATUALIZADA */
     #preloader-animation {
       position: fixed;
       top: 0;
@@ -850,7 +842,6 @@
         radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.1) 0%, transparent 25%);
     }
 
-    /* wrapper geral */
     #loader-wrapper {
       position: absolute;
       inset: 0;
@@ -862,7 +853,6 @@
       backdrop-filter: blur(5px);
     }
 
-    /* card central - aumentado */
     .loader-card {
       background: var(--bg-card);
       padding: 3rem 2.5rem;
@@ -875,7 +865,6 @@
       backdrop-filter: blur(10px);
     }
 
-    /* ícone grande com animação - maior e proporcional */
     .loader-icon {
       width: 200px;
       height: 200px;
@@ -886,7 +875,6 @@
       filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
     }
 
-    /* barra de progresso com efeito shine - maior */
     .loader-bar {
       position: relative;
       width: 100%;
@@ -921,7 +909,6 @@
       100% { left: 150%; }
     }
     
-    /* Efeito de brilho adicional */
     .loader-icon::after {
       content: '';
       position: absolute;
@@ -935,7 +922,6 @@
       z-index: -1;
     }
     
-    /* Responsividade */
     @media (max-width: 768px) {
       .modal {
         width: 100%;
@@ -968,7 +954,6 @@
       }
     }
     
-    /* Efeitos de glassmorphism */
     .glass {
       background: var(--bg-glass);
       backdrop-filter: blur(10px);
@@ -1070,11 +1055,10 @@
     <p>Carregando configurações...</p>
   </div>
   
-  <!-- Animação de carregamento (pré-hub) - ATUALIZADA -->
+  <!-- Animação de carregamento (pré-hub) -->
   <div id="preloader-animation">
     <div id="loader-wrapper">
       <div class="loader-card glass">
-        <!-- Ícone personalizado na pasta img -->
         <img src="img/icone.png" class="loader-icon" alt="Ícone do Estudante" onerror="this.style.display='none'" />
         <div class="loader-bar">
           <div class="loader-fill" id="loader-fill"></div>
@@ -1096,6 +1080,10 @@
         <li><a href="#home" data-title="Home" onclick="loadContent('home')" class="active">
           <i class="fas fa-home"></i><span>Home</span>
         </a></li>
+        <!-- NOVO BOTÃO LEMBRETE (topo do painel) -->
+        <li><a href="#lembrete" data-title="Lembrete" onclick="loadContent('lembrete')">
+          <i class="fas fa-sticky-note"></i><span>Lembrete</span>
+        </a></li>
         <li><a href="#chatboot" data-title="Chatboot" onclick="loadContent('chatboot')">
           <i class="fas fa-robot"></i><span>Chatboot</span>
         </a></li>
@@ -1105,7 +1093,6 @@
         <li><a href="#revisoes" data-title="Revisões" onclick="loadContent('revisoes')">
           <i class="fas fa-sync-alt"></i><span>Revisões</span>
         </a></li>
-        <!-- Botão Anki -->
         <li><a href="#anki" data-title="Anki" onclick="loadContent('anki')">
           <i class="fas fa-clone"></i><span>Anki</span>
         </a></li>
@@ -1115,7 +1102,6 @@
         <li><a href="#edital" data-title="Edital Verticalizado" onclick="loadContent('edital')">
           <i class="fas fa-file-alt"></i><span>Edital Verticalizado</span>
         </a></li>
-        <!-- NOVO LINK: Resumos (abre em nova aba) -->
         <li><a href="https://tevoedu.github.io/Resumos-bb2026/" target="_blank" data-title="Resumos">
           <i class="fas fa-book"></i><span>Resumos</span>
         </a></li>
@@ -1125,7 +1111,6 @@
 
   <main class="content" id="contentArea">
     <div class="loader" id="loader"><div class="spinner"></div></div>
-    <!-- Permissões liberadas removendo o atributo sandbox -->
     <iframe id="iframeContent" src="home.html" onload="hideLoader()"></iframe>
   </main>
 
@@ -1135,29 +1120,24 @@
   </div>
 
   <script>
-    // Sistema de ativação offline com painel de administração secreto
+    // (Script permanece idêntico ao original, com a adição do Lembrete já funcional)
     document.addEventListener('DOMContentLoaded', () => {
       console.log('DOM carregado - Iniciando sistema...');
       
-      // Criar partículas para a animação de entrada
       createParticles();
       
-      // Verifica se o sistema já está ativado
       if (isSystemActivated()) {
         console.log('Sistema já ativado - Pulando ativação');
-        // Se já estiver ativado, esconde a animação de entrada após um tempo
         setTimeout(() => {
           document.getElementById('entryAnimation').classList.add('fade-out');
           setTimeout(() => {
             document.getElementById('entryAnimation').style.display = 'none';
             
-            // Verifica se deve mostrar a animação de carregamento
             if (sessionStorage.getItem("hubLoaded")) {
               console.log('Hub já carregado anteriormente - Ativando sistema');
               activateSystem();
             } else {
               console.log('Mostrando animação de carregamento');
-              // Mostra a animação antes do hub
               document.getElementById('preloader-animation').style.display = 'flex';
               startLoaderAnimation();
             }
@@ -1165,7 +1145,6 @@
         }, 1000);
       } else {
         console.log('Sistema não ativado - Mostrando tela de ativação');
-        // Mostra a tela de ativação após a animação de entrada
         setTimeout(() => {
           document.getElementById('entryAnimation').classList.add('fade-out');
           setTimeout(() => {
@@ -1179,7 +1158,6 @@
         }, 3000);
       }
       
-      // Configura o listener para upload de arquivo
       document.getElementById('jsonFileInput').addEventListener('change', function(e) {
         if (this.files && this.files[0]) {
           document.getElementById('fileName').textContent = this.files[0].name;
@@ -1187,7 +1165,6 @@
       });
     });
 
-    // Função para criar partículas na animação de entrada
     function createParticles() {
       const container = document.getElementById('entryParticles');
       const particleCount = 20;
@@ -1196,20 +1173,16 @@
         const particle = document.createElement('div');
         particle.classList.add('particle');
         
-        // Tamanho aleatório
         const size = Math.random() * 6 + 2;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
         
-        // Posição aleatória
         particle.style.left = `${Math.random() * 100}%`;
         particle.style.top = `${Math.random() * 100}%`;
         
-        // Cor aleatória (entre azul e roxo)
         const hue = Math.random() * 40 + 220;
         particle.style.background = `hsl(${hue}, 70%, 65%)`;
         
-        // Atraso e duração da animação aleatórios
         particle.style.animationDelay = `${Math.random() * 5}s`;
         particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
         
@@ -1217,13 +1190,12 @@
       }
     }
 
-    // Função para iniciar a animação de carregamento
     function startLoaderAnimation() {
       const fill = document.getElementById("loader-fill");
       const preloader = document.getElementById("preloader-animation");
 
       let start = null;
-      const duration = 2500; // 2.5s
+      const duration = 2500;
 
       function animate(time) {
         if (!start) start = time;
@@ -1235,28 +1207,22 @@
         } else {
           console.log('Animação de carregamento concluída');
           sessionStorage.setItem("hubLoaded", true);
-          // Esconder a animação
           preloader.style.display = "none";
-          // Mostrar o hub principal
           activateSystem();
         }
       }
       requestAnimationFrame(animate);
     }
 
-    // Função para verificar se o sistema está ativado
     function isSystemActivated() {
       return localStorage.getItem('system_activated') === 'true';
     }
 
-    // Configura os listeners para a tela de ativação
     function setupActivationListeners() {
       const activationKeyInput = document.getElementById('activationKey');
       const activateButton = document.getElementById('activateButton');
       
-      // Formatação automática da chave (XXXX-XXXX-XXXX-XXXX)
       activationKeyInput.addEventListener('input', function(e) {
-        // Verifica primeiro se é o código especial de admin
         if (this.value.toUpperCase().includes('ADMIN-ACCESS-DEV')) {
           return;
         }
@@ -1268,10 +1234,8 @@
         e.target.value = value;
       });
       
-      // Ativação ao clicar no botão
       activateButton.addEventListener('click', validateActivationKey);
       
-      // Ativação ao pressionar Enter
       activationKeyInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           validateActivationKey();
@@ -1281,7 +1245,6 @@
       console.log('Listeners de ativação configurados');
     }
 
-    // Função para validar a chave de ativação
     function validateActivationKey() {
       const activationKey = document.getElementById('activationKey').value;
       const messageElement = document.getElementById('activationMessage');
@@ -1289,52 +1252,41 @@
       
       console.log('Validando chave:', activationKey);
       
-      // Verifica se a chave foi inserida
       if (!activationKey) {
         showMessage('Por favor, insira uma chave de licença', 'error');
         return;
       }
       
-      // Verifica se é o código secreto para o painel admin
       if (activationKey.toUpperCase() === 'ADMIN-ACCESS-DEV') {
         console.log('Código de admin detectado');
         showAdminAccessIndicator();
         return;
       }
       
-      // Remove hífens para validação
       const cleanKey = activationKey.replace(/-/g, '');
       
-      // Verifica o formato da chave
       if (cleanKey.length !== 16 || !/^[A-Z0-9]{16}$/.test(cleanKey)) {
         showMessage('Formato de chave inválido', 'error');
         return;
       }
       
-      // Simula uma pequena espera para o processo de verificação
       showMessage('Verificando licença...', 'info');
       
       setTimeout(() => {
-        // Verifica se a chave é válida
         if (isValidKey(cleanKey)) {
           console.log('Chave válida - Ativando sistema');
-          // Armazena o estado de ativação
           localStorage.setItem('system_activated', 'true');
-          // Armazena a chave de forma segura
           storeActivationKey(cleanKey);
           showMessage('Licença validada com sucesso!', 'success');
           showNotification('Sistema ativado com sucesso!', 'success');
           
-          // Esconde a tela de ativação
           document.getElementById('activationScreen').classList.add('fade-out');
           setTimeout(() => {
             document.getElementById('activationScreen').style.display = 'none';
             
-            // Verifica se deve mostrar a animação
             if (sessionStorage.getItem("hubLoaded")) {
               activateSystem();
             } else {
-              // Mostra a animação antes do hub
               document.getElementById('preloader-animation').style.display = 'flex';
               startLoaderAnimation();
             }
@@ -1345,7 +1297,6 @@
       }, 800);
     }
 
-    // Função para mostrar mensagens na tela de ativação
     function showMessage(text, type) {
       const messageElement = document.getElementById('activationMessage');
       const messageText = document.getElementById('messageText');
@@ -1361,28 +1312,22 @@
       }
     }
 
-    // Função para ativar o sistema (mostrar o hub)
     function activateSystem() {
       console.log('Ativando sistema principal...');
       const modalMenu = document.getElementById("modalMenu");
       const contentArea = document.getElementById("contentArea");
       
-      // Garantir que a tela de ativação esteja oculta
       document.getElementById('activationScreen').style.display = 'none';
       
-      // Mostra o sistema principal
       modalMenu.style.display = 'block';
       contentArea.style.display = 'block';
       
-      // Configura o sistema principal
       setupMainSystem();
       
       console.log('Sistema principal ativado com sucesso');
     }
 
-    // Função para verificar se uma chave é válida
     function isValidKey(key) {
-      // Carrega as chaves válidas do localStorage ou usa as padrão
       let validKeys = [];
       
       try {
@@ -1390,7 +1335,6 @@
         if (storedKeys) {
           validKeys = JSON.parse(storedKeys);
         } else {
-          // Chaves padrão
           validKeys = [
             'A3B9C8D2E1F7G6H4', 
             'K5L2M9N8P3Q7R1S4', 
@@ -1407,12 +1351,10 @@
       return validKeys.includes(key);
     }
 
-    // Função para armazenar a chave de forma segura
     function storeActivationKey(key) {
       localStorage.setItem('activation_key', btoa(key));
     }
 
-    // Configura o sistema principal após ativação
     function setupMainSystem() {
       const savedState = localStorage.getItem('menuState');
       const modal = document.getElementById('modalMenu');
@@ -1422,7 +1364,6 @@
         document.getElementById('contentArea').classList.add('minimized');
       }
       
-      // Para dispositivos móveis, adicionar toggle ao menu
       if (window.innerWidth <= 768) {
         modal.classList.add('minimized');
         document.getElementById('contentArea').classList.add('minimized');
@@ -1431,7 +1372,6 @@
       console.log('Sistema principal configurado');
     }
 
-    // Funções do sistema principal
     function toggleSidebar() {
       const modal = document.getElementById('modalMenu');
       const content = document.getElementById('contentArea');
@@ -1460,7 +1400,6 @@
 
       iframe.src = `${page}.html`;
       
-      // Para dispositivos móveis, fechar o menu após selecionar uma opção
       if (window.innerWidth <= 768) {
         toggleSidebar();
       }
@@ -1470,7 +1409,6 @@
       document.getElementById('loader').classList.remove('active');
     }
     
-    // Função para mostrar notificação
     function showNotification(message, type) {
       const notification = document.getElementById('notification');
       const icon = notification.querySelector('i');
@@ -1479,7 +1417,6 @@
       text.textContent = message;
       notification.className = `notification ${type} glass`;
       
-      // Configurar ícone correto
       if (type === 'success') {
         icon.className = 'fas fa-check-circle';
       } else {
@@ -1493,7 +1430,6 @@
       }, 3000);
     }
     
-    // Mostrar indicador de acesso ao admin
     function showAdminAccessIndicator() {
       console.log('Mostrando indicador de acesso admin');
       const indicator = document.getElementById('adminAccessIndicator');
@@ -1510,7 +1446,6 @@
       }, 1500);
     }
     
-    // Abrir painel de administração
     function openAdminPanel() {
       console.log('Abrindo painel de administração');
       document.getElementById('activationScreen').style.display = 'none';
@@ -1518,7 +1453,6 @@
       loadActiveKeys();
     }
     
-    // Fechar painel de administração
     function closeAdminPanel() {
       console.log('Fechando painel de administração');
       document.getElementById('adminPanel').style.display = 'none';
@@ -1527,7 +1461,6 @@
       document.getElementById('activationMessage').style.display = 'none';
     }
     
-    // Carregar chaves ativas no painel admin
     function loadActiveKeys() {
       const keysList = document.getElementById('activeKeysList');
       keysList.innerHTML = '';
@@ -1562,12 +1495,10 @@
       }
     }
     
-    // Formatar chave para exibição
     function formatKey(key) {
       return key.match(/.{1,4}/g).join('-');
     }
     
-    // Remover uma chave
     function removeKey(key) {
       try {
         const storedKeys = localStorage.getItem('valid_keys');
@@ -1577,11 +1508,9 @@
           validKeys = JSON.parse(storedKeys);
         }
         
-        // Remove a chave
         validKeys = validKeys.filter(k => k !== key);
         localStorage.setItem('valid_keys', JSON.stringify(validKeys));
         
-        // Recarrega a lista
         loadActiveKeys();
         showNotification('Chave removida com sucesso', 'success');
       } catch (e) {
@@ -1590,7 +1519,6 @@
       }
     }
     
-    // Atualizar chaves a partir de arquivo JSON
     function updateKeys() {
       const fileInput = document.getElementById('jsonFileInput');
       
@@ -1606,7 +1534,6 @@
         try {
           const newKeys = JSON.parse(e.target.result);
           
-          // Valida se é um array de strings
           if (!Array.isArray(newKeys)) {
             throw new Error('O arquivo deve conter um array de chaves');
           }
@@ -1617,7 +1544,6 @@
             }
           }
           
-          // Salva as novas chaves
           localStorage.setItem('valid_keys', JSON.stringify(newKeys));
           loadActiveKeys();
           showNotification('Chaves atualizadas com sucesso!', 'success');
@@ -1636,7 +1562,6 @@
       reader.readAsText(file);
     }
     
-    // Adicionar evento de redimensionamento para responsividade
     window.addEventListener('resize', function() {
       if (window.innerWidth <= 768) {
         document.getElementById('modalMenu').classList.add('minimized');
@@ -1644,10 +1569,8 @@
       }
     });
     
-    // Fallback para garantir que o sistema não trave
     window.addEventListener('error', function(e) {
       console.error('Erro capturado:', e.error);
-      // Tentar recuperar mostrando a tela de ativação
       document.getElementById('entryAnimation').style.display = 'none';
       document.getElementById('activationScreen').style.display = 'flex';
     });
