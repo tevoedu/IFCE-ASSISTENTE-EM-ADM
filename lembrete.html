@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estudos BB • O que faltou (análise aprofundada)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ----- Reset & Base (Dark Mode) ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #0f172a;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #e2e8f0;
+    }
+    .container {
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ----- Header (Dark) ----- */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .header h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .header h1 i {
+      color: #60a5fa;
+      font-size: 2.6rem;
+    }
+    .header .sub {
+      font-size: 1.15rem;
+      color: #cbd5e1;
+      background: rgba(96, 165, 250, 0.12);
+      padding: 0.6rem 2rem;
+      border-radius: 40px;
+      display: inline-block;
+      margin-top: 0.5rem;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(96, 165, 250, 0.2);
+    }
+    .header .sub i {
+      margin-right: 0.6rem;
+      color: #60a5fa;
+    }
+
+    /* ----- Introdução (Dark) ----- */
+    .intro {
+      background: #1e293b;
+      border-radius: 32px;
+      padding: 1.8rem 2.2rem;
+      margin-bottom: 2.8rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .intro i {
+      font-size: 2.4rem;
+      color: #fbbf24;
+      background: #2d3748;
+      padding: 0.8rem;
+      border-radius: 20px;
+    }
+    .intro p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      flex: 1;
+      margin: 0;
+    }
+    .intro strong {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .intro .badge {
+      background: #334155;
+      color: #f1f5f9;
+      padding: 0.25rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      display: inline-block;
+      margin-top: 0.25rem;
+    }
+    .intro .badge i {
+      color: #fbbf24;
+      background: transparent;
+      padding: 0;
+      font-size: 0.8rem;
+    }
+
+    /* ----- Grade de Cards ----- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin: 1.5rem 0 2.5rem;
+    }
+
+    /* ----- Card (Dark) ----- */
+    .card {
+      background: #1e293b;
+      border-radius: 28px;
+      padding: 1.8rem 1.8rem 2rem;
+      box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.5);
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 40px -14px rgba(0, 0, 0, 0.6);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.4rem;
+      border-bottom: 2px solid #334155;
+      padding-bottom: 0.9rem;
+    }
+    .card-header i {
+      font-size: 2rem;
+      width: 2.6rem;
+      text-align: center;
+      color: #94a3b8;
+    }
+    .card-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      letter-spacing: -0.3px;
+    }
+    .card-header .cobertura {
+      margin-left: auto;
+      background: #334155;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+    .card-body ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .card-body li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid #2d3748;
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+    .card-body li:last-child {
+      border-bottom: none;
+    }
+    .card-body li i {
+      color: #f87171;
+      font-size: 0.9rem;
+      margin-top: 0.15rem;
+      min-width: 1.2rem;
+      text-align: center;
+    }
+    .card-body li .fa-circle-check {
+      color: #34d399;
+    }
+    .card-body .item-destaque {
+      background: #2d3748;
+      border-radius: 12px;
+      padding: 0.3rem 0.8rem;
+      font-weight: 500;
+      color: #fbbf24;
+      font-size: 0.85rem;
+      display: inline-block;
+      margin-top: 0.2rem;
+    }
+    .card-body .subitem {
+      margin-left: 1.8rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      list-style: none;
+    }
+
+    /* Cores dos cards por matéria */
+    .card-bancarios .card-header i { color: #60a5fa; }
+    .card-bancarios .cobertura { background: #1e3a5f; color: #93c5fd; }
+
+    .card-vendas .card-header i { color: #fb923c; }
+    .card-vendas .cobertura { background: #4a2e1a; color: #fcd34d; }
+
+    .card-atualidades .card-header i { color: #34d399; }
+    .card-atualidades .cobertura { background: #1a3a2a; color: #6ee7b7; }
+
+    .card-informatica .card-header i { color: #a78bfa; }
+    .card-informatica .cobertura { background: #2d1f4a; color: #c4b5fd; }
+
+    .card-portugues .card-header i { color: #f472b6; }
+    .card-portugues .cobertura { background: #4a1a2e; color: #f9a8d4; }
+
+    /* ----- Rodapé / lembrete (Dark) ----- */
+    .footer-note {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 40px;
+      padding: 1.4rem 2.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .footer-note .left {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .footer-note .left i {
+      font-size: 2.2rem;
+      color: #fbbf24;
+    }
+    .footer-note .left span {
+      font-size: 1.1rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: #cbd5e1;
+    }
+    .footer-note .left strong {
+      font-weight: 600;
+      color: #fcd34d;
+    }
+    .footer-note .btn {
+      background: #1e293b;
+      color: #f1f5f9;
+      border: 1px solid #334155;
+      padding: 0.6rem 1.6rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .footer-note .btn:hover {
+      background: #334155;
+      transform: scale(1.02);
+      border-color: #475569;
+    }
+
+    /* ----- Responsivo (Dark) ----- */
+    @media (max-width: 640px) {
+      body { padding: 1rem; }
+      .header h1 { font-size: 2rem; }
+      .intro { padding: 1.2rem; flex-direction: column; align-items: flex-start; }
+      .grid { grid-template-columns: 1fr; }
+      .card-header .cobertura { font-size: 0.65rem; padding: 0.1rem 0.6rem; }
+      .footer-note { flex-direction: column; align-items: flex-start; }
+      .footer-note .left { flex-wrap: wrap; }
+    }
+
+    /* ----- Animações ----- */
+    .card {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .card:nth-child(1) { animation-delay: 0.05s; }
+    .card:nth-child(2) { animation-delay: 0.12s; }
+    .card:nth-child(3) { animation-delay: 0.19s; }
+    .card:nth-child(4) { animation-delay: 0.26s; }
+    .card:nth-child(5) { animation-delay: 0.33s; }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Cabeçalho -->
+  <header class="header">
+    <h1>
+      <i class="fas fa-list-check"></i> O que faltou nos estudos
+    </h1>
+    <div class="sub">
+      <i class="fas fa-graduation-cap"></i> Análise aprofundada • Banco do Brasil – Agente Comercial
+    </div>
+  </header>
+
+  <!-- Introdução -->
+  <div class="intro">
+    <i class="fas fa-lightbulb"></i>
+    <div>
+      <p>
+        <strong>✅ Diagnóstico detalhado concluído!</strong> Cruzamos cada item do edital com o conteúdo dos seus decks. 
+        Abaixo estão listados <strong>todos os pontos que faltam ou estão incompletos</strong> em cada disciplina, 
+        com base na análise minuciosa de Português, Conhecimentos Bancários, Vendas/Negociação e Informática.
+      </p>
+      <p style="margin-top: 0.4rem;">
+        <span class="badge"><i class="fas fa-check-circle" style="margin-right: 0.4rem;"></i> Priorize os itens com <i class="fas fa-circle-exclamation" style="color: #f87171;"></i> vermelho</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Grade de cards -->
+  <div class="grid">
+
+    <!-- 1. Conhecimentos Bancários -->
+    <div class="card card-bancarios">
+      <div class="card-header">
+        <i class="fas fa-university"></i>
+        <h2>Conhecimentos Bancários</h2>
+        <span class="cobertura">~80% coberto</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Sigilo bancário</strong> – LC 105/2001 (hipóteses de quebra, dever de sigilo, consequências)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>LGPD</strong> – Lei 13.709/2018 (bases legais, direitos do titular, ANPD, aplicação bancária)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Lei Anticorrupção</strong> – 12.846/2013 e Decreto 11.129/2022 (responsabilidade objetiva, programa de integridade, sanções)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Segurança cibernética</strong> – Res. CMN 4.893/2021 (política, gestão de riscos, incidentes)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Código de Ética do BB</strong> – princípios, vedações, deveres e sanções (documento específico)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>PRSAC do BB</strong> – Política de Responsabilidade Socioambiental (pilares e compromissos próprios)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Prêmio de risco e fluxo de capitais</strong> – impacto no câmbio, diferencial de juros</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Curva de juros</strong> – estrutura a termo, inclinação (normal/invertida) e expectativas</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Tesouraria bancária</strong> – funções, gestão de liquidez, mesa de operações</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Recuperação de crédito</strong> – renegociação, cobrança administrativa/judicial, baixa para prejuízo</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>ASG com foco em Economia Sustentável</strong> – green bonds, critérios ASG para PJ, finanças verdes</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. Vendas e Negociação -->
+    <div class="card card-vendas">
+      <div class="card-header">
+        <i class="fas fa-handshake"></i>
+        <h2>Vendas e Negociação</h2>
+        <span class="cobertura">~91% coberto</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Copywriting</strong> – técnicas (AIDA, storytelling, gatilhos aplicados à escrita) – ausente</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Inbound Marketing</strong> – as 4 etapas (Atrair, Converter, Relacionar, Vender), funil de vendas, lead nurturing – ausente</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Lei Brasileira de Inclusão</strong> – Lei 13.146/2015 (atendimento prioritário, acessibilidade, Libras, obrigações bancárias) – totalmente ausente</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.85rem; color: #94a3b8;">
+          <i class="fas fa-check-circle" style="color: #34d399;"></i> Os demais 14 itens do edital estão cobertos.
+        </p>
+      </div>
+    </div>
+
+    <!-- 3. Atualidades do Mercado Financeiro -->
+    <div class="card card-atualidades">
+      <div class="card-header">
+        <i class="fas fa-chart-line"></i>
+        <h2>Atualidades</h2>
+        <span class="cobertura">75‑80% coberto</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><i class="fas fa-circle-exclamation"></i> Arranjos de pagamento (bandeiras, adquirentes, regulamentação do BC)</li>
+          <li><i class="fas fa-circle-exclamation"></i> Marketplace – modelo de negócios e integração financeira</li>
+          <li><i class="fas fa-circle-exclamation"></i> Segmentação e interações digitais (personalização com IA)</li>
+          <li><i class="fas fa-circle-exclamation"></i> Big techs no setor financeiro (Google, Amazon, Apple)</li>
+          <li><i class="fas fa-circle-exclamation"></i> Fases do Open Finance e obrigatoriedade para bancos com >500 mil contas</li>
+          <li><i class="fas fa-circle-exclamation"></i> DREX (moeda digital do BC) – comparativo com CBDCs e stablecoins</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.85rem; color: #94a3b8;">
+          <i class="fas fa-info-circle"></i> Mantido da análise anterior – não houve nova avaliação para este tópico.
+        </p>
+      </div>
+    </div>
+
+    <!-- 4. Informática -->
+    <div class="card card-informatica">
+      <div class="card-header">
+        <i class="fas fa-laptop-code"></i>
+        <h2>Informática</h2>
+        <span class="cobertura">~70‑75% coberto</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Business Intelligence (BI)</strong> – Data Warehouse, OLAP, ETL, dashboards, KPIs (totalmente ausente)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Análise de dados</strong> – medidas de tendência central/dispersão, amostragem, correlação (totalmente ausente)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Educação a distância</strong> – conceitos, AVA (Moodle/Canvas), videoconferência educacional (totalmente ausente)</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Multimídia</strong> – edição de áudio/vídeo, streaming, reprodutores (VLC, formatos MP4, MKV, etc.) – parcial</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Ferramentas de colaboração</strong> – Cisco Webex, Google Hangout (funcionalidades) – parcial</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Linux SUSE SLES 15 SP2</strong> – particularidades, gerenciador zypper – parcial</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Hardening e controle de USB</strong> – políticas de restrição, práticas de hardening – parcial</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Versões 32/64 bits</strong> – limitações e compatibilidade – não abordado</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 5. Língua Portuguesa -->
+    <div class="card card-portugues">
+      <div class="card-header">
+        <i class="fas fa-book-open"></i>
+        <h2>Língua Portuguesa</h2>
+        <span class="cobertura">~95% coberto</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Pontuação</strong> – ponto-final, ponto-e-vírgula, dois-pontos, reticências, interrogação/exclamação (função entoacional) – parcial</li>
+          <li><i class="fas fa-circle-exclamation"></i> <strong>Colocação pronominal</strong> – mesóclise (pronome no meio do verbo no futuro) – parcial</li>
+        </ul>
+        <p style="margin-top: 0.8rem; font-size: 0.85rem; color: #94a3b8;">
+          <i class="fas fa-check-circle" style="color: #34d399;"></i> Todos os demais tópicos (ortografia, crase, sintaxe, concordância, regência, etc.) estão completamente cobertos.
+        </p>
+      </div>
+    </div>
+
+  </div> <!-- /grid -->
+
+  <!-- Rodapé / lembrete -->
+  <div class="footer-note">
+    <div class="left">
+      <i class="fas fa-bell"></i>
+      <span>
+        <strong>Lembrete:</strong> Priorize os tópicos com <i class="fas fa-circle-exclamation" style="color: #fbbf24;"></i> 
+        e revise os pontos mais críticos próximos à prova.
+      </span>
+    </div>
+    <button class="btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      <i class="fas fa-arrow-up"></i> Voltar ao topo
+    </button>
+  </div>
+
+</div> <!-- /container -->
+
+<script>
+  // Efeito de clique nos cards
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('button')) return;
+      this.style.transition = 'background 0.15s';
+      this.style.background = '#2d3748';
+      setTimeout(() => {
+        this.style.background = '';
+      }, 250);
+    });
+  });
+
+  const totalItems = document.querySelectorAll('.card-body li').length;
+  console.log(`📋 Total de itens faltantes (atualizado): ${totalItems}`);
+</script>
+
+</body>
+</html>
