@@ -4741,8 +4741,8 @@
           questions: 0
         });
 
-        // NOVO: Atualizar progresso do deck Anki
-        this.updateAnkiProgress(deckNome, parseInt(cards) || 0);
+        // Recalcular progresso do deck a partir de todos os registros (mais robusto)
+        this.recalcAnkiProgress();
         
         if (window.UI_ENHANCER && window.UI_ENHANCER.updateSidePanel) {
           window.UI_ENHANCER.updateSidePanel();
