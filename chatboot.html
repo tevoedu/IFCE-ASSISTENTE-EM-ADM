@@ -2483,26 +2483,18 @@
 
       // ---------- STATE ADAPTER (leitura dos dados existentes) ----------
       ChatSystem.StateAdapter = {
-        getTodayTime() {
-          const hojeStr = chatBot ? chatBot.getDynamicDateString() : new Date().toISOString().split('T')[0];
-          let total = 0;
-          // atividades diárias
-          const daily = JSON.parse(localStorage.getItem(`dailyActivities_${hojeStr}`)) || { activities: {} };
-          const acts = daily.activities || {};
-          if (acts.questoes) acts.questoes.forEach(q => total += q.tempo || 0);
-          if (acts.anki) acts.anki.forEach(a => total += a.tempo || 0);
-          if (acts.teoria) acts.teoria.forEach(t => total += t.tempo || 0);
-          // registro parcial
-          const partial = JSON.parse(localStorage.getItem('studyFlow_partialRegistration')) || {};
-          if (partial.date === hojeStr && partial.activities) {
-            const p = partial.activities;
-            if (p.questoes) p.questoes.forEach(q => total += q.tempo || 0);
-            if (p.anki) p.anki.forEach(a => total += a.tempo || 0);
-            if (p.teoria) p.teoria.forEach(t => total += t.tempo || 0);
-          }
-          console.log('[StateAdapter] getTodayTime:', total);
-          return total;
-        },
+       getTodayTime() {
+  const hojeStr = chatBot ? chatBot.getDynamicDateString() : new Date().toISOString().split('T')[0];
+  let total = 0;
+  const daily = JSON.parse(localStorage.getItem(`dailyActivities_${hojeStr}`)) || { activities: {} };
+  const acts = daily.activities || {};
+  if (acts.questoes) acts.questoes.forEach(q => total += q.tempo || 0);
+  if (acts.anki) acts.anki.forEach(a => total += a.tempo || 0);
+  if (acts.teoria) acts.teoria.forEach(t => total += t.tempo || 0);
+  // Removida a soma do registro parcial para evitar duplicação
+  console.log('[StateAdapter] getTodayTime:', total);
+  return total;
+} ,
         getTotalTime() {
           let total = 0;
           for (let i = 0; i < localStorage.length; i++) {
