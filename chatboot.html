@@ -2077,6 +2077,67 @@
       font-size: 0.8rem;
     }
 
+    /* ---------- ESTILOS PARA O FORMULÁRIO DE ADIÇÃO DE RESUMO ---------- */
+    .theory-add-form {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .theory-add-form .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: flex-end;
+      margin-bottom: 0.5rem;
+    }
+    .theory-add-form .form-row .form-group {
+      flex: 1;
+      min-width: 120px;
+      margin-bottom: 0;
+    }
+    .theory-add-form .form-row .form-group label {
+      font-size: 0.75rem;
+    }
+    .theory-add-form .form-row .form-group input {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.85rem;
+    }
+    .theory-add-form .chapter-fields {
+      margin-top: 0.5rem;
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .theory-add-form .chapter-fields .chapter-field {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .theory-add-form .chapter-fields .chapter-field label {
+      min-width: 80px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .theory-add-form .chapter-fields .chapter-field input {
+      flex: 1;
+      padding: 0.3rem 0.6rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      background: var(--bg-inset);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+    }
+    .theory-add-form .form-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      justify-content: flex-end;
+    }
+
     /* Responsividade */
     @media (max-width: 600px) {
       .review-item-body {
@@ -2089,6 +2150,13 @@
       }
       #reviewItemsContainer {
         max-height: 40vh;
+      }
+      .theory-add-form .form-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .theory-add-form .form-row .form-group {
+        min-width: auto;
       }
     }
 
@@ -2308,6 +2376,8 @@
             <button class="btn btn-secondary" id="exportTheoryBtn"><i class="fas fa-download"></i> Exportar JSON</button>
             <button class="btn btn-secondary" id="syncTheoryFromPlansBtn"><i class="fas fa-sync-alt"></i> Sincronizar Matérias</button>
           </div>
+          <!-- Container para o formulário de adição de resumo -->
+          <div id="theoryAddFormContainer" style="margin-top: 1rem;"></div>
         </div>
 
       </div>
@@ -3699,6 +3769,36 @@
           this.data = { version: '1.0', subjects: {} };
           this.save();
         }
+
+        // MIGRAÇÃO AUTOMÁTICA: preencher 'chapters' para resumos antigos
+        this._migrateChapters();
+      }
+
+      _migrateChapters() {
+        let modified = false;
+        for (const subject in this.data.subjects) {
+          const summaries = this.data.subjects[subject].summaries || [];
+          summaries.forEach(summary => {
+            if (summary.totalChapters > 0 && (!summary.chapters || summary.chapters.length === 0)) {
+              // Gerar capítulos genéricos
+              summary.chapters = [];
+              for (let i = 1; i <= summary.totalChapters; i++) {
+                summary.chapters.push({ index: i, name: `Capítulo ${i}` });
+              }
+              modified = true;
+            }
+            // Garantir que cada capítulo tenha índice (caso não tenha)
+            if (summary.chapters && summary.chapters.length > 0) {
+              summary.chapters.forEach((ch, idx) => {
+                if (!ch.index) ch.index = idx + 1;
+              });
+            }
+          });
+        }
+        if (modified) {
+          this.save();
+          console.log('[TheoryProgressManager] Migração automática de capítulos realizada.');
+        }
       }
 
       save() {
@@ -3741,11 +3841,14 @@
         if (!this.data.subjects[subject]) {
           this.data.subjects[subject] = { summaries: [] };
         }
+        const chaptersArray = summaryData.chapters || [];
+        const totalChapters = chaptersArray.length || summaryData.totalChapters || 0;
+        const chapters = chaptersArray.length > 0 ? chaptersArray : Array.from({ length: totalChapters }, (_, i) => ({ index: i+1, name: `Capítulo ${i+1}` }));
         const newSummary = {
           id: 'sb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
           name: summaryData.name || 'Resumo sem nome',
-          totalChapters: parseInt(summaryData.totalChapters) || 0,
-          chapters: summaryData.chapters || [],
+          totalChapters: totalChapters,
+          chapters: chapters,
           lastRegisteredChapter: 0,
           lastStudyDate: null
         };
@@ -3758,10 +3861,36 @@
         const summaries = this.getSummariesForSubject(subject);
         const index = summaries.findIndex(s => s.id === summaryId);
         if (index === -1) return false;
-        Object.assign(summaries[index], updates);
-        if (summaries[index].lastRegisteredChapter > summaries[index].totalChapters) {
-          summaries[index].lastRegisteredChapter = summaries[index].totalChapters;
+        const summary = summaries[index];
+        // Atualiza nome e totalCapítulos, mas preserva capítulos existentes se não forem fornecidos
+        if (updates.name) summary.name = updates.name;
+        if (updates.totalChapters !== undefined && updates.totalChapters !== summary.totalChapters) {
+          // Se o total mudar, ajustar lista de capítulos (preservar nomes existentes, adicionar/remover)
+          const newTotal = updates.totalChapters;
+          const currentChapters = summary.chapters || [];
+          if (newTotal > currentChapters.length) {
+            // Adicionar novos capítulos com nomes genéricos
+            for (let i = currentChapters.length + 1; i <= newTotal; i++) {
+              currentChapters.push({ index: i, name: `Capítulo ${i}` });
+            }
+          } else if (newTotal < currentChapters.length) {
+            // Remover capítulos extras (cuidado: pode perder progresso se o último capítulo registrado for removido)
+            // Verificar se o capítulo atual está dentro do novo total
+            if (summary.lastRegisteredChapter > newTotal) {
+              summary.lastRegisteredChapter = newTotal;
+            }
+            currentChapters.splice(newTotal);
+          }
+          summary.chapters = currentChapters;
+          summary.totalChapters = newTotal;
         }
+        // Se updates.chapters for fornecido, substituir completamente
+        if (updates.chapters) {
+          summary.chapters = updates.chapters;
+          summary.totalChapters = updates.chapters.length;
+        }
+        if (updates.lastRegisteredChapter !== undefined) summary.lastRegisteredChapter = updates.lastRegisteredChapter;
+        if (updates.lastStudyDate) summary.lastStudyDate = updates.lastStudyDate;
         this.save();
         return true;
       }
@@ -3841,6 +3970,8 @@
           throw new Error('Schema inválido: faltando campo "subjects"');
         }
         this.data = { version: '1.0', subjects: parsed.subjects };
+        // Aplicar migração após importação
+        this._migrateChapters();
         this.save();
         return true;
       }
@@ -3917,6 +4048,14 @@
         this.pendingReviewData = null;
         this.isReviewing = false;
         this.isConfirming = false;
+      }
+      
+      // ============================================================
+      // FUNÇÃO AUXILIAR PARA SANITIZAR IDs (CORREÇÃO DO SELETOR)
+      // ============================================================
+      sanitizeId(str) {
+        if (!str) return 'empty';
+        return String(str).replace(/[^a-zA-Z0-9_-]/g, '_');
       }
       
       // NOVO: Consolidar atividades pendentes (partialRegistration) para dailyActivities
@@ -4606,7 +4745,7 @@
         const dailyActivities = JSON.parse(localStorage.getItem(`dailyActivities_${hojeStr}`)) || { activities: {} };
         if (dailyActivities.activities.anki) {
           dailyActivities.activities.anki.forEach(a => {
-            if (!registrados.some(r => r.id === a.deck)) {
+            if (!registradas.some(r => r.id === a.deck)) {
               registrados.push({
                 id: a.deck,
                 nome: a.deck,
@@ -6516,27 +6655,57 @@
       
       // NOVO: configura os seletores de teoria no modal de registro
       setupTheorySelectors() {
-        document.querySelectorAll('#registerModal .theory-resumo-select').forEach(select => {
+        // Seleciona todos os selects de resumo dentro do modal de registro
+        const resumoSelects = document.querySelectorAll('#registerModal .theory-resumo-select');
+        resumoSelects.forEach(select => {
+          // Remove listener antigo para evitar duplicação
           select.removeEventListener('change', this._theorySelectHandler);
-          this._theorySelectHandler = (e) => {
-            const subject = select.dataset.subject;
+          
+          // Obtém o select de capítulos correspondente usando o data-subject e ID sanitizado
+          const subject = select.dataset.subject;
+          const sanitizedSubject = this.sanitizeId(subject);
+          const chapterSelect = document.getElementById(`teoria-capitulo-${sanitizedSubject}`);
+          
+          if (!chapterSelect) {
+            console.warn(`[setupTheorySelectors] Capítulo select não encontrado para ${subject}`);
+            return;
+          }
+          
+          // Define o handler diretamente com o chapterSelect capturado
+          const handler = (e) => {
             const summaryId = select.value;
-            const chapterSelect = document.querySelector(`#teoria-capitulo-${subject}`);
-            if (!chapterSelect) return;
+            if (!summaryId) {
+              chapterSelect.innerHTML = '';
+              return;
+            }
             const summaries = this.theoryManager.getSummariesForSubject(subject);
             const summary = summaries.find(s => s.id === summaryId);
             if (!summary) {
               chapterSelect.innerHTML = '';
               return;
             }
+            // Popula o select com os capítulos
             let options = '';
-            for (let i = 1; i <= summary.totalChapters; i++) {
-              const chapterName = summary.chapters && summary.chapters[i-1] ? summary.chapters[i-1].name : `Capítulo ${i}`;
-              options += `<option value="${i}">${chapterName}</option>`;
+            const chapters = summary.chapters || [];
+            for (let i = 0; i < chapters.length; i++) {
+              const ch = chapters[i];
+              const chapterName = ch.name || `Capítulo ${i+1}`;
+              options += `<option value="${ch.index || i+1}">${chapterName}</option>`;
+            }
+            // Fallback: se chapters estiver vazio, usar totalChapters
+            if (options === '' && summary.totalChapters > 0) {
+              for (let i = 1; i <= summary.totalChapters; i++) {
+                options += `<option value="${i}">Capítulo ${i}</option>`;
+              }
             }
             chapterSelect.innerHTML = options;
           };
-          select.addEventListener('change', this._theorySelectHandler);
+          
+          select.addEventListener('change', handler);
+          // Guarda o handler para remoção futura, se necessário
+          select._theoryHandler = handler;
+          
+          // Dispara o change para popular imediatamente
           select.dispatchEvent(new Event('change'));
         });
       }
@@ -6570,24 +6739,28 @@
                 <span class="subject-status">${statusLabel}</span>
               </div>
               <div style="margin-bottom: 0.5rem;">
-                <button class="btn btn-secondary btn-sm" onclick="chatBot.addTheorySummary('${subject}')" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">
-                  <i class="fas fa-plus"></i> Adicionar Resumo
+                <button class="btn btn-secondary btn-sm" onclick="chatBot.showAddSummaryForm('${subject}')" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">
+                  <i class="fas fa-plus"></i> Novo Resumo
                 </button>
               </div>
               <div class="theory-summary-list">
-                ${summaries.map(s => `
-                  <div class="summary-item ${s.lastRegisteredChapter >= s.totalChapters ? 'completed' : ''}">
-                    <div>
-                      <strong>${s.name}</strong> 
-                      <span style="font-size: 0.8rem; color: var(--text-tertiary);">(${s.lastRegisteredChapter}/${s.totalChapters} capítulos)</span>
-                      ${s.lastRegisteredChapter >= s.totalChapters && s.totalChapters > 0 ? ' ✅' : ''}
+                ${summaries.map(s => {
+                  const progress = this.theoryManager.getProgress(subject, s.id);
+                  const isCompleted = progress.lastChapter >= progress.total && progress.total > 0;
+                  return `
+                    <div class="summary-item ${isCompleted ? 'completed' : ''}">
+                      <div>
+                        <strong>${s.name}</strong> 
+                        <span style="font-size: 0.8rem; color: var(--text-tertiary);">(${progress.lastChapter}/${progress.total} capítulos)</span>
+                        ${isCompleted ? ' ✅' : ''}
+                      </div>
+                      <div class="summary-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="chatBot.editTheorySummary('${subject}', '${s.id}')" style="padding: 0.1rem 0.5rem; font-size: 0.7rem;"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-secondary btn-sm" onclick="chatBot.deleteTheorySummary('${subject}', '${s.id}')" style="padding: 0.1rem 0.5rem; font-size: 0.7rem; color: var(--danger);"><i class="fas fa-trash"></i></button>
+                      </div>
                     </div>
-                    <div class="summary-actions">
-                      <button class="btn btn-secondary btn-sm" onclick="chatBot.editTheorySummary('${subject}', '${s.id}')" style="padding: 0.1rem 0.5rem; font-size: 0.7rem;"><i class="fas fa-edit"></i></button>
-                      <button class="btn btn-secondary btn-sm" onclick="chatBot.deleteTheorySummary('${subject}', '${s.id}')" style="padding: 0.1rem 0.5rem; font-size: 0.7rem; color: var(--danger);"><i class="fas fa-trash"></i></button>
-                    </div>
-                  </div>
-                `).join('')}
+                  `;
+                }).join('')}
               </div>
             </div>
           `;
@@ -6595,25 +6768,120 @@
         container.innerHTML = html;
       }
 
-      addTheorySummary(subject) {
-        const name = prompt('Nome do resumo:');
-        if (!name) return;
-        const totalChapters = prompt('Total de capítulos (número):');
-        if (totalChapters === null || isNaN(parseInt(totalChapters))) return;
-        this.theoryManager.addSummary(subject, { name, totalChapters: parseInt(totalChapters) });
-        this.renderTheoryConfig();
-        if (window.UI_ENHANCER) window.UI_ENHANCER.updateSidePanel();
+      // NOVO: Exibe formulário para adicionar resumo com capítulos nomeados
+      showAddSummaryForm(subject) {
+        const container = document.getElementById('theoryAddFormContainer');
+        if (!container) return;
+
+        // Se já existir um formulário, remove
+        container.innerHTML = '';
+
+        // Escapa o nome da matéria para uso em atributos
+        const escapedSubject = subject.replace(/'/g, "\\'");
+
+        const formHTML = `
+          <div class="theory-add-form" id="theoryAddForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="newSummaryName">Nome do Resumo</label>
+                <input type="text" id="newSummaryName" placeholder="Ex: Cap. 1 a 5" value="">
+              </div>
+              <div class="form-group">
+                <label for="newSummaryChapters">Quantidade de Capítulos</label>
+                <input type="number" id="newSummaryChapters" min="1" value="1">
+              </div>
+              <button class="btn btn-secondary" onclick="chatBot.renderChapterInputs()" style="padding: 0.4rem 1rem;">Gerar Campos</button>
+            </div>
+            <div id="chapterFieldsContainer" class="chapter-fields"></div>
+            <div class="form-actions">
+              <button class="btn btn-secondary" onclick="chatBot.hideAddSummaryForm()">Cancelar</button>
+              <button class="btn btn-primary" onclick="chatBot.saveNewSummary('${escapedSubject}')">Salvar Resumo</button>
+            </div>
+          </div>
+        `;
+        container.innerHTML = formHTML;
+
+        // Gerar campos iniciais
+        this.renderChapterInputs();
       }
 
+      // Renderiza os inputs para cada capítulo
+      renderChapterInputs() {
+        const container = document.getElementById('chapterFieldsContainer');
+        const countInput = document.getElementById('newSummaryChapters');
+        if (!container || !countInput) return;
+
+        const count = parseInt(countInput.value) || 1;
+        if (count < 1) return;
+
+        let html = '';
+        for (let i = 1; i <= count; i++) {
+          const placeholder = `Capítulo ${i}`;
+          html += `
+            <div class="chapter-field">
+              <label for="chapterName_${i}">Cap. ${i}</label>
+              <input type="text" id="chapterName_${i}" placeholder="${placeholder}" value="${placeholder}">
+            </div>
+          `;
+        }
+        container.innerHTML = html;
+      }
+
+      // Salva o novo resumo com os nomes dos capítulos
+      saveNewSummary(subject) {
+        const nameInput = document.getElementById('newSummaryName');
+        const chapterFields = document.querySelectorAll('#chapterFieldsContainer .chapter-field input');
+        const name = nameInput ? nameInput.value.trim() : '';
+        if (!name) {
+          alert('Por favor, informe o nome do resumo.');
+          return;
+        }
+        const chapters = [];
+        chapterFields.forEach((input, idx) => {
+          const chapterName = input.value.trim() || `Capítulo ${idx+1}`;
+          chapters.push({ index: idx+1, name: chapterName });
+        });
+        if (chapters.length === 0) {
+          alert('Adicione pelo menos um capítulo.');
+          return;
+        }
+
+        // Verifica se já existe resumo com mesmo nome para a matéria
+        const existing = this.theoryManager.getSummariesForSubject(subject);
+        if (existing.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+          alert('Já existe um resumo com este nome para esta matéria.');
+          return;
+        }
+
+        this.theoryManager.addSummary(subject, { name, chapters });
+        this.hideAddSummaryForm();
+        this.renderTheoryConfig();
+        if (window.UI_ENHANCER) window.UI_ENHANCER.updateSidePanel();
+        this.typeMessage(`Resumo "${name}" adicionado com ${chapters.length} capítulos.`);
+      }
+
+      // Oculta o formulário
+      hideAddSummaryForm() {
+        document.getElementById('theoryAddFormContainer').innerHTML = '';
+      }
+
+      // Edita um resumo existente (simples: apenas nome e total, preserva capítulos)
       editTheorySummary(subject, summaryId) {
         const summaries = this.theoryManager.getSummariesForSubject(subject);
         const summary = summaries.find(s => s.id === summaryId);
         if (!summary) return;
+
         const newName = prompt('Nome do resumo:', summary.name);
         if (newName === null) return;
+
         const newTotal = prompt('Total de capítulos:', summary.totalChapters);
         if (newTotal === null || isNaN(parseInt(newTotal))) return;
-        this.theoryManager.updateSummary(subject, summaryId, { name: newName, totalChapters: parseInt(newTotal) });
+
+        // Atualiza nome e total (capítulos são ajustados automaticamente na migração)
+        this.theoryManager.updateSummary(subject, summaryId, {
+          name: newName,
+          totalChapters: parseInt(newTotal)
+        });
         this.renderTheoryConfig();
         if (window.UI_ENHANCER) window.UI_ENHANCER.updateSidePanel();
       }
@@ -6658,6 +6926,9 @@
         URL.revokeObjectURL(link.href);
       }
 
+      // ============================================================
+      // CRIAÇÃO DOS CARDS DE TEORIA – COM IDS SANITIZADOS
+      // ============================================================
       createQuestaoCard(questao, isRegistered = false, isYesterday = false) {
         const modalId = isYesterday ? 'yesterdayModal' : 'registerModal';
         
@@ -6796,49 +7067,54 @@
         }
         
         const subject = materia;
+        const sanitizedSubject = this.sanitizeId(subject);
         const summaries = this.theoryManager.getSummariesForSubject(subject);
         const hasStructuredData = summaries && summaries.length > 0;
         
         let formHTML = '';
         if (hasStructuredData) {
-          const summaryId = isRegistered && registeredData ? registeredData.resumoId : '';
-          const chapterIdx = isRegistered && registeredData ? registeredData.chapterIndex : 0;
+          const summaryId = isRegistered && registeredData ? registeredData.resumoId : (summaries.length > 0 ? summaries[0].id : '');
           const obs = isRegistered && registeredData ? registeredData.observacoes : '';
           
           formHTML += `
             <div class="form-group">
-              <label for="teoria-resumo-${subject}">Resumo</label>
-              <select id="teoria-resumo-${subject}" class="theory-resumo-select" data-subject="${subject}" ${isRegistered ? 'disabled' : ''}>
+              <label for="teoria-resumo-${sanitizedSubject}">Resumo</label>
+              <select id="teoria-resumo-${sanitizedSubject}" class="theory-resumo-select" data-subject="${subject}" ${isRegistered ? 'disabled' : ''}>
                 ${summaries.map(s => `<option value="${s.id}" ${s.id === summaryId ? 'selected' : ''}>${s.name}</option>`).join('')}
               </select>
             </div>
             <div class="form-group">
-              <label for="teoria-capitulo-${subject}">Capítulo</label>
-              <select id="teoria-capitulo-${subject}" class="theory-capitulo-select" ${isRegistered ? 'disabled' : ''}>
+              <label for="teoria-capitulo-${sanitizedSubject}">Capítulo</label>
+              <select id="teoria-capitulo-${sanitizedSubject}" class="theory-capitulo-select" ${isRegistered ? 'disabled' : ''}>
                 <!-- será populado via JS no onchange -->
               </select>
             </div>
             <div class="form-group">
-              <label for="teoria-observacoes-${subject}">Observações (opcional)</label>
-              <input type="text" id="teoria-observacoes-${subject}" placeholder="Anotações sobre o capítulo" value="${obs}" ${isRegistered ? 'disabled' : ''}>
+              <label for="teoria-observacoes-${sanitizedSubject}">Observações (opcional)</label>
+              <input type="text" id="teoria-observacoes-${sanitizedSubject}" placeholder="Anotações sobre o capítulo" value="${obs}" ${isRegistered ? 'disabled' : ''}>
             </div>
           `;
         } else {
+          // Fallback: campos antigos
+          const conteudo = isRegistered && registeredData ? (registeredData.conteudo || '') : '';
+          const pagina = isRegistered && registeredData ? (registeredData.pagina || '') : '';
           formHTML += `
             <div class="form-group">
-              <label for="teoria-conteudo-${subject}">Conteúdo estudado (PDF/Aula)</label>
-              <input type="text" id="teoria-conteudo-${subject}" placeholder="Ex: PDF Aula 1" ${isRegistered ? 'disabled' : ''} value="${isRegistered && registeredData ? registeredData.conteudo || '' : ''}">
+              <label for="teoria-conteudo-${sanitizedSubject}">Conteúdo estudado (PDF/Aula)</label>
+              <input type="text" id="teoria-conteudo-${sanitizedSubject}" placeholder="Ex: PDF Aula 1" ${isRegistered ? 'disabled' : ''} value="${conteudo}">
             </div>
             <div class="form-group">
-              <label for="teoria-pagina-${subject}">Página/Progresso</label>
-              <input type="text" id="teoria-pagina-${subject}" placeholder="Ex: Página 42" ${isRegistered ? 'disabled' : ''} value="${isRegistered && registeredData ? registeredData.pagina || '' : ''}">
+              <label for="teoria-pagina-${sanitizedSubject}">Página/Progresso</label>
+              <input type="text" id="teoria-pagina-${sanitizedSubject}" placeholder="Ex: Página 42" ${isRegistered ? 'disabled' : ''} value="${pagina}">
             </div>
           `;
         }
+        // Campo de tempo comum
+        const tempoValue = isRegistered && registeredData ? registeredData.tempo : '';
         formHTML += `
           <div class="form-group">
-            <label for="teoria-tempo-${subject}">Tempo de estudo (minutos)</label>
-            <input type="number" id="teoria-tempo-${subject}" min="0" placeholder="Ex: 60" ${isRegistered ? 'disabled' : ''} value="${isRegistered && registeredData ? registeredData.tempo || '' : ''}">
+            <label for="teoria-tempo-${sanitizedSubject}">Tempo de estudo (minutos)</label>
+            <input type="number" id="teoria-tempo-${sanitizedSubject}" min="0" placeholder="Ex: 60" ${isRegistered ? 'disabled' : ''} value="${tempoValue}">
           </div>
         `;
         
@@ -6897,7 +7173,8 @@
             } else if (type === 'anki') {
               tempoInput = document.getElementById(`anki-tempo-${id}`);
             } else if (type === 'teoria') {
-              tempoInput = document.getElementById(`teoria-tempo-${id}`);
+              const sanitizedSubject = this.sanitizeId(id);
+              tempoInput = document.getElementById(`teoria-tempo-${sanitizedSubject}`);
             }
             if (tempoInput && tempoInput.value.trim() === '') {
               tempoInput.value = duration;
@@ -7026,10 +7303,11 @@
 
           } else if (type === 'teoria') {
             const subject = id;
-            const resumoSelect = document.getElementById(`teoria-resumo-${subject}`);
-            const chapterSelect = document.getElementById(`teoria-capitulo-${subject}`);
-            const observacoesInput = document.getElementById(`teoria-observacoes-${subject}`);
-            const tempoInput = document.getElementById(`teoria-tempo-${subject}`);
+            const sanitizedSubject = this.sanitizeId(subject);
+            const resumoSelect = document.getElementById(`teoria-resumo-${sanitizedSubject}`);
+            const chapterSelect = document.getElementById(`teoria-capitulo-${sanitizedSubject}`);
+            const observacoesInput = document.getElementById(`teoria-observacoes-${sanitizedSubject}`);
+            const tempoInput = document.getElementById(`teoria-tempo-${sanitizedSubject}`);
 
             let resumoId = null, chapterIndex = null, observacoes = '';
             let conteudo = '', pagina = '';
@@ -7039,8 +7317,8 @@
               chapterIndex = parseInt(chapterSelect ? chapterSelect.value : 0) || 0;
               observacoes = observacoesInput ? observacoesInput.value : '';
             } else {
-              const conteudoInput = document.getElementById(`teoria-conteudo-${subject}`);
-              const paginaInput = document.getElementById(`teoria-pagina-${subject}`);
+              const conteudoInput = document.getElementById(`teoria-conteudo-${sanitizedSubject}`);
+              const paginaInput = document.getElementById(`teoria-pagina-${sanitizedSubject}`);
               conteudo = conteudoInput ? conteudoInput.value : '';
               pagina = paginaInput ? paginaInput.value : '';
             }
@@ -7135,10 +7413,15 @@
         data.activities.teoria.forEach(t => {
           // Tenta obter nome do resumo se disponível
           let summaryName = t.materia;
+          let chapterName = t.chapterIndex ? `Capítulo ${t.chapterIndex}` : '';
           if (t.resumoId) {
             const summaries = this.theoryManager.getSummariesForSubject(t.materia);
             const summary = summaries.find(s => s.id === t.resumoId);
-            if (summary) summaryName = summary.name;
+            if (summary) {
+              summaryName = summary.name;
+              const ch = summary.chapters ? summary.chapters.find(c => c.index === t.chapterIndex) : null;
+              if (ch) chapterName = ch.name;
+            }
           }
           allActivities.push({
             type: 'teoria',
@@ -7151,7 +7434,7 @@
                 </div>
                 <div class="review-item-body">
                   <div class="review-field"><span>Matéria</span><strong>${t.materia}</strong></div>
-                  ${t.resumoId ? `<div class="review-field"><span>Capítulo</span><strong>${t.chapterIndex}</strong></div>` : ''}
+                  ${t.resumoId ? `<div class="review-field"><span>Capítulo</span><strong>${chapterName || t.chapterIndex}</strong></div>` : ''}
                   ${t.conteudo ? `<div class="review-field"><span>Conteúdo</span><strong>${t.conteudo}</strong></div>` : ''}
                   ${t.pagina ? `<div class="review-field"><span>Página</span><strong>${t.pagina}</strong></div>` : ''}
                   <div class="review-field"><span>Tempo</span><strong>${t.tempo} min</strong></div>
@@ -9834,6 +10117,7 @@
       
       // ============================================================
       // NOVA VERSÃO DE updateSidePanel COM TAGS E BARRA DE PROGRESSO ANKI
+      // E EXIBIÇÃO DO NOME DO CAPÍTULO
       // ============================================================
       updateSidePanel: function() {
         if (!chatBot) return;
@@ -10026,6 +10310,8 @@
                   const progress = chatBot.theoryManager.getProgress(materia, summary.id);
                   const percent = progress.percentage;
                   const nextChapter = progress.lastChapter + 1;
+                  const nextChapterName = summary.chapters && summary.chapters[nextChapter - 1] ? summary.chapters[nextChapter - 1].name : `Capítulo ${nextChapter}`;
+                  
                   const pendingCard = document.createElement('div');
                   pendingCard.className = 'activity-card pending';
                   pendingCard.innerHTML = `
@@ -10040,7 +10326,7 @@
                       </div>
                     </div>
                     <div class="activity-details">
-                      Próximo capítulo: ${nextChapter} de ${summary.totalChapters}
+                      Próximo capítulo: ${nextChapterName} (${nextChapter} de ${summary.totalChapters})
                     </div>
                     <div class="deck-progress-mini">
                       <div class="deck-progress-mini-bar">
@@ -10141,16 +10427,20 @@
           activitiesContainer.appendChild(activityCard);
         });
         
-        // Teoria (com barra de progresso)
+        // Teoria (com barra de progresso e nome do capítulo)
         atividades.teoria.forEach(t => {
           let progressHTML = '';
           let summaryName = '';
+          let chapterDisplay = '';
           if (t.resumoId) {
             const progress = chatBot.theoryManager.getProgress(t.materia, t.resumoId);
             const summaries = chatBot.theoryManager.getSummariesForSubject(t.materia);
             const summary = summaries.find(s => s.id === t.resumoId);
             summaryName = summary ? summary.name : 'Resumo';
             const percent = progress.percentage;
+            const lastChapter = progress.lastChapter;
+            const chapterName = (summary && summary.chapters && summary.chapters[lastChapter - 1]) ? summary.chapters[lastChapter - 1].name : `Capítulo ${lastChapter}`;
+            chapterDisplay = `Último: ${chapterName} (${lastChapter}/${progress.total})`;
             progressHTML = `
               <div class="deck-progress-mini">
                 <div class="deck-progress-mini-bar">
@@ -10161,6 +10451,7 @@
             `;
           } else {
             summaryName = t.materia;
+            chapterDisplay = t.conteudo || t.pagina || 'Estudo concluído';
             progressHTML = '';
           }
           
@@ -10181,7 +10472,7 @@
               </div>
             </div>
             <div class="activity-details">
-              ${t.resumoId ? `Capítulo ${t.chapterIndex || 0} de ${progress.total || 0}` : (t.conteudo || t.pagina || 'Estudo concluído')} • ${t.tempo} min
+              ${chapterDisplay} • ${t.tempo} min
             </div>
             ${progressHTML}
           `;
